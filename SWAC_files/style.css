@@ -240,7 +240,7 @@ width: 24px;
 /* ============================================================================== 지도 */
 #map { 
         width:88%; 
-        height: 1190px;
+        height: 1000px;
         float: left;
         margin-top: 20px;
 
@@ -250,7 +250,7 @@ width: 24px;
 #locbtnBox {
 	float: left;
 	width: 10%; 
-	height: 1190px;
+	height: 1000px;
     margin-top: 20px;
 	background-color:#f4f4f4; 
 }
@@ -372,7 +372,7 @@ input[type="radio"]:checked + label:before {
 }
 
 .tableLocationin {
-  font-size: 2.0em;
+  font-size: 1.4em;
   color:#222;
   font-weight: 700;
   margin:0; 
@@ -421,26 +421,26 @@ table#popupin {
 
  
 table#popupin td.tabletitle {
-  font-size: 1.5em;
+  font-size: 1.2em;
   color:#222; 
   font-weight: 700;
 }
 
 table#popupin td.tabletitles {
-  font-size: 1.5em;
+  font-size: 1.2em;
   color:#222; 
   font-weight: 700;
   text-align:center;
 }
 
 table#popupin td.tabledata {
-  font-size: 1.5em;
+  font-size: 1.2em;
   color:#555;
   font-weight: 300; 
 }
 
 table#popupin td.tabledatas {
-  font-size: 1.5em;
+  font-size: 1.2em;
   color:#555;
   font-weight: 300; 
   text-align: center;
@@ -670,7 +670,7 @@ table.dataTable {
 #dashboard {
 	width: 20%;
 	float: right;
-	height: 1190px;
+	height: 1000px;
 	margin-top: 20px;
 	background-color:#f4f4f4; 
 	position: absolute;
@@ -681,14 +681,14 @@ table.dataTable {
 
 
 .labelExplainBox {
-	margin-top: 30px;
+	margin-top: 10px;
 }
 
 .labelExplainBoxtitle {
 	font-weight: 700;
-	font-size: 2.5em;
+	font-size: 1.7em;
 	text-align:center;
-	margin-bottom: 30px;
+	margin-bottom: 10px;
 }
 
 
