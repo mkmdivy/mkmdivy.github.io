@@ -131,8 +131,9 @@
 	
 	
 	<script>
-
-	readfile("https://mkmd.neocities.org/SWAC2.json");
+//https://mkmd.neocities.org/SWAC2.json
+	
+	readfile("./SWAC_files/SWAC2.json");
 
 	
 
@@ -141,7 +142,7 @@
 		var table = $('#myTable').DataTable({
 		 
 		  'ajax'       : { 
-		    "url"    : 'https://mkmd.neocities.org/SWAC2B.json',
+		    "url"    : './SWAC_files/SWAC2.json',
 		    "dataSrc": function (json) {
 		      var return_data = new Array();
 		      for(var i=0;i< json.length; i++){
