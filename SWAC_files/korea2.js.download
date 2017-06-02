@@ -223,10 +223,6 @@ function readfile (filename) {
 			       		'<td class="tabledatas">'+(e.target.feature.properties.Agglomeration_ID)+'</td>'+
 						'</tr>'+
 			       		'<tr>'+
-							'<td class="tabledata">Country</td>'+
-			       			'<td class="tabledatas">'+e.target.feature.properties.ISO3+'</td>'+
-						'</tr>'+
-			       		'<tr>'+
 						'<td class="tabledata">Lon</td>'+
 			       		'<td class="tabledatas">'+(e.target.feature.properties.Lon).toFixed(2)+'</td>'+
 						'</tr>'+
