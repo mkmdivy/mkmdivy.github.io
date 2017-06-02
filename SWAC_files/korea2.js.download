@@ -184,7 +184,7 @@ function readfile (filename) {
 				type: 'radar',data:SWACdata,
 				
 				options:{responsive:true,borderColor:"red",
-					scale: {
+					scale: {ticks:{beginAtZero: true,max:1,stepSize:0.2},
 					// Hides the scale
 					display: true
 					}
