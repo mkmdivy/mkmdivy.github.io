@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css" />
+        <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/MarkerCluster.css" />
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet-heat.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/OSMBuildings-Leaflet.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/leaflet-tilelayer-wmts.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/leaflet.markercluster.js"></script>
+        <script src="data/Church0.js"></script>
+        <script src="data/Mosque1.js"></script>
+        <script>
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:27, minZoom:1
+        }).fitBounds([[-5.50449360829,-35.2230210242],[42.9761484529,53.4005017273]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
+        var bounds_group = new L.featureGroup([]);
+        var basemap0 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            maxZoom: 27
+        });
+        basemap0.addTo(map);
+        function setBounds() {
+        }
+        function geoJson2heat(geojson, weight) {
+          return geojson.features.map(function(feature) {
+            return [
+              feature.geometry.coordinates[1],
+              feature.geometry.coordinates[0],
+              feature.properties[weight]
+            ];
+          });
+        }
+        function pop_Church0(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>name</strong><br />' + (feature.properties['name'] !== null ? Autolinker.link(String(feature.properties['name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>religion</strong><br />' + (feature.properties['religion'] !== null ? Autolinker.link(String(feature.properties['religion'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_Church0(feature) {
+            switch(feature.properties['religion']) {
+                case 'christian':
+                    return {
+                pane: 'pane_Church0',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(251,154,153,1.0)',
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Church0');
+        map.getPane('pane_Church0').style.zIndex = 600;
+        map.getPane('pane_Church0').style['mix-blend-mode'] = 'normal';
+        var layer_Church0 = new L.geoJson(json_Church0, {
+            attribution: '<a href=""></a>',
+            pane: 'pane_Church0',
+            onEachFeature: pop_Church0,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Church0(feature))
+            }
+        });
+        var cluster_Church0 = new L.MarkerClusterGroup({showCoverageOnHover: false});
+        cluster_Church0.addLayer(layer_Church0);
+
+        bounds_group.addLayer(layer_Church0);
+        cluster_Church0.addTo(map);
+        function pop_Mosque1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>name</strong><br />' + (feature.properties['name'] !== null ? Autolinker.link(String(feature.properties['name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>religion</strong><br />' + (feature.properties['religion'] !== null ? Autolinker.link(String(feature.properties['religion'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_Mosque1(feature) {
+            switch(feature.properties['religion']) {
+                case 'muslim':
+                    return {
+                pane: 'pane_Mosque1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fillOpacity: 1,
+                fillColor: 'rgba(51,160,44,1.0)',
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Mosque1');
+        map.getPane('pane_Mosque1').style.zIndex = 601;
+        map.getPane('pane_Mosque1').style['mix-blend-mode'] = 'normal';
+        var layer_Mosque1 = new L.geoJson(json_Mosque1, {
+            attribution: '<a href=""></a>',
+            pane: 'pane_Mosque1',
+            onEachFeature: pop_Mosque1,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Mosque1(feature))
+            }
+        });
+        var cluster_Mosque1 = new L.MarkerClusterGroup({showCoverageOnHover: false});
+        cluster_Mosque1.addLayer(layer_Mosque1);
+
+        bounds_group.addLayer(layer_Mosque1);
+        cluster_Mosque1.addTo(map);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'Mosque<br /><table><tr><td style="text-align: center;"><img src="legend/Mosque1_muslim0.png" /></td><td>muslim</td></tr></table>': cluster_Mosque1,'Church<br /><table><tr><td style="text-align: center;"><img src="legend/Church0_christian0.png" /></td><td>christian</td></tr></table>': cluster_Church0,},{collapsed:false}).addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
