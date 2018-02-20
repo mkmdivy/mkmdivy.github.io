@@ -1,0 +1,683 @@
+  // This is the default error handler for ajax requests.
+  // Extract all the information required to understand.
+
+  	$.ajaxSetup({
+        error: function(jqXHR, exception) {
+            if (jqXHR.status === 0) {
+                alert('Not connect.\n Verify Network.');
+            } else if (jqXHR.status == 404) {
+                alert('Requested page not found. [404]');
+            } else if (jqXHR.status == 500) {
+                alert('Internal Server Error [500].');
+            } else if (exception === 'parsererror') {
+                alert('Requested JSON parse failed.');
+            } else if (exception === 'timeout') {
+                alert('Time out error.');
+            } else if (exception === 'abort') {
+                alert('Ajax request aborted.');
+            } else {
+                alert('Uncaught Error.\n' + jqXHR.responseText);
+            }
+        }
+    });
+
+
+	$('#loading-image').hide();
+
+	
+
+	
+	//Create map, set zoom extents and imagery
+	var map = L.map('map', {
+		minZoom: 2,
+		maxZoom: 18,
+		layers: [
+			L.tileLayer('http://server.arcgisonline.com/ArcGIS/' + 'rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	        minZoom: 16,
+	        maxZoom: 18,
+	        noWrap: true,
+	        attribution: 'SWAC' 
+	     	        })/*,
+			L.tileLayer('http://openmapsurfer.uni-hd.de/tiles/roads/x={x}&y={y}&z={z}', {
+			attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a>'
+				+ ' &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, '
+				+ '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+			noWrap: true,
+			minZoom: 13,
+	        maxZoom: 15
+			})*/
+	    ]});
+
+	// Set view of Leaflet map based on screen size
+	if ($(window).width() < 626) {
+		map.setView([20, 0],10);
+		//map.locate({setView: true, maxZoom: 12});
+
+	} else {
+		map.setView([20, 0],3);
+		//map.locate({setView: true, maxZoom: 12});
+	}
+
+	var southWest = new L.LatLng(90, -180);
+	var northEast = new L.LatLng(-90 , 180);
+
+	var bounds = new L.LatLngBounds(southWest, northEast);
+	map.setMaxBounds(bounds);
+	
+	function onLocationFound(e) {
+		
+	    var radius = e.accuracy / 2;
+	    L.marker(e.latlng).addTo(map).bindPopup("You are within <b>" + radius + " meters</b> from this point").openPopup();
+	    L.circle(e.latlng, radius).addTo(map);    
+	}
+
+	function onLocationError(e) {
+	    alert(e.message);
+	}
+
+	map.on('locationerror', onLocationError);
+
+	map.on('locationfound', onLocationFound);
+
+    //Create Base Layers.
+  	var roadmap = L.esri.basemapLayer('Streets');
+  	var aerial =  L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+                  minZoom: 2,
+                  maxZoom: 14,
+                  continuousWorld: true,
+                  subdomains:['mt0','mt1','mt2','mt3']
+    });
+  	var terrain =  L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', {
+		attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
+		minZoom: 2,
+        continuousWorld: true,
+        maxZoom: 14
+	   });
+
+	var toner = L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
+		        noWrap: true,
+		        maxZoom: 15,
+		        minZoom: 2
+		    }).addTo(map);//default base map
+
+	//Add population count wms as an overlay
+  	var popdens =  L.tileLayer.wms('http://sedac.ciesin.columbia.edu/geoserver/wms', {
+      	layers: 'gpw-v4:gpw-v4-population-count_2015',
+      	format: 'image/png',
+        continuousWorld: true,
+      	transparent: true,
+      	opacity: .1,
+      	attribution: "SEDAC <a href='http://sedac.ciesin.columbia.edu/gpw' target='_top'>Gridded Population of the World v4</a>",
+      	minZoom: 2,
+        maxZoom: 14
+  	}).addTo(map); 
+
+/*  	uri = "http://sedac.ciesin.columbia.edu/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&legend_options=fontAntiAliasing:true&LAYER=gpw-v3:gpw-v3-population-count-future-estimates_2005",
+    L.wmsLegend(uri);*/
+
+    //Add settlement point wms as an overlay
+  	var settlements =  L.tileLayer.wms('http://sedac.ciesin.columbia.edu/geoserver/wms', {
+      	layers: 'grump-v1:grump-v1-settlement-points',
+      	styles: 'grump-v1-settlement-points:scale-dependent',
+      	format: 'image/png',
+      	transparent: true,
+        continuousWorld: true,
+      	opacity: .1,
+      	attribution: "SEDAC <a href='http://sedac.ciesin.columbia.edu/data/collection/grump-v1' target='_top'>Global Rural-Urban Mapping Project Settlement Points</a>",
+      	minZoom: 2,
+        maxZoom: 14
+  	});
+
+	var baseLayers = {
+		"Roadmap": roadmap,
+		"Aerial": aerial,
+		"Terrain" : terrain,
+		"Country Boundaries" : toner
+	};
+	var overlays = {
+	  "Socioeconomic": {
+	    "2015 Population Count<br/><img src='libs/images/pop-count-legend.png' style='opacity: .6;' title='2015 Population Count' />" : popdens,
+	    "<img src='libs/images/settlement-points-legend.png' title='Settlement Points' /> Settlement Points" : settlements
+	  }
+	};
+
+
+	
+
+	var drawnItems = new L.FeatureGroup();
+	map.addLayer(drawnItems);
+
+	var drawControl = new L.Control.Draw({
+		draw: {
+			position: 'topright',
+			polygon: {
+				metric: false,
+				title: 'Draw a polygon!',
+				allowIntersection: false,
+				drawError: {
+					color: '#b00b00',
+					timeout: 1000
+				},
+				shapeOptions: {
+					color: '#000',
+					clickable: true
+				},
+				showArea: true
+			},
+			rectangle:false,
+			polyline: false,
+			circle: {
+				shapeOptions: {
+					color: '#000',
+					clickable: true
+				},
+				showArea: true
+			},
+			marker: false
+		},
+		edit: {
+			edit: true,
+			featureGroup: drawnItems
+		}
+	});
+	map.addControl(drawControl);
+
+/*
+
+		var setExtent = L.control({ position: 'topleft' });
+
+
+		setExtent.onAdd = function(map) {
+		    this._div = L.DomUtil.create('div', 'setExtentCntl');
+		    var img_log = "<div class='setExtent'><img src='nuke.png'></img></div>";
+
+		    this._div.innerHTML = img_log;
+		    return this._div;
+
+		}
+		setExtent.addTo(map);
+
+    map.addControl(setExtent);
+
+ */
+	//handle user input
+	map.on('draw:created', function (e) {
+		//get polygon vertices 
+		var type = e.layerType,
+			layer = e.layer;
+		if (type === 'circle') {
+			var radius = layer.getRadius();
+			var origin = layer.getLatLng(); //center of circle
+			var point_num = 100; //starting number of vertices
+			if(radius > 100) point_num += radius/100; //adjust number of vertices proportionally to the size of the radius
+			if(radius > 1000000) {
+				alert('Circles with a radius larger than 1000km are not allowed.');
+				return null;
+			} else if (radius < 5000) {
+					alert('Circles with a radius smaller than 5km are not allowed.');
+					return null;
+				} else {
+					var radius = layer.getRadius();
+				}
+			var projection = L.CRS.EPSG4326;
+
+			//console.log('The number of vertices used to construct this circle is '+ point_num);
+			var polys = createGeodesicPolygon(origin, radius, point_num, 0, projection); //these points were derived from the drawn circle
+    		var polygon = []; // store the geometry
+
+    		for (var i = 0; i < polys.length; i++) {
+    			var geometry = [polys[i].lat, polys[i].lng]; 
+    			polygon.push(geometry);
+    		}
+
+    		var polyCircle = L.polygon(polygon); //.addTo(map); //draw a leaflet polygon with stored geometry
+
+    		//store the vertices 
+    		var coords = '';
+    		var arrayVertices = polyCircle.getLatLngs();
+
+		} else {
+
+			//store the vertices
+			var coords = '';
+    		var arrayVertices = layer.getLatLngs();
+    	}
+    		//loop through vertices
+    		var i;
+		    for (i = 0; i < arrayVertices.length; i++) {
+		      var vertex = arrayVertices[i];
+		      var firstVertex = arrayVertices[0];
+		  		
+		      //create middle part of wps request
+		      
+		      coords += '[' + vertex.lng + ',';
+		      coords += vertex.lat + '],';
+		     
+		     }
+			
+			// Complete (i.e. close) the polygon by adding the very first vertex again
+			coords += '[' + firstVertex.lng + ',';
+			coords += firstVertex.lat + ']';
+
+			//create header and footer part of wps request
+			wpsRequestHeader = 'Input_Feature_Set={ "geometryType": "esriGeometryPolygon","fields": [{"name": "id","type": "esriFieldTypeInteger"}],"spatialReference": {"wkid": 4326},"features": [{"geometry": {"rings": [[';
+			wpsRequestFooter = ']],"spatialReference": {"wkid": 4326}},"attributes": {"id": 1}}]}&f=json';
+			//construct full xml request to be sent to the wps sevice via ajax
+			var wpsRequest = wpsRequestHeader + coords + wpsRequestFooter;
+			console.log(wpsRequest);
+
+			// submit the request to the SEDAC wps service
+
+
+			$.ajax({
+			    url: "http://sedac.ciesin.columbia.edu/arcgis/rest/services/sedac/geoprocessing/GPServer/pes-v2/execute",
+			    dataType: "json",
+			    type: "post",
+			    data: wpsRequest,
+			    beforeSend: function(){
+					$('#loading-image').show();
+				 },
+			    complete: function(json) {
+			    	$('#loading-image').hide();
+  					var json = json.responseText;
+ 					  var pesObj = jQuery.parseJSON( json ); 
+  					if (typeof pesObj.results != 'undefined') {
+						var pesResult = pesObj.results[0].value.features[0].attributes; 						
+	  				var getPopulation = pesResult.POPULATION;
+				    var getCount = pesResult.COUNT;
+				    var getLandArea = pesResult.LANDAREA;
+						var getMax = pesResult.MAX;
+						var getMean = pesResult.MEAN;
+						var getMeanUnitArea = pesResult.MEANUNITAREA;
+						var getMin = pesResult.MIN;
+						var getQualityWarning = pesResult.QUALITYWARNING;
+						var getRange = pesResult.RANGE;
+						var getStandardDeviation = pesResult.STD;					
+				        var contentHtml = "<h2>Population Estimates</h2>";
+						    contentHtml += "<table width='100%'>";
+						    contentHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Population 2015</a></td><td align='right'><b>"+addCommas(Math.round(getPopulation))+"</b></td></tr>";
+						    contentHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urban Population 2015</a></td><td align='right'><b>"+addCommas(Math.round(getPopulation)/2-53452)+"</b></td></tr>";
+							contentHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urbanization rate 2015</a></td><td align='right'><b>"+addCommas(Math.round((getPopulation/2-53452)/getPopulation*100))+'%'+"</b></td></tr>";
+							contentHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Estimated Land Area'>Estimated Land Area</a></td><td align='right'><b>"+addCommas(Math.round(getLandArea))+" km<sup>2</sup></b></td></tr>";
+						    if (getQualityWarning === '1') {								
+						    	contentHtml += "<tr><td align='left' colspan='2' style='color:red;'>The circle or polygon drawn is smaller than the resolution of underlying data. Increase its size for better estimate</td></tr>";						    	
+						    }
+						    contentHtml += "</table>";
+							layer.bindPopup(contentHtml).openPopup();    
+						    wpsResponse.push(getPopulation,getCount,getMin,getMax,getMean,getStandardDeviation,getLandArea,getMeanUnitArea,getQualityWarning);
+  					} else if (typeof pesObj.results == 'undefined') {
+  						var contentHtml = "<h2>Population Estimates</h2>";
+						    contentHtml += "<table width='100%'>";
+						    contentHtml += "<tr><td><b>Out of Range. Please make your polygon larger.</b></td></tr>";
+						    contentHtml += "</table>";						
+							layer.bindPopup(contentHtml).openPopup();
+
+
+  					}
+				 }
+
+			});
+		    
+		    //store xml response
+		   	var wpsResponse = [];
+			 
+			//retrieve stored wpsResponse when polygon is clicked and display in a table
+			layer.on('click', function(e) {
+
+				var clickHtml = "<h2>Population Estimates</h2>";
+					    clickHtml += "<table width='100%'>";
+					    clickHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the drawn circle or polygon, 2015 estimate'>Estimated Population 2015</a></td><td align='right'><b>"+addCommas(Math.round(wpsResponse[0]))+"</b></td></tr>";
+					    clickHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urban Population 2015</a></td><td align='right'><b>"+addCommas(Math.round(wpsResponse[0])/2-53452)+"</b></td></tr>";
+						clickHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urbanization rate 2015</a></td><td align='right'><b>"+addCommas(Math.round((wpsResponse[0]/2-53452)/wpsResponse[0]*100))+'%'+"</b></td></tr>";
+						clickHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Estimated Land Area'>Estimated Land Area</a></td><td align='right'><b>"+addCommas(Math.round(wpsResponse[6]))+" km<sup>2</sup></b></td></tr>";
+					    if (wpsResponse[8] === '1') {
+						    clickHtml += "<tr><td align='left' colspan='2' style='color:red;'>The circle or polygon drawn is smaller than the resolution of underlying data. Increase its size for better estimate</td></tr>";  
+					    } 
+
+					    clickHtml += "</table>";
+
+				layer.bindPopup(clickHtml).openPopup();
+			}); 
+
+		drawnItems.addLayer(layer);
+	});
+	
+
+	map.on('draw:edited', function (e) {
+	    var layers = e.layers;	
+ 		layers.eachLayer(function (layer) {
+ 			var type = layer._mRadius;
+	 		if (type != undefined) {
+				var radius = layer.getRadius();
+				var origin = layer.getLatLng(); //center of circle
+				var point_num = 100; //starting number of vertices
+				if(radius > 100) point_num += radius/100; //adjust number of vertices proportionally to the size of the radius
+				if(radius > 1000000) {
+					alert('Circles with a radius larger than 1000km are not allowed.');
+					return null;
+				} else if (radius < 5000) {
+						alert('Circles with a radius smaller than 5km are not allowed.');
+						return null;
+				} else {
+					var radius = layer.getRadius();
+				}
+				var projection = L.CRS.EPSG4326;
+
+				//console.log('The number of vertices used to construct this circle is '+ point_num);
+				var polys = createGeodesicPolygon(origin, radius, point_num, 0, projection); //these points were derived from the drawn circle
+	    		var polygon = []; // store the geometry
+
+	    		for (var i = 0; i < polys.length; i++) {
+	    			var geometry = [polys[i].lat, polys[i].lng]; 
+	    			polygon.push(geometry);
+	    		}
+
+	    		var polyCircle = L.polygon(polygon); //.addTo(map); //draw a leaflet polygon with stored geometry
+
+	    		//store the vertices 
+	    		var coords = '';
+	    		var arrayVertices = polyCircle.getLatLngs();
+
+			} else {
+				//store the vertices
+				var coords = '';
+	    		var arrayVertices = layer.getLatLngs();
+	    	}
+    	
+    		//loop through vertices
+    		var i;
+		    for (i = 0; i < arrayVertices.length; i++) {
+		      var vertex = arrayVertices[i];
+		      var firstVertex = arrayVertices[0];
+		  		
+		      //create middle part of wps request
+		      
+		      coords += '[' + vertex.lng + ',';
+		      coords += vertex.lat + '],';
+		     
+		     }
+			
+			// Complete (i.e. close) the polygon by adding the very first vertex again
+			coords += '[' + firstVertex.lng + ',';
+			coords += firstVertex.lat + ']';
+
+			//create header and footer part of wps request
+			wpsRequestHeader = 'Input_Feature_Set={ "geometryType": "esriGeometryPolygon","fields": [{"name": "id","type": "esriFieldTypeInteger"}],"spatialReference": {"wkid": 4326},"features": [{"geometry": {"rings": [[';
+			wpsRequestFooter = ']],"spatialReference": {"wkid": 4326}},"attributes": {"id": 1}}]}&f=json';
+			//construct full xml request to be sent to the wps sevice via ajax
+			var wpsRequest = wpsRequestHeader + coords + wpsRequestFooter;
+			console.log(wpsRequest);
+
+			// submit the request to the SEDAC wps service
+
+
+			$.ajax({
+          url: "http://sedac.ciesin.columbia.edu/arcgis/rest/services/sedac/geoprocessing/GPServer/pes-v2/execute",
+          dataType: "json",
+          type: "post",
+          data: wpsRequest,
+          beforeSend: function(){
+          $('#loading-image').show();
+         },
+          complete: function(json) {
+            $('#loading-image').hide();
+            var json = json.responseText;
+            var pesObj = jQuery.parseJSON( json ); 
+            if (typeof pesObj.results != 'undefined') {
+            var pesResult = pesObj.results[0].value.features[0].attributes;             
+            var getPopulation = pesResult.POPULATION;
+            var getCount = pesResult.COUNT;
+            var getLandArea = pesResult.LANDAREA;
+            var getMax = pesResult.MAX;
+            var getMean = pesResult.MEAN;
+            var getMeanUnitArea = pesResult.MEANUNITAREA;
+            var getMin = pesResult.MIN;
+            var getQualityWarning = pesResult.QUALITYWARNING;
+            var getRange = pesResult.RANGE;
+            var getStandardDeviation = pesResult.STD;         
+                var contentHtml = "<h2>Population Estimates</h2>";
+                contentHtml += "<table width='100%'>";
+                contentHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Population 2015</a></td><td align='right'><b>"+addCommas(Math.round(getPopulation))+"</b></td></tr>";
+                contentHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urban Population 2015</a></td><td align='right'><b>"+addCommas(Math.round(getPopulation)-53452)+"</b></td></tr>";
+				contentHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urbanization rate 2015</a></td><td align='right'><b>"+addCommas(Math.round((getPopulation/2-53452)/getPopulation*100))+'%'+"</b></td></tr>";
+				contentHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Estimated Land Area'>Estimated Land Area</a></td><td align='right'><b>"+addCommas(Math.round(getLandArea))+" km<sup>2</sup></b></td></tr>";
+                if (getQualityWarning === '1') {                
+                  contentHtml += "<tr><td align='left' colspan='2' style='color:red;'>The circle or polygon drawn is smaller than the resolution of underlying data. Increase its size for better estimate</td></tr>";                  
+                }
+                contentHtml += "</table>";
+              layer.bindPopup(contentHtml).openPopup();    
+                wpsResponse.push(getPopulation,getCount,getMin,getMax,getMean,getStandardDeviation,getLandArea,getMeanUnitArea,getQualityWarning);
+            } else if (typeof pesObj.results == 'undefined') {
+              var contentHtml = "<h2>Population Estimates</h2>";
+                contentHtml += "<table width='100%'>";
+                contentHtml += "<tr><td><b>Out of Range. Please make your polygon larger.</b></td></tr>";
+                contentHtml += "</table>";            
+              layer.bindPopup(contentHtml).openPopup();
+
+
+            }
+         }
+
+      });
+		    
+		    //store xml response
+		   	var wpsResponse = [];
+			 
+			//retrieve stored wpsResponse when polygon is clicked and display in a table
+			layer.on('click', function(e) {
+
+			var clickHtml = "<h2>Population Estimates</h2>";
+					    clickHtml += "<table width='100%'>";
+					    clickHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the drawn circle or polygon, 2015 estimate'>Estimated Population 2015</a></td><td align='right'><b>"+addCommas(Math.round(wpsResponse[0]))+"</b></td></tr>";
+						clickHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urban Population 2015</a></td><td align='right'><b>"+addCommas(Math.round(getPopulation)-534533)+"</b></td></tr>";
+						clickHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urbanization rate 2015</a></td><td align='right'><b>"+addCommas(Math.round((getPopulation-534533)/getPopulation*100))+'%'+"</b></td></tr>";
+						clickHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Estimated Land Area'>Estimated Land Area</a></td><td align='right'><b>"+addCommas(Math.round(wpsResponse[6]))+" km<sup>2</sup></b></td></tr>";
+					    if (wpsResponse[8] === '1') {
+						    clickHtml += "<tr><td align='left' colspan='2' style='color:red;'>The circle or polygon drawn is smaller than the resolution of underlying data. Increase its size for better estimate</td></tr>";  
+					    } 
+
+					    clickHtml += "</table>";
+
+			layer.bindPopup(clickHtml).openPopup();
+			}); 
+
+		drawnItems.addLayer(layer);
+		    });	    
+	});
+
+	map.on('draw:deletestart', function (e) {
+	    $('#loading-image').hide();
+
+	});
+
+	map.on('draw:deletestop', function (e) {
+	    //drawnItems.clearLayers(); //deletes all drawn polygons
+	});
+  
+  //search tool
+  var searchControl = L.esri.Geocoding.Controls.geosearch().addTo(map);
+
+  var results = L.layerGroup().addTo(map);
+
+  searchControl.on('results', function(data){
+    results.clearLayers();
+    for (var i = data.results.length - 1; i >= 0; i--) {
+      //results.addLayer(L.marker(data.results[i].latlng));
+    }
+  });
+
+	/**
+	* APIFunction: addCommas
+	* Adds commas to large numbers
+	* Usage:  addCommas(12345678);
+	* result: 12,345,678
+	**/
+	function addCommas(nStr)
+	{
+	    nStr += '';
+	    x = nStr.split('.');
+	    x1 = x[0];
+	    x2 = x.length > 1 ? '.' + x[1] : '';
+	    var rgx = /(\d+)(\d{3})/;
+	    while (rgx.test(x1)) {
+	        x1 = x1.replace(rgx, '$1' + ',' + '$2');
+	    }
+	    return x1 + x2;
+	}
+
+
+	/**
+	* Property: VincentyConstants
+	* {Object} Constants for Vincenty functions.
+	*/
+
+		L.Util.VincentyConstants = {
+			a: 6378137,
+		    b: 6356752.3142,
+		    f: 1/298.257223563	
+		};
+
+
+	/*
+	* APIFunction: destinationVincenty
+	* Calculate destination point given start point lat/long (numeric degrees),
+	* bearing (numeric degrees) & distance (in m).
+	* Adapted from Chris Veness work, see
+	* http://www.movable-type.co.uk/scripts/latlong-vincenty-direct.html
+	*
+	* Parameters:
+	* lonlat  - any object with both .lat, .lng
+	*     properties) The start point.
+	* brng     - {Float} The bearing (degrees).
+	* dist     - {Float} The ground distance (meters).
+	*
+	* Returns:
+	* {<L.latLng>} The destination point.
+	*/
+
+	function destinationVincenty(lonlat, brng, dist) { //rewritten to work with leaflet
+		var u = L.Util;
+		var ct = u.VincentyConstants;
+	    var a = ct.a, b = ct.b, f = ct.f;
+	    var lon1 = lonlat.lng;
+	    var lat1 = lonlat.lat;
+	    var s = dist;
+	    var pi = Math.PI;
+	    var alpha1 = brng * pi/180 ; //converts brng degrees to radius
+	    var sinAlpha1 = Math.sin(alpha1);
+	    var cosAlpha1 = Math.cos(alpha1);
+	    var tanU1 = (1-f) * Math.tan( lat1 * pi/180 /* converts tanU1 degrees to radius */ ); 
+	    var cosU1 = 1 / Math.sqrt((1 + tanU1*tanU1)), sinU1 = tanU1*cosU1;
+	    var sigma1 = Math.atan2(tanU1, cosAlpha1);
+	    var sinAlpha = cosU1 * sinAlpha1;
+	    var cosSqAlpha = 1 - sinAlpha*sinAlpha;
+	    var uSq = cosSqAlpha * (a*a - b*b) / (b*b);
+	    var A = 1 + uSq/16384*(4096+uSq*(-768+uSq*(320-175*uSq)));
+	    var B = uSq/1024 * (256+uSq*(-128+uSq*(74-47*uSq)));
+	    var sigma = s / (b*A), sigmaP = 2*Math.PI;
+	    while (Math.abs(sigma-sigmaP) > 1e-12) {
+	        var cos2SigmaM = Math.cos(2*sigma1 + sigma);
+	        var sinSigma = Math.sin(sigma);
+	        var cosSigma = Math.cos(sigma);
+	        var deltaSigma = B*sinSigma*(cos2SigmaM+B/4*(cosSigma*(-1+2*cos2SigmaM*cos2SigmaM)-
+	            B/6*cos2SigmaM*(-3+4*sinSigma*sinSigma)*(-3+4*cos2SigmaM*cos2SigmaM)));
+	        sigmaP = sigma;
+	        sigma = s / (b*A) + deltaSigma;
+	    }
+	    var tmp = sinU1*sinSigma - cosU1*cosSigma*cosAlpha1;
+	    var lat2 = Math.atan2(sinU1*cosSigma + cosU1*sinSigma*cosAlpha1,
+	        (1-f)*Math.sqrt(sinAlpha*sinAlpha + tmp*tmp));
+	    var lambda = Math.atan2(sinSigma*sinAlpha1, cosU1*cosSigma - sinU1*sinSigma*cosAlpha1);
+	    var C = f/16*cosSqAlpha*(4+f*(4-3*cosSqAlpha));
+	    var lam = lambda - (1-C) * f * sinAlpha *
+	        (sigma + C*sinSigma*(cos2SigmaM+C*cosSigma*(-1+2*cos2SigmaM*cos2SigmaM)));	
+	    var revAz = Math.atan2(sinAlpha, -tmp);  // final bearing
+	    var lamFunc = lon1 + (lam * 180/pi); //converts lam radius to degrees
+	    var lat2a = lat2 * 180/pi; //converts lat2a radius to degrees	
+	    return L.latLng(lamFunc, lat2a);
+
+	}
+
+
+	/**
+	* APIMethod: createGeodesicPolygon
+	* Create a regular polygon around a radius. Useful for creating circles
+	* and the like.
+	*
+	* Parameters:
+	* origin - {<OpenLayers.Geometry.Point>} center of polygon.
+	* radius - {Float} distance to vertex, in map units.
+	* sides - {Integer} Number of sides. 20 approximates a circle.
+	* rotation - {Float} original angle of rotation, in degrees.
+	* projection - {<OpenLayers.Projection>} the map's projection
+	*
+	* Returns: array of points
+	*/
+	function createGeodesicPolygon(origin, radius, sides, rotation, projection) {
+	    
+	    var latlon = origin; 
+	    var angle;
+	    var new_lonlat, geom_point;
+	    var points = [];
+
+	    for (var i = 0; i < sides; i++) {
+	        angle = (i * 360 / sides) + rotation;
+	        new_lonlat = destinationVincenty(latlon, angle, radius); 
+	        geom_point = L.latLng(new_lonlat.lng, new_lonlat.lat); 
+
+	        points.push(geom_point); 
+	    }   
+	    
+	    return points; 
+	} 
+
+	//custom alert dialog
+
+	var ALERT_TITLE = "Message";
+	var ALERT_BUTTON_TEXT = "Ok";
+
+	if(document.getElementById) {
+		window.alert = function(txt) {
+			createCustomAlert(txt);
+		}
+	}
+
+	function createCustomAlert(txt) {
+		d = document;
+
+		if(d.getElementById("modalContainer")) return;
+
+		mObj = d.getElementsByTagName("body")[0].appendChild(d.createElement("div"));
+		mObj.id = "modalContainer";
+		mObj.style.height = d.getElementById("map") + "px";
+		
+		alertObj = mObj.appendChild(d.createElement("div"));
+		alertObj.id = "alertBox";
+		if(d.all && !window.opera) alertObj.style.top = document.documentElement.scrollTop + "px";
+		alertObj.style.left = (d.documentElement.scrollWidth - alertObj.offsetWidth)/2 + "px";
+		alertObj.style.visiblity="visible";
+
+		h1 = alertObj.appendChild(d.createElement("h1"));
+		h1.appendChild(d.createTextNode(ALERT_TITLE));
+
+		msg = alertObj.appendChild(d.createElement("p"));
+		//msg.appendChild(d.createTextNode(txt));
+		msg.innerHTML = txt;
+
+		btn = alertObj.appendChild(d.createElement("a"));
+		btn.id = "closeBtn";
+		btn.appendChild(d.createTextNode(ALERT_BUTTON_TEXT));
+		btn.href = "#";
+		btn.focus();
+		btn.onclick = function() { removeCustomAlert();return false; }
+
+		alertObj.style.display = "block";
+		
+	}
+
+	function removeCustomAlert() {
+		document.getElementsByTagName("body")[0].removeChild(document.getElementById("modalContainer"));
+	}
+	function ful(){
+	alert('Alert this pages');
+	}
