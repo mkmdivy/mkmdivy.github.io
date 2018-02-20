@@ -270,7 +270,7 @@
 
 
 			$.ajax({
-			    url: "http://sedac.ciesin.columbia.edu/arcgis/rest/services/sedac/geoprocessing/GPServer/pes-v2/execute",
+			    url: "https://sedac.ciesin.columbia.edu/arcgis/rest/services/sedac/geoprocessing/GPServer/pes-v2/execute",
 			    dataType: "json",
 			    type: "post",
 			    data: wpsRequest,
@@ -412,7 +412,7 @@
 
 
 			$.ajax({
-          url: "http://sedac.ciesin.columbia.edu/arcgis/rest/services/sedac/geoprocessing/GPServer/pes-v2/execute",
+          url: "https://sedac.ciesin.columbia.edu/arcgis/rest/services/sedac/geoprocessing/GPServer/pes-v2/execute",
           dataType: "json",
           type: "post",
           data: wpsRequest,
