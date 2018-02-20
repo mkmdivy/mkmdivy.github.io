@@ -296,7 +296,7 @@
 				        var contentHtml = "<h2>Population Estimates</h2>";
 						    contentHtml += "<table width='100%'>";
 						    contentHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Population 2015</a></td><td align='right'><b>"+addCommas(Math.round(getPopulation))+"</b></td></tr>";
-						    contentHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urban Population 2015</a></td><td align='right'><b>"+addCommas(Math.round(getPopulation)/2-53452)+"</b></td></tr>";
+						    contentHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urban Population 2015</a></td><td align='right'><b>"+addCommas(Math.round((getPopulation)/2-53452))+"</b></td></tr>";
 							contentHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urbanization rate 2015</a></td><td align='right'><b>"+addCommas(Math.round((getPopulation/2-53452)/getPopulation*100))+'%'+"</b></td></tr>";
 							contentHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Estimated Land Area'>Estimated Land Area</a></td><td align='right'><b>"+addCommas(Math.round(getLandArea))+" km<sup>2</sup></b></td></tr>";
 						    if (getQualityWarning === '1') {								
@@ -327,7 +327,7 @@
 				var clickHtml = "<h2>Population Estimates</h2>";
 					    clickHtml += "<table width='100%'>";
 					    clickHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the drawn circle or polygon, 2015 estimate'>Estimated Population 2015</a></td><td align='right'><b>"+addCommas(Math.round(wpsResponse[0]))+"</b></td></tr>";
-					    clickHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urban Population 2015</a></td><td align='right'><b>"+addCommas(Math.round(wpsResponse[0])/2-53452)+"</b></td></tr>";
+					    clickHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urban Population 2015</a></td><td align='right'><b>"+addCommas(Math.round((wpsResponse[0])/2-53452))+"</b></td></tr>";
 						clickHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urbanization rate 2015</a></td><td align='right'><b>"+addCommas(Math.round((wpsResponse[0]/2-53452)/wpsResponse[0]*100))+'%'+"</b></td></tr>";
 						clickHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Estimated Land Area'>Estimated Land Area</a></td><td align='right'><b>"+addCommas(Math.round(wpsResponse[6]))+" km<sup>2</sup></b></td></tr>";
 					    if (wpsResponse[8] === '1') {
@@ -438,7 +438,7 @@
                 var contentHtml = "<h2>Population Estimates</h2>";
                 contentHtml += "<table width='100%'>";
                 contentHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Population 2015</a></td><td align='right'><b>"+addCommas(Math.round(getPopulation))+"</b></td></tr>";
-                contentHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urban Population 2015</a></td><td align='right'><b>"+addCommas(Math.round(getPopulation)-53452)+"</b></td></tr>";
+                contentHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urban Population 2015</a></td><td align='right'><b>"+addCommas(Math.round((getPopulation)-53452))+"</b></td></tr>";
 				contentHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urbanization rate 2015</a></td><td align='right'><b>"+addCommas(Math.round((getPopulation/2-53452)/getPopulation*100))+'%'+"</b></td></tr>";
 				contentHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Estimated Land Area'>Estimated Land Area</a></td><td align='right'><b>"+addCommas(Math.round(getLandArea))+" km<sup>2</sup></b></td></tr>";
                 if (getQualityWarning === '1') {                
@@ -469,7 +469,7 @@
 			var clickHtml = "<h2>Population Estimates</h2>";
 					    clickHtml += "<table width='100%'>";
 					    clickHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the drawn circle or polygon, 2015 estimate'>Estimated Population 2015</a></td><td align='right'><b>"+addCommas(Math.round(wpsResponse[0]))+"</b></td></tr>";
-						clickHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urban Population 2015</a></td><td align='right'><b>"+addCommas(Math.round(getPopulation)-534533)+"</b></td></tr>";
+						clickHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urban Population 2015</a></td><td align='right'><b>"+addCommas(Math.round((getPopulation)-534533))+"</b></td></tr>";
 						clickHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Number of persons inside the provided circle or polygon, 2015 estimate'>Estimated Urbanization rate 2015</a></td><td align='right'><b>"+addCommas(Math.round((getPopulation-534533)/getPopulation*100))+'%'+"</b></td></tr>";
 						clickHtml += "<tr><td align='left'><a href='#' class='left-tip' data-tips='Estimated Land Area'>Estimated Land Area</a></td><td align='right'><b>"+addCommas(Math.round(wpsResponse[6]))+" km<sup>2</sup></b></td></tr>";
 					    if (wpsResponse[8] === '1') {
