@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	
-	<title>SWAC : Interactive Map</title>
+	<title>SWAC : Africapolis</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<!-- js !-->
@@ -20,15 +20,8 @@
 	</head>
 
 <body> 
-	
-	<div id="menubar">
-		<div class="menubarRight">
-			<p id="teamname"> </p>
-		</div>
-       	</div>
+	   	
        	
-		
-		</section>
 		<section id="tablebox" class="sections">						
 			<p> &nbsp&nbsp&nbsp&nbsp&nbsp </p>
 			<p class="secTitle">Africapolis</p>  
@@ -53,7 +46,8 @@
 				
 			<tbody></tbody></table>
        	</section>
-       	     	
+       	  <section id="mapbox" class="sections">
+		</section>   	
        	
 	</a>
 	 
@@ -61,7 +55,7 @@
 	
 	<script>
 
-	readfile("https://mkmd.neocities.org/SWAC2.json");
+	readfile("http://mkmd.neocities.org/SWAC2.json");
 
 		var locbtn = new Vue({
 			el : '#locbtnBox',
@@ -114,7 +108,7 @@
 		var table = $('#myTable').DataTable({
 		 
 		  'ajax'       : { 
-		    "url"    : 'https://mkmd.neocities.org/SWAC2B.json',
+		    "url"    : 'http://mkmd.neocities.org/SWAC2B.json',
 		    "dataSrc": function (json) {
 		      var return_data = new Array();
 		      for(var i=0;i< json.length; i++){
