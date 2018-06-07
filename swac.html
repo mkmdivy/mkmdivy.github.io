@@ -61,7 +61,7 @@
 	
 	<script>
 
-	readfile("http://mkmd.neocities.org/SWAC2.json");
+	readfile("https://mkmd.neocities.org/SWAC2.json");
 
 		var locbtn = new Vue({
 			el : '#locbtnBox',
@@ -114,7 +114,7 @@
 		var table = $('#myTable').DataTable({
 		 
 		  'ajax'       : { 
-		    "url"    : 'http://mkmd.neocities.org/SWAC2B.json',
+		    "url"    : 'https://mkmd.neocities.org/SWAC2B.json',
 		    "dataSrc": function (json) {
 		      var return_data = new Array();
 		      for(var i=0;i< json.length; i++){
