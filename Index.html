@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	
-	<title>SWAC : Africapolis</title>
+	<title>SWAC : Interactive Map</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<!-- js !-->
@@ -9,6 +9,7 @@
 	<script src="./SWAC_files/leaflet.js.download"></script>
 	<script src="./SWAC_files/dataTable.js.download"></script>
 	<script src="./SWAC_files/vue.js.download"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"> </script>
 	<script src="js/leaflet.markercluster.js"></script>
 	<!-- css !--> 
 	<link rel="stylesheet" href="./SWAC_files/leaflet.css">
@@ -20,11 +21,85 @@
 	</head>
 
 <body> 
-	   	
-       	
+	<div id="menubar">
+		<div class="menubarRight">
+			<p id="teamname"> </p>
+		</div>
+       	</div>
+       	<!--//////////////////////////!-->
+		<!--<div class="graph" id="graphBox">!-->
+		       	
+				
+
+			
+		<!--</div>!-->
+		<!--//////////////////////////!-->
+		
+       	<section id="mapbox" class="sections">
+       		<br></br><br></br>
+			<p class="secTitle">West Africa Interactive Map</p> 
+       		<p class="explainsec">Click each category to reorganize the interactive map. Put your mouse cursor on the map to have a popup window.</p>
+       		<div id="locbtnBox"><ul><li class="loctitle">City Size</li> 
+			<li><input type="radio" id="size_overall" name="crimeSelected" value="size_overall"> <label for="size_overall" id="size_overall" class="locbtn clickCrime"> Overall</label></li>
+			<li><input type="radio" id="size_10000" name="crimeSelected" value="size_10000"> <label for="size_10000" id="size_10000" class="locbtn clickCrime"> 10 000 - 30 000</label></li>
+			<li><input type="radio" id="size_30000" name="crimeSelected" value="size_30000"> <label for="size_30000" id="size_30000" class="locbtn clickCrime"> 30 000 - 100 000</label></li>
+			<li><input type="radio" id="size_100000" name="crimeSelected" value="size_100000"> <label for="size_100000" id="size_100000" class="locbtn clickCrime"> 100 000 - 350 000</label></li>
+			<li><input type="radio" id="size_350000" name="crimeSelected" value="size_350000"> <label for="size_350000" id="size_350000" class="locbtn clickCrime"> 350 000 - 1 million</label></li>
+			<li><input type="radio" id="size_1mil" name="crimeSelected" value="size_1mil"> <label for="size_1mil" id="size_1mil" class="locbtn clickCrime"> 1 - 2 million</label></li>
+			<li><input type="radio" id="size_2mil" name="crimeSelected" value="size_2mil"> <label for="size_2mil" id="size_2mil" class="locbtn clickCrime"> > 2 million </label></li></ul> 
+			<ul><li class="loctitle">City Groups</li>
+			<li><input type="radio" id="Global" name="crimeSelected" value="Global"> <label for="Global" id="Global" class="locbtn clickCrime"> Global African cities</label></li>
+			<li><input type="radio" id="Regional" name="crimeSelected" value="Regional"> <label for="Regional" id="Regional" class="locbtn clickCrime"> Regional Cities</label></li>
+			<li><input type="radio" id="Metro" name="crimeSelected" value="Metro"> <label for="Metro" id="Metro" class="locbtn clickCrime"> Metropolitan areas</label></li>
+			<li><input type="radio" id="Satellite" name="crimeSelected" value="Satellite"> <label for="Satellite" id="Satellite" class="locbtn clickCrime"> Satellite towns</label></li>
+			<li><input type="radio" id="Local" name="crimeSelected" value="Local"> <label for="Local" id="Local" class="locbtn clickCrime"> Local cities</label></li>
+			<li><input type="radio" id="RuralC" name="crimeSelected" value="RuralC"> <label for="RuralC" id="RuralC" class="locbtn clickCrime"> Rural clusters</label></li>
+			<li><input type="radio" id="RuralT" name="crimeSelected" value="RuralT"> <label for="RuralT" id="RuralT" class="locbtn clickCrime"> Rural towns</label></li></ul> 
+			<ul><li class="loctitle">Market Potential</li>
+			<li><input type="radio" id="categoryAll" name="locationSelected" value="categoryAll"> <label for="categoryAll" id="categoryAll" class="locbtn clickLocation"> Overall</label></li>
+			<li><input type="radio" id="categoryB" name="locationSelected" value="categoryB"> <label for="categoryB" id="categoryB" class="locbtn clickLocation"> <200 000 </label></li>
+			<li><input type="radio" id="categoryA" name="locationSelected" value="categoryA"> <label for="categoryA" id="categoryA" class="locbtn clickLocation"> 200 000 – 500 000</label></li>
+			<li><input type="radio" id="categoryC" name="locationSelected" value="categoryC"> <label for="categoryC" id="categoryC" class="locbtn clickLocation"> 500 000 – 1 million</label></li>
+			<li><input type="radio" id="categoryD" name="locationSelected" value="categoryD"> <label for="categoryD" id="categoryD" class="locbtn clickLocation"> 1 – 2 million</label></li>
+			<li><input type="radio" id="categoryE" name="locationSelected" value="categoryE"> <label for="categoryE" id="categoryE" class="locbtn clickLocation"> 2-5 million</label></li>
+			<li><input type="radio" id="categoryF" name="locationSelected" value="categoryF"> <label for="categoryF" id="categoryf" class="locbtn clickLocation"> > 5 million</label></li></ul></div>
+					
+					<!--//////////////////////////////////////////////////!-->
+					<section id="dashboard">
+		<div id="closeBoard">
+			<svg version="1.1" x="0px" y="0px"  viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve" > 
+				<g>
+					<path class="closebutton" d="M45.2,5.2c-0.5-0.5-1.4-0.5-1.9,0l-18,18L6.7,4.6C6.2,4,5.3,4,4.8,4.6C4.3,5.1,4.3,6,4.8,6.4L23.4,25L4.8,43.6
+						c-0.5,0.5-0.5,1.4,0,1.9c0.3,0.3,0.6,0.4,1,0.4c0.4,0,0.7-0.1,1-0.4l18.6-18.6l18,18c0.3,0.3,0.6,0.4,1,0.4c0.4,0,0.7-0.1,1-0.4
+						c0.5-0.5,0.5-1.4,0-1.9l-18-18l18-18C45.6,6.5,45.6,5.6,45.2,5.2z"/>
+				</g>
+			</svg>			
+		</div>
+		
+		<div class="labelExplainBoxtitle" id="labelExplainBoxtitle">				
+		</div>       	
+		<div class="graph" id="graphBox">
+		       	<canvas id="myChart"></canvas> 
+				</div>        
+		<div class="labelExplainBox" id="labelExplainBox">				
+		</div>
+	</section>
+			
+       		<div id="map" class="leaflet-container leaflet-touch leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom" tabindex="0" style="position: relative;">
+			<div class="leaflet-pane leaflet-map-pane" style="transform: translate3d(0px, 32px, 0px);">
+			<div class="leaflet-pane leaflet-tile-pane"><div class="leaflet-layer " style="z-index: 1; opacity: 1;">
+			<div class="leaflet-tile-container leaflet-zoom-animated" style="z-index: 11; transform: translate3d(0px, 0px, 0px) scale(1);">
+			</div></div><div class="leaflet-pane leaflet-shadow-pane"></div><div class="leaflet-pane leaflet-overlay-pane"><svg pointer-events="none" class="leaflet-zoom-animated" width="1973" height="1428" viewBox="-164 -151 1973 1428" style="transform: translate3d(-164px, -151px, 0px);">
+			
+		
+		
+		</section>
+		
+		
+		
 		<section id="tablebox" class="sections">						
 			<p> &nbsp&nbsp&nbsp&nbsp&nbsp </p>
-			<p class="secTitle">Africapolis</p>  
+			<p class="secTitle">West Africa Agglomerations Table</p>  
        		<p class="explainsec">Check the agglomerations you are familiar with</p> 
 			<div id="myTable_wrapper" class="dataTables_wrapper no-footer"><table id="myTable" class="dataTable no-footer" role="grid" style="width: 1808px;">
 				<thead>
@@ -33,12 +108,12 @@
 					<th class="sorting_disabled" rowspan="1" colspan="1" style="width: 171px;" aria-label="Names">Names</th>
 					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 100px;" aria-label="Countries: activate to sort column ascending">Countries</th>
 					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 100px;" aria-label="City Size: activate to sort column ascending">City Size</th>
-					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 85px;" aria-label="살인 건수 : activate to sort column ascending">Market Potential </th>
-					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 85px;" aria-label="만명당 강도: activate to sort column ascending">Urbanisation Level</th>
-					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 85px;" aria-label="만명당 절도: activate to sort column ascending">Local Dominance</th>
-					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 160px;" aria-label="만명당 폭력: activate to sort column ascending">City Group</th>
-					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 60px;" aria-label="만명당 성폭력: activate to sort column ascending">Lon</th>
-					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 60px;" aria-label="경찰 출동시간(분): activate to sort column ascending">Lat</th>
+					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 85px;" aria-label="Market Potential: activate to sort column ascending">Market Potential </th>
+					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 85px;" aria-label="Urbanisation Level: activate to sort column ascending">Urbanisation Level</th>
+					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 85px;" aria-label="Local Dominance: activate to sort column ascending">Local Dominance</th>
+					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 160px;" aria-label="City Group: activate to sort column ascending">City Group</th>
+					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 60px;" aria-label="Lon: activate to sort column ascending">Lon</th>
+					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 60px;" aria-label="Lat: activate to sort column ascending">Lat</th>
 					<!th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 85px;" aria-label="치안 만족도: activate to sort column ascending"><!/th>
 					<!th class="sorting_asc" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 102px;" aria-label="1만명당 CCTV: activate to sort column descending" aria-sort="ascending"><!/th>
 					<!th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 109px;" aria-label="1인당 담당인구 : activate to sort column ascending"><!/th></tr>
@@ -46,68 +121,26 @@
 				
 			<tbody></tbody></table>
        	</section>
-       	
+       	     	
        	
 	</a>
 	 
 	<script type="text/javascript" src="./SWAC_files/korea2.js.download"></script>  
 	
+
+	
+	
 	<script>
-
-	readfile("http://mkmd.neocities.org/SWAC2.json");
-
-		var locbtn = new Vue({
-			el : '#locbtnBox',
-			data: {
-				checked:true, 
-				menus: [ 
-					{ name : 'City_Size', id: 'City_Size'  }, 
-					{ name : 'Market_Potential', id: 'Market_Potential'  },
-					{ name : 'Urban_Rate', id: 'Urban_Rate'   },
-					{ name : 'Local_Dominance', id: 'Local_Dominance'   },
-					{ name : 'ISO3', id: 'ISO3'  }, 
-					{ name : 'City Size', id: 'City_Size'  } 
-
-				],
-				menusB: [ 
-					{ name : 'City Size', id: 'City_Size'  }, 
-					{ name : 'City Size', id: 'City_Size'  }, 
-					{ name : 'City Size', id: 'City_Size'  }, 
-					{ name : 'City Size', id: 'City_Size'  }
-				],
-				loclist: [
-					{name: '전체 보기', id: 'categoryAll'},
-					{name: '인구 20만 명 미만 ', id: 'categoryB'},
-					{name: '인구 20~40만명 도시', id: 'categoryA'},
-					{name: '인구 40만 명 이상 도시', id: 'categoryC'},
-					{name: '광역시 자치구', id: 'categoryD'},
-					{name: '농어촌', id: 'categoryE'},
-				]
-			},
-			methods: {
-				moveto: function(event) { 
-					var testme = $(event.currentTarget).attr('id');
-
-					 $('input:radio[name="locationSelected"]').change(function(){
-					 	$('path.leaflet-interactive').hide();
-
-					 	if($('input:radio[name="locationSelected"]:input[value=categoryAll]').is(":checked"))  { $('path.leaflet-interactive').show() };
-					 	if($('input:radio[name="locationSelected"]:input[value=categoryA]').is(":checked"))  { $('. Global African Cities ').show() };
-					 	if($('input:radio[name="locationSelected"]:input[value=categoryB]').is(":checked"))  { $('. Metropolitan Areas ').show() };
-					 	if($('input:radio[name="locationSelected"]:input[value=categoryC]').is(":checked"))  { $(' Local Cities ').show() };
-					 	if($('input:radio[name="locationSelected"]:input[value=categoryD]').is(":checked"))  { $('.cateD').show() };
-					 	if($('input:radio[name="locationSelected"]:input[value=categoryE]').is(":checked"))  { $('.cateE').show() };  
-					 }); 
-				} // moveto 끝 
-			}
-		});
-
+//https://mkmd.neocities.org/SWAC2.json
+	
+	readfile("./SWAC_files/SWAC2.json");
+	
 		$(document).ready(function(){
  
 		var table = $('#myTable').DataTable({
 		 
 		  'ajax'       : { 
-		    "url"    : 'http://mkmd.neocities.org/SWAC2B.json',
+		    "url"    : './SWAC_files/SWAC2B.json',
 		    "dataSrc": function (json) {
 		      var return_data = new Array();
 		      for(var i=0;i< json.length; i++){
@@ -171,12 +204,9 @@
 		            cell.className = 'numberIs';
 		        } );
     	} ).draw(); //table.on 끝  
-
      
-
 }); // document.ready 끝 
  
-
 			
 	</script>
 	
