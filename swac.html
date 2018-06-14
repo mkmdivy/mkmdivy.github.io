@@ -46,8 +46,7 @@
 				<thead>
 					<tr role="row"><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 37px;" aria-label="Rank">No.</th>
 					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 100px;" aria-label="Countries: activate to sort column ascending">Names</th>
-					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 100px;" aria-label="City Size: activate to sort column ascending">Population Africapolis</th>
-					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 85px;" aria-label="Market Potential: activate to sort column ascending">Population Administrative</th>
+					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 100px;" aria-label="City Size: activate to sort column ascending">Population</th>
 					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 85px;" aria-label="Urbanisation Level: activate to sort column ascending">Country</th>
 					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 85px;" aria-label="Local Dominance: activate to sort column ascending">Surface km2</th>
 					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 160px;" aria-label="City Group: activate to sort column ascending">Population density</th>
@@ -87,7 +86,6 @@ return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1  ")
 		        'index': i,
 		          'Names': json[i].NAME, 
 		          'Population Africapolis' : formatNumber(json[i].PTA2015),
-		          'Population Admin': formatNumber(json[i].PTv2015), 
 		          'Country' : json[i].Country, 
 		          'Surface km2': formatNumber(json[i].Skm2), 
 		          'Population density' : formatNumber(json[i].PopDens) 
