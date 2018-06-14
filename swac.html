@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	
-	<title>SWAC : Africapolis</title>
+	<title>SWAC : Interactive Map</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<!-- js !-->
@@ -20,11 +20,28 @@
 	</head>
 
 <body> 
-	   	
+	<div id="menubar">
+		<div class="menubarRight">
+			<p id="teamname"> </p>
+		</div>
+       	</div>
        	
+       	<section id="mapbox" class="sections">
+       		<br></br><br></br>
+		
+			
+       		<div id="map" class="leaflet-container leaflet-touch leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom" tabindex="0" style="position: relative;">
+			<div class="leaflet-pane leaflet-map-pane" style="transform: translate3d(0px, 32px, 0px);">
+			<div class="leaflet-pane leaflet-tile-pane"><div class="leaflet-layer " style="z-index: 1; opacity: 1;">
+			<div class="leaflet-tile-container leaflet-zoom-animated" style="z-index: 11; transform: translate3d(0px, 0px, 0px) scale(1);">
+			</div></div><div class="leaflet-pane leaflet-shadow-pane"></div><div class="leaflet-pane leaflet-overlay-pane"><svg pointer-events="none" class="leaflet-zoom-animated" width="0" height="0" viewBox="-164 -151 1973 1428" style="transform: translate3d(-164px, -151px, 0px);">
+			
+		
+		
+		</section>
 		<section id="tablebox" class="sections">						
 			<p> &nbsp&nbsp&nbsp&nbsp&nbsp </p>
-			<p class="secTitle">Africapolis</p>  
+			<p class="secTitle">West Africa Agglomerations Table</p>  
        		<p class="explainsec">Check the agglomerations you are familiar with</p> 
 			<div id="myTable_wrapper" class="dataTables_wrapper no-footer"><table id="myTable" class="dataTable no-footer" role="grid" style="width: 1808px;">
 				<thead>
@@ -46,17 +63,12 @@
 				
 			<tbody></tbody></table>
        	</section>
-       	  	<div id="menubar">
-		<div class="menubarRight">
-			<p id="teamname"> </p>
-		</div>
-       	</div>
-       	
-       
-	<script type="text/javascript" src="./SWAC_files/korea2.js.download"></script>  
+       	     	
        	
 	</a>
 	 
+	<script type="text/javascript" src="./SWAC_files/korea2.js.download"></script>  
+	
 	<script>
 
 	readfile("./SWAC2.json");
@@ -186,6 +198,7 @@ function formatNumber (num) {
 
 			
 	</script>
+	
 
 
 </body></html>
