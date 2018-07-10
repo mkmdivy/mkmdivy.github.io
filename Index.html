@@ -40,21 +40,16 @@
 		
 		<section id="tablebox" class="sections">						
 			<p> &nbsp&nbsp&nbsp&nbsp&nbsp </p>
-			<p class="secTitle">Africapolis</p>  
-       		<p class="explainsec">Check the agglomerations you are familiar with</p> 
+			<p class="secTitle">Africapolis 2015</p>  
+       		<p class="explainsec">Search the cities you are familiar with</p> 
 			<div id="myTable_wrapper" class="dataTables_wrapper no-footer"><table id="myTable" class="dataTable no-footer" role="grid" style="width: 1808px;">
 				<thead>
-					<tr role="row"><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 37px;" aria-label="Rank">Rank</th>
-					<th class="sorting_disabled" rowspan="1" colspan="1" style="width: 37px;" aria-label="ID">ID</th>
-					<th class="sorting_disabled" rowspan="1" colspan="1" style="width: 171px;" aria-label="Names">Names</th>
-					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 100px;" aria-label="Countries: activate to sort column ascending">Countries</th>
-					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 100px;" aria-label="City Size: activate to sort column ascending">City Size</th>
-					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 85px;" aria-label="Market Potential: activate to sort column ascending">Market Potential </th>
-					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 85px;" aria-label="Urbanisation Level: activate to sort column ascending">Urbanisation Level</th>
-					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 85px;" aria-label="Local Dominance: activate to sort column ascending">Local Dominance</th>
-					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 160px;" aria-label="City Group: activate to sort column ascending">City Group</th>
-					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 60px;" aria-label="Lon: activate to sort column ascending">Lon</th>
-					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 60px;" aria-label="Lat: activate to sort column ascending">Lat</th>
+					<tr role="row"><th class="sorting_disabled" rowspan="1" colspan="1" style="width: 37px;" aria-label="Rank">No.</th>
+					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 100px;" aria-label="Countries: activate to sort column ascending">Names</th>
+					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 100px;" aria-label="City Size: activate to sort column ascending">Population</th>
+					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 85px;" aria-label="Urbanisation Level: activate to sort column ascending">Country</th>
+					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 85px;" aria-label="Local Dominance: activate to sort column ascending">Surface km2</th>
+					<th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 160px;" aria-label="City Group: activate to sort column ascending">Population density</th>
 					<!th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 85px;" aria-label="치안 만족도: activate to sort column ascending"><!/th>
 					<!th class="sorting_asc" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 102px;" aria-label="1만명당 CCTV: activate to sort column descending" aria-sort="ascending"><!/th>
 					<!th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" style="width: 109px;" aria-label="1인당 담당인구 : activate to sort column ascending"><!/th></tr>
@@ -73,7 +68,9 @@
 	
 	<script>
 //https://mkmd.neocities.org/SWAC2.json
-	
+function formatNumber (num) {
+return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1  ")
+};
 	readfile("./SWAC_files/SWAC2.json");
 	
 		$(document).ready(function(){
@@ -87,16 +84,15 @@
 		      for(var i=0;i< json.length; i++){
 		        return_data.push({
 		        'index': i,
-		          'Agglomeration_ID': json[i].Agglomeration_ID, 
-		          'Names' : json[i].Names,
-		          'ISO3': json[i].ISO3, 
-		          'City_Size' : formatNumber(json[i].City_Size), 
-		          'Market_Potential': formatNumber(json[i].Market_Potential), 
-		          'Urban_Rate' : (json[i].Urban_Rate).toFixed(2), 
-		          'Local_Dominance' : (json[i].Local_Dominance).toFixed(2), 
-		          'City Group' : (json[i].Cluster_group), 
-		          'Lon' : (json[i].Lon).toFixed(2), 
-		          'Lat' : (json[i].Lat).toFixed(2), 
+		          'Names': json[i].NAME, 
+		          'Population Africapolis' : formatNumber(json[i].PTA2015),
+		          'Country' : json[i].Country, 
+		          'Surface km2': formatNumber(json[i].Skm2), 
+		          'Population density' : formatNumber(json[i].PopDens) 
+		          //'Local_Dominance' : (json[i].Local_Dominance).toFixed(2), 
+		          //'City Group' : (json[i].Cluster_group), 
+		          //'Lon' : (json[i].Lon).toFixed(2), 
+		          //'Lat' : (json[i].Lat).toFixed(2), 
 		          //'City_Size' : (json[i].City_Size).toFixed(2), 
 		          //'City_Size' : (json[i].City_Size).toFixed(2), 
 		          //'City_Size' : (json[i].City_Size).toFixed(2) 
@@ -107,16 +103,15 @@
 		  }, // 데이터로드 
 		  "columns"    : [ 
 		  {'data': 'index'},
-		    {'data': 'Agglomeration_ID'},
 		    {'data': 'Names'},
-		    {'data': 'ISO3'},
-		    {'data': 'City_Size'},
-		    {'data': 'Market_Potential'},
-		    {'data': 'Urban_Rate'},
-		    {'data': 'Local_Dominance'},
-		    {'data': 'City Group'},
-		    {'data': 'Lon'},
-		    {'data': 'Lat'},
+		    {'data': 'Population Africapolis'},
+		    {'data': 'Country'},
+		    {'data': 'Surface km2'},
+		    {'data': 'Population density'}
+		    //{'data': 'Local_Dominance'},
+		    //{'data': 'City Group'},
+		    //{'data': 'Lon'},
+		    //{'data': 'Lat'},
 		    //{'data': 'City_Size'},
 		    //{'data': 'City_Size'},
 		    //{'data': 'City_Size'}
