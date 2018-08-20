@@ -1,0 +1,355 @@
+<html>
+
+<head>
+<link rel="stylesheet" href=".\node_modules\leaflet\dist\leaflet.css">
+<link rel="stylesheet" href=".\src\leaflet-gplaces-autocomplete.css">
+   <script src=".\node_modules\leaflet\dist\leaflet.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+  <script src=".\src\Control.GlobeMiniMap.js"></script>
+  <script src=".\src\leaflet-tilelayer-mask.js"></script>
+  <script src=".\src\leaflet.snogylop.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDr5TfNhMWgtC7F1U0JQrn6o4zZAmwd0dw&libraries=places"></script>
+<script src=".\src\leaflet-gplaces-autocomplete.js"></script>
+<script type="text/javascript" src=".\top50.json"></script>
+<script type="text/javascript" src=".\top50_json.json"></script>
+<script type="text/javascript" src=".\histogram.json"></script>
+<script type="text/javascript" src=".\agglos.json"></script>
+<script type="text/javascript" src=".\africa_one.geojson"></script>
+<script type="text/javascript" src=".\africa_continent.geojson"></script>
+<script src=".\js\d3plus.full.js"></script>
+
+
+
+
+
+</head>
+
+<body>
+
+<div class="slidecontainer">
+  <span id="year" style="font-weight:bold;color:black"></span>  
+  <input type="range" min="1950" max="2020" value="2020" step="10" class="slider" id="YearRange">
+</div>
+
+
+ 
+	<div id="mapid"  style="width: 1000px; float:left; height: 900px;"></div>
+	<div id="content" style="width: 600px; float:left; height: 700px;" ></div>
+	<div id="histogram" style="width: 600px; float:left; height: 100px;" ></div>
+<script>
+
+var slideCol= document.getElementById("YearRange")
+var y = document.getElementById("year");
+y.innerHTML=slideCol.value;
+
+
+slideCol.oninput = function() {
+
+
+
+
+    y.innerHTML = this.value;
+	a=this.value;
+
+	
+	/*map part*/
+	inputlist.clearLayers();
+	function YearFilter_in(feature) {
+	if (feature.properties.Year == a) return true}
+	newlist = new L.geoJSON(top50, {filter: YearFilter_in,onEachFeature: onEachFeature,
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);}
+    })	
+	inputlist.addLayer(newlist);
+	
+
+	/*treemap part*/
+	document.getElementById("content").innerHTML = "";
+	var newtree = new d3plus.Treemap()
+  .data(top50_json.filter(d => d.Year === Number(a)))
+  .tooltipConfig({
+    body: function(d) {
+      var table = "<table class='tooltip-table'>";
+      table += "<tr><td class='title'>Country:</td><td class='data'>" + d.Country_name + "</td></tr>";
+      table += "<tr><td class='title'>Name:</td><td class='data'>" + d.Name + "</td></tr>";
+	  table += "<tr><td class='title'>Population:</td><td class='data'>" + formatNumber(d.Population) + "</td></tr>";
+      table += "</table>";
+      return table;
+    },
+    footer: function(d) {
+      return "<sub class='tooltip-footer'>Data Collected in 2015</sub>";
+    },
+    title: function(d) {
+      var txt = d.Name;
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();;
+    }
+  })
+  .select("#content")
+  .groupBy(["Country","Name"])
+  .sum("Population")
+  .render();	
+
+	/*histogram part*/
+	document.getElementById("histogram").innerHTML = "";
+	
+}
+
+new d3plus.BarChart()
+   .color("grey")
+   .tooltipConfig({
+    body: function(d) {
+      var table = "<table class='tooltip-table'>";
+      table += "<tr><td class='title'>Urbanisation rate:</td><td class='data'>" + Math.round(d.y*100) +"%"+ "</td></tr>";
+      table += "</table>";
+      return table;
+    },
+    
+    title: function(d) {
+      var txt = d.id;
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();;
+    }
+  })
+  .yConfig({
+    barConfig: {"stroke-width": 0},
+    title: false,
+    ticks: [],
+	labels: []
+  })
+  .xConfig({
+    barConfig: {"stroke-width": 0},
+    title: false,
+    ticks: []
+  })
+  .data(hist)
+  .select("#histogram")
+  .render();
+
+
+
+
+newtree = new d3plus.Treemap()
+  .data(top50_json.filter(d => d.Year === 1950))
+  .tooltipConfig({
+    body: function(d) {
+      var table = "<table class='tooltip-table'>";
+      table += "<tr><td class='title'>Country:</td><td class='data'>" + d.Country_name + "</td></tr>";
+      table += "<tr><td class='title'>Name:</td><td class='data'>" + d.Name + "</td></tr>";
+	  table += "<tr><td class='title'>Population:</td><td class='data'>" + formatNumber(d.Population) + "</td></tr>";
+      table += "</table>";
+      return table;
+    },
+    footer: function(d) {
+      return "<sub class='tooltip-footer'>Data Collected in 2015</sub>";
+    },
+    title: function(d) {
+      var txt = d.Name;
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();;
+    }
+  })
+  .select("#content")
+  .groupBy(["Country","Name"])
+  .sum("Population")
+  .render();
+
+
+function myFunction() {
+    var x = document.getElementById("mySelect").selectedIndex;
+    var y = document.getElementById("mySelect").options;
+    var typed= prompt("You selected a "+ y[x].text + ". What is the name of " + y[x].text + "?");
+    if (typed != null) {
+    // var newMarker = new L.marker([13,-3]).addTo(mymap)
+    //      .bindPopup(typed).openPopup();
+
+}
+}
+
+
+
+
+	var mymap = L.map('mapid').setView([1.46,8.3], 4);
+	var africa_one_map = L.geoJson(africa_one,{invert:true}).addTo(mymap);
+	var africa_continent_map = L.geoJson(africa_continent,{onEachFeature: onEachFeature_continent}).addTo(mymap);
+	africa_continent_map.setStyle({fillOpacity: 0,color: 'transparent'})
+	
+	
+	
+	
+	function onEachFeature_continent(feature, layer) {
+	layer.on('mouseover', function() {
+    layer.setStyle({
+        fillOpacity: 0.3,
+        color: 'black'
+        });
+	});
+	layer.on('mouseout', function() {
+    layer.setStyle({
+        fillOpacity: 0.0,
+        color: 'transparent'
+        });
+	});
+    
+    };
+	
+	
+
+	L.tileLayer('https://api.mapbox.com/styles/v1/mkmd/cjj041lbo07vo2rphltlukpya/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWttZCIsImEiOiJjajBqYjJpY2owMDE0Mndsbml0d2V1ZXczIn0.el8wQmA-TSJp2ggX8fJ1rA', {
+    maxZoom: 18,
+   
+}).addTo(mymap);
+
+
+//		var mask = L.tileLayer.mask('https://api.mapbox.com/styles/v1/mkmd/cjjfjgznh9vke2sqplfgtisoy/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWttZCIsImEiOiJjajBqYjJpY2owMDE0Mndsbml0d2V1ZXczIn0.el8wQmA-TSJp2ggX8fJ1rA', {
+//			maskSize: 128,
+//			maxZoom: 18,
+//			maxNativeZoom: 17
+//		}).addTo(mymap);
+
+//		mymap.on("mousemove", function(e) {
+//			mask.setCenter(e.containerPoint);
+//		});
+
+
+    new L.Control.GPlaceAutocomplete({
+    	callback: function(place){
+    		var loc = place.geometry.location;
+    		mymap.setView( [loc.lat(), loc.lng()], 18);
+    	}
+    }).addTo(mymap);
+
+
+
+	
+
+var geojsonMarkerOptions = {
+    radius: 8,
+    fillColor: "#ff7800",
+    color: "#000",
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 0.8
+};
+	
+    
+	
+	
+	function onEachFeature(feature, layer) {
+		var popupContent = "<table class='tooltip-table'>";
+      popupContent += "<tr><td class='data'><strong>"+ feature.properties.Year + "</strong></td></tr>";
+	  popupContent += "<tr><td class='title'>Country:</td><td class='data'>" + feature.properties.Country_name + "</td></tr>";
+      popupContent += "<tr><td class='title'>Name:</td><td class='data'>" + feature.properties.Name + "</td></tr>";
+	  popupContent += "<tr><td class='title'>Population:</td><td class='data'>" + formatNumber(feature.properties.Population) + "</td></tr>";
+      popupContent += "</table>";
+      
+	
+
+		if (feature.properties && feature.properties.popupContent) {
+			popupContent += feature.properties.popupContent;
+			  
+			  
+		}
+	layer.on('click', function () {
+      document.getElementById("content").innerHTML = "";
+	  	var newtree = new d3plus.Treemap()
+  .data(agglos.filter(d => d.ISO === feature.properties.Country))
+  .tooltipConfig({
+    body: function(d) {
+      var table = "<table class='tooltip-table'>";
+      table += "<tr><td class='title'>Name:</td><td class='data'>" + d.Name + "</td></tr>";
+	  table += "<tr><td class='title'>Population:</td><td class='data'>" + formatNumber(d.PTA2015) + "</td></tr>";
+      table += "</table>";
+      return table;
+    },
+    footer: function(d) {
+      return "<sub class='tooltip-footer'>Data Collected in 2015</sub>";
+    },
+    title: function(d) {
+      var txt = d.ISO;
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();;
+    }
+  })
+  .select("#content")
+  .groupBy("NAME")
+  .sum("PTA2015")
+  .render();	
+
+    });
+	
+	
+		layer.bindPopup(popupContent);
+		
+	}
+
+function formatNumber (num) {
+return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1  ")
+};
+	
+	
+function YearFilter(feature) {
+  if (feature.properties.Year === 1950) return true
+}
+	
+	
+var inputlist=new L.geoJSON(top50, {filter: YearFilter,onEachFeature: onEachFeature,
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);}
+    }).addTo(mymap);	
+
+
+
+
+	
+var miniMap = new L.Control.GlobeMiniMap({
+     //uncomment to assign colors
+     // land:'#FFFF00',
+     // water:'#3333FF',
+     // marker:'#000000'
+   }).addTo(mymap);
+
+//L.marker([17.5, -1]).addTo(mymap)
+//  .bindPopup("<b>Hello, this is a SWAC page!</b><br />Select a point to register a building").openPopup();
+
+var popup = L.popup();
+
+
+
+
+
+function onMapClick(e) {
+
+
+  popup
+    .setLatLng(e.latlng)
+    //.setContent("You clicked the map at " + e.latlng.toString())  //this.getLatLng() don't work
+    .setContent("You select the point at" + "<br>Latitude: " + e.latlng.lat.toFixed(3) +"<br>Longtitude: " + e.latlng.lng.toFixed(3) +
+    '<br> <select id="mySelect">  <option>Church</option>  <option>Mosque</option>  <option>Bank</option>  <option>Hospital</option> </select>'+
+    '<button type="button" onclick="myFunction()">Register the building</button>'
+)  //this.getLatLng() don't work
+    .openOn(mymap);
+
+
+}
+
+function assign(e){
+  var newMarker = new L.marker([e.latlng.lat,e.latlng.lng]).addTo(mymap)
+        .bindPopup("typed").openPopup();
+
+}
+
+//mymap.on('click', assign);
+//mymap.on('click', onMapClick);
+
+
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+
+</html>
