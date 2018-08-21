@@ -1,0 +1,4002 @@
+﻿var top50_json=[
+  {
+    "Year": 1950,
+    "Rank": 1,
+    "Country": "EGY",
+    "Name": "Muhâfaza Le Caire",
+    "Population": 2561779,
+    "Lon": 31.3337,
+    "Lat": 29.9733,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1950,
+    "Rank": 2,
+    "Country": "EGY",
+    "Name": "Alexandrie",
+    "Population": 1025064,
+    "Lon": 29.9118,
+    "Lat": 31.2032,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1950,
+    "Rank": 3,
+    "Country": "ZAF",
+    "Name": "Johannesburg",
+    "Population": 875527,
+    "Lon": 28.113,
+    "Lat": -26.05,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1950,
+    "Rank": 4,
+    "Country": "MAR",
+    "Name": "Casablanca",
+    "Population": 675564,
+    "Lon": -7.634,
+    "Lat": 33.539,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1950,
+    "Rank": 5,
+    "Country": "ZAF",
+    "Name": "Cape Town",
+    "Population": 572048,
+    "Lon": 18.555,
+    "Lat": -33.969,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1950,
+    "Rank": 6,
+    "Country": "ZAF",
+    "Name": "Durban",
+    "Population": 487116,
+    "Lon": 31.03,
+    "Lat": -29.848,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1950,
+    "Rank": 7,
+    "Country": "NGA",
+    "Name": "Ibadan",
+    "Population": 436236,
+    "Lon": 3.905,
+    "Lat": 7.418,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1950,
+    "Rank": 8,
+    "Country": "DZA",
+    "Name": "Alger",
+    "Population": 429493,
+    "Lon": 3.051,
+    "Lat": 36.765,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 1950,
+    "Rank": 9,
+    "Country": "TUN",
+    "Name": "Tunis",
+    "Population": 412907,
+    "Lon": 10.175,
+    "Lat": 36.826,
+    "Country_name": "Tunisie"
+  },
+  {
+    "Year": 1950,
+    "Rank": 10,
+    "Country": "ETH",
+    "Name": "ADDIS ABABA CITY ADMINISTRATION",
+    "Population": 363424,
+    "Lon": 38.758,
+    "Lat": 8.982,
+    "Country_name": "Éthiopie"
+  },
+  {
+    "Year": 1950,
+    "Rank": 11,
+    "Country": "NGA",
+    "Name": "Lagos",
+    "Population": 288895,
+    "Lon": 3.395,
+    "Lat": 6.452,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1950,
+    "Rank": 12,
+    "Country": "ZAF",
+    "Name": "Pretoria",
+    "Population": 280486,
+    "Lon": 28.19114,
+    "Lat": -25.998955,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1950,
+    "Rank": 13,
+    "Country": "DZA",
+    "Name": "Oran",
+    "Population": 253036,
+    "Lon": -0.645,
+    "Lat": 35.699,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 1950,
+    "Rank": 14,
+    "Country": "SUD",
+    "Name": "Khartum",
+    "Population": 229376,
+    "Lon": 32.53333333,
+    "Lat": 15.6,
+    "Country_name": "Soudan"
+  },
+  {
+    "Year": 1950,
+    "Rank": 15,
+    "Country": "SEN",
+    "Name": "Dakar",
+    "Population": 229000,
+    "Lon": -17.49,
+    "Lat": 14.74,
+    "Country_name": "Sénégal"
+  },
+  {
+    "Year": 1950,
+    "Rank": 16,
+    "Country": "MAR",
+    "Name": "Marrakech",
+    "Population": 213159,
+    "Lon": -8.024,
+    "Lat": 31.633,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1950,
+    "Rank": 17,
+    "Country": "MAR",
+    "Name": "Rabat",
+    "Population": 200763,
+    "Lon": -6.825,
+    "Lat": 33.994,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1950,
+    "Rank": 18,
+    "Country": "ZWE",
+    "Name": "Harare",
+    "Population": 187705,
+    "Lon": 31.05,
+    "Lat": -17.82,
+    "Country_name": "Zimbabwe"
+  },
+  {
+    "Year": 1950,
+    "Rank": 19,
+    "Country": "ZAF",
+    "Name": "Port Elizabeth",
+    "Population": 185970,
+    "Lon": 25.608,
+    "Lat": -33.914,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1950,
+    "Rank": 20,
+    "Country": "MAR",
+    "Name": "Fès",
+    "Population": 177578,
+    "Lon": -5.012,
+    "Lat": 34.008,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1950,
+    "Rank": 21,
+    "Country": "GHA",
+    "Name": "Accra",
+    "Population": 158196,
+    "Lon": -0.2,
+    "Lat": 5.548,
+    "Country_name": "Ghana"
+  },
+  {
+    "Year": 1950,
+    "Rank": 22,
+    "Country": "ZAR",
+    "Name": "Kinshasa",
+    "Population": 155428,
+    "Lon": 15.371,
+    "Lat": -4.408,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 1950,
+    "Rank": 23,
+    "Country": "EGY",
+    "Name": "Tantâ",
+    "Population": 152340,
+    "Lon": 30.9971,
+    "Lat": 30.7937,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1950,
+    "Rank": 24,
+    "Country": "ZAF",
+    "Name": "Germiston",
+    "Population": 150689,
+    "Lon": 28.183,
+    "Lat": -26.217,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1950,
+    "Rank": 25,
+    "Country": "EGY",
+    "Name": "Bûr S'aîd",
+    "Population": 149935,
+    "Lon": 32.2945,
+    "Lat": 31.2637,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1950,
+    "Rank": 26,
+    "Country": "AGO",
+    "Name": "Luanda",
+    "Population": 141700,
+    "Lon": 13.3,
+    "Lat": -8.924,
+    "Country_name": "Angola"
+  },
+  {
+    "Year": 1950,
+    "Rank": 27,
+    "Country": "EGY",
+    "Name": "al-Mansûra",
+    "Population": 139698,
+    "Lon": 31.3978,
+    "Lat": 31.0395,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1950,
+    "Rank": 28,
+    "Country": "MAR",
+    "Name": "Meknes",
+    "Population": 138976,
+    "Lon": -5.539,
+    "Lat": 33.882,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1950,
+    "Rank": 29,
+    "Country": "NGA",
+    "Name": "Ogbomosho",
+    "Population": 132558,
+    "Lon": 4.23,
+    "Lat": 8.118,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1950,
+    "Rank": 30,
+    "Country": "EGY",
+    "Name": "al-Mahalla al-Kubrâ (qism 1 & 2)",
+    "Population": 126265,
+    "Lon": 31.1551,
+    "Lat": 30.9696,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1950,
+    "Rank": 31,
+    "Country": "NGA",
+    "Name": "Kano",
+    "Population": 123664,
+    "Lon": 8.511,
+    "Lat": 11.979,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1950,
+    "Rank": 32,
+    "Country": "ZAF",
+    "Name": "Springs",
+    "Population": 118718,
+    "Lon": 28.47,
+    "Lat": -26.257,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1950,
+    "Rank": 33,
+    "Country": "NGA",
+    "Name": "Osogbo",
+    "Population": 116573,
+    "Lon": 4.566,
+    "Lat": 7.764,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1950,
+    "Rank": 34,
+    "Country": "EGY",
+    "Name": "Suez",
+    "Population": 114482,
+    "Lon": 32.5148,
+    "Lat": 29.9825,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1950,
+    "Rank": 35,
+    "Country": "CMR",
+    "Name": "Douala",
+    "Population": 113700,
+    "Lon": 9.705,
+    "Lat": 4.046,
+    "Country_name": "Cameroun"
+  },
+  {
+    "Year": 1950,
+    "Rank": 36,
+    "Country": "ZAF",
+    "Name": "Benoni",
+    "Population": 108443,
+    "Lon": 28.312,
+    "Lat": -26.161,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1950,
+    "Rank": 37,
+    "Country": "ZAF",
+    "Name": "Bloemfontein Central",
+    "Population": 108136,
+    "Lon": 26.218,
+    "Lat": -29.134,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1950,
+    "Rank": 38,
+    "Country": "NGA",
+    "Name": "Ife",
+    "Population": 105251,
+    "Lon": 4.56,
+    "Lat": 7.479,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1950,
+    "Rank": 39,
+    "Country": "MAR",
+    "Name": "Tanger",
+    "Population": 104940,
+    "Lon": -5.841,
+    "Lat": 35.742,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1950,
+    "Rank": 40,
+    "Country": "EGY",
+    "Name": "Qism Damanhûr",
+    "Population": 102893,
+    "Lon": 30.4714,
+    "Lat": 31.0418,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1950,
+    "Rank": 41,
+    "Country": "ZAR",
+    "Name": "Lubumbashi",
+    "Population": 101791,
+    "Lon": 27.472,
+    "Lat": -11.655,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 1950,
+    "Rank": 42,
+    "Country": "ERI",
+    "Name": "Asmara",
+    "Population": 99329,
+    "Lon": 38.933196,
+    "Lat": 15.336918,
+    "Country_name": "Érythrée"
+  },
+  {
+    "Year": 1950,
+    "Rank": 43,
+    "Country": "EGY",
+    "Name": "Asyût",
+    "Population": 97389,
+    "Lon": 31.1873,
+    "Lat": 27.1856,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1950,
+    "Rank": 44,
+    "Country": "NGA",
+    "Name": "Iwo",
+    "Population": 95006,
+    "Lon": 4.182,
+    "Lat": 7.639,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1950,
+    "Rank": 45,
+    "Country": "GHA",
+    "Name": "Kumasi",
+    "Population": 93413,
+    "Lon": -1.586,
+    "Lat": 6.694,
+    "Country_name": "Ghana"
+  },
+  {
+    "Year": 1950,
+    "Rank": 46,
+    "Country": "MOZ",
+    "Name": "Maputo",
+    "Population": 93265,
+    "Lon": 32.585344,
+    "Lat": -25.946282,
+    "Country_name": "Mozambique"
+  },
+  {
+    "Year": 1950,
+    "Rank": 47,
+    "Country": "EGY",
+    "Name": "al-Zaqâzîq",
+    "Population": 90433,
+    "Lon": 31.5089,
+    "Lat": 30.5927,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1950,
+    "Rank": 48,
+    "Country": "ZAF",
+    "Name": "East London",
+    "Population": 90340,
+    "Lon": 27.885,
+    "Lat": -32.986,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1950,
+    "Rank": 49,
+    "Country": "DZA",
+    "Name": "Constantine",
+    "Population": 88273,
+    "Lon": 6.619,
+    "Lat": 36.355,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 1950,
+    "Rank": 50,
+    "Country": "EGY",
+    "Name": "Qism al-Fayyûm",
+    "Population": 87841,
+    "Lon": 30.8503,
+    "Lat": 29.3119,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1960,
+    "Rank": 1,
+    "Country": "EGY",
+    "Name": "Muhâfaza Le Caire",
+    "Population": 3877835,
+    "Lon": 31.3337,
+    "Lat": 29.9733,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1960,
+    "Rank": 2,
+    "Country": "EGY",
+    "Name": "Alexandrie",
+    "Population": 1496294,
+    "Lon": 29.9118,
+    "Lat": 31.2032,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1960,
+    "Rank": 3,
+    "Country": "ZAF",
+    "Name": "Johannesburg",
+    "Population": 1096541,
+    "Lon": 28.113,
+    "Lat": -26.05,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1960,
+    "Rank": 4,
+    "Country": "MAR",
+    "Name": "Casablanca",
+    "Population": 965277,
+    "Lon": -7.634,
+    "Lat": 33.539,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1960,
+    "Rank": 5,
+    "Country": "NGA",
+    "Name": "Lagos",
+    "Population": 822320,
+    "Lon": 3.395,
+    "Lat": 6.452,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1960,
+    "Rank": 6,
+    "Country": "DZA",
+    "Name": "Alger",
+    "Population": 738668,
+    "Lon": 3.051,
+    "Lat": 36.765,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 1960,
+    "Rank": 7,
+    "Country": "ZAF",
+    "Name": "Cape Town",
+    "Population": 718189,
+    "Lon": 18.555,
+    "Lat": -33.969,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1960,
+    "Rank": 8,
+    "Country": "ZAF",
+    "Name": "Durban",
+    "Population": 655370,
+    "Lon": 31.03,
+    "Lat": -29.848,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1960,
+    "Rank": 9,
+    "Country": "ETH",
+    "Name": "ADDIS ABABA CITY ADMINISTRATION",
+    "Population": 541699,
+    "Lon": 38.758,
+    "Lat": 8.982,
+    "Country_name": "Éthiopie"
+  },
+  {
+    "Year": 1960,
+    "Rank": 10,
+    "Country": "NGA",
+    "Name": "Ibadan",
+    "Population": 528126,
+    "Lon": 3.905,
+    "Lat": 7.418,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1960,
+    "Rank": 11,
+    "Country": "TUN",
+    "Name": "Tunis",
+    "Population": 485303,
+    "Lon": 10.175,
+    "Lat": 36.826,
+    "Country_name": "Tunisie"
+  },
+  {
+    "Year": 1960,
+    "Rank": 12,
+    "Country": "ZAR",
+    "Name": "Kinshasa",
+    "Population": 451149,
+    "Lon": 15.371,
+    "Lat": -4.408,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 1960,
+    "Rank": 13,
+    "Country": "ZAF",
+    "Name": "Pretoria",
+    "Population": 420053,
+    "Lon": 28.19114,
+    "Lat": -25.998955,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1960,
+    "Rank": 14,
+    "Country": "ZWE",
+    "Name": "Harare",
+    "Population": 375594,
+    "Lon": 31.05,
+    "Lat": -17.82,
+    "Country_name": "Zimbabwe"
+  },
+  {
+    "Year": 1960,
+    "Rank": 15,
+    "Country": "DZA",
+    "Name": "Oran",
+    "Population": 348973,
+    "Lon": -0.645,
+    "Lat": 35.699,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 1960,
+    "Rank": 16,
+    "Country": "SUD",
+    "Name": "Khartum",
+    "Population": 342728,
+    "Lon": 32.53333333,
+    "Lat": 15.6,
+    "Country_name": "Soudan"
+  },
+  {
+    "Year": 1960,
+    "Rank": 17,
+    "Country": "GHA",
+    "Name": "Accra",
+    "Population": 337800,
+    "Lon": -0.2,
+    "Lat": 5.548,
+    "Country_name": "Ghana"
+  },
+  {
+    "Year": 1960,
+    "Rank": 18,
+    "Country": "SEN",
+    "Name": "Dakar",
+    "Population": 315703,
+    "Lon": -17.49,
+    "Lat": 14.74,
+    "Country_name": "Sénégal"
+  },
+  {
+    "Year": 1960,
+    "Rank": 19,
+    "Country": "MAR",
+    "Name": "Rabat",
+    "Population": 303244,
+    "Lon": -6.825,
+    "Lat": 33.994,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1960,
+    "Rank": 20,
+    "Country": "ZAF",
+    "Name": "Port Elizabeth",
+    "Population": 270815,
+    "Lon": 25.608,
+    "Lat": -33.914,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1960,
+    "Rank": 21,
+    "Country": "MAR",
+    "Name": "Marrakech",
+    "Population": 243134,
+    "Lon": -8.024,
+    "Lat": 31.633,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1960,
+    "Rank": 22,
+    "Country": "EGY",
+    "Name": "Bûr S'aîd",
+    "Population": 228759,
+    "Lon": 32.2945,
+    "Lat": 31.2637,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1960,
+    "Rank": 23,
+    "Country": "CIV",
+    "Name": "Abidjan",
+    "Population": 224605,
+    "Lon": -4.029,
+    "Lat": 5.353,
+    "Country_name": "Côte d'Ivoire"
+  },
+  {
+    "Year": 1960,
+    "Rank": 24,
+    "Country": "AGO",
+    "Name": "Luanda",
+    "Population": 224600,
+    "Lon": 13.3,
+    "Lat": -8.924,
+    "Country_name": "Angola"
+  },
+  {
+    "Year": 1960,
+    "Rank": 25,
+    "Country": "MAR",
+    "Name": "Fès",
+    "Population": 216133,
+    "Lon": -5.012,
+    "Lat": 34.008,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1960,
+    "Rank": 26,
+    "Country": "NGA",
+    "Name": "Kano",
+    "Population": 213063,
+    "Lon": 8.511,
+    "Lat": 11.979,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1960,
+    "Rank": 27,
+    "Country": "ZAF",
+    "Name": "Germiston",
+    "Population": 204605,
+    "Lon": 28.183,
+    "Lat": -26.217,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1960,
+    "Rank": 28,
+    "Country": "EGY",
+    "Name": "Tantâ",
+    "Population": 197877,
+    "Lon": 30.9971,
+    "Lat": 30.7937,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1960,
+    "Rank": 29,
+    "Country": "EGY",
+    "Name": "Suez",
+    "Population": 189321,
+    "Lon": 32.5148,
+    "Lat": 29.9825,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1960,
+    "Rank": 30,
+    "Country": "EGY",
+    "Name": "al-Mansûra",
+    "Population": 185944,
+    "Lon": 31.3978,
+    "Lat": 31.0395,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1960,
+    "Rank": 31,
+    "Country": "MOZ",
+    "Name": "Maputo",
+    "Population": 183800,
+    "Lon": 32.585344,
+    "Lat": -25.946282,
+    "Country_name": "Mozambique"
+  },
+  {
+    "Year": 1960,
+    "Rank": 32,
+    "Country": "ZAR",
+    "Name": "Lubumbashi",
+    "Population": 182275,
+    "Lon": 27.472,
+    "Lat": -11.655,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 1960,
+    "Rank": 33,
+    "Country": "GHA",
+    "Name": "Kumasi",
+    "Population": 180642,
+    "Lon": -1.586,
+    "Lat": 6.694,
+    "Country_name": "Ghana"
+  },
+  {
+    "Year": 1960,
+    "Rank": 34,
+    "Country": "EGY",
+    "Name": "al-Mahalla al-Kubrâ (qism 1 & 2)",
+    "Population": 176649,
+    "Lon": 31.1551,
+    "Lat": 30.9696,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1960,
+    "Rank": 35,
+    "Country": "MAR",
+    "Name": "Meknes",
+    "Population": 175943,
+    "Lon": -5.539,
+    "Lat": 33.882,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1960,
+    "Rank": 36,
+    "Country": "DZA",
+    "Name": "Constantine",
+    "Population": 171636,
+    "Lon": 6.619,
+    "Lat": 36.355,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 1960,
+    "Rank": 37,
+    "Country": "NGA",
+    "Name": "Ilorin",
+    "Population": 170143,
+    "Lon": 4.533,
+    "Lat": 8.48,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1960,
+    "Rank": 38,
+    "Country": "TZA",
+    "Name": "Dar es Salaam",
+    "Population": 159469,
+    "Lon": 39.2101,
+    "Lat": -6.798,
+    "Country_name": "Tanzanie"
+  },
+  {
+    "Year": 1960,
+    "Rank": 39,
+    "Country": "NGA",
+    "Name": "Abeokuta",
+    "Population": 157982,
+    "Lon": 3.351,
+    "Lat": 7.157,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1960,
+    "Rank": 40,
+    "Country": "NGA",
+    "Name": "Onitsha",
+    "Population": 156772,
+    "Lon": 6.776,
+    "Lat": 6.138,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1960,
+    "Rank": 41,
+    "Country": "NGA",
+    "Name": "Port Harcourt",
+    "Population": 150765,
+    "Lon": 7.024,
+    "Lat": 4.778,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1960,
+    "Rank": 42,
+    "Country": "MAR",
+    "Name": "Tanger",
+    "Population": 141741,
+    "Lon": -5.841,
+    "Lat": 35.742,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1960,
+    "Rank": 43,
+    "Country": "ZAF",
+    "Name": "Bloemfontein Central",
+    "Population": 140924,
+    "Lon": 26.218,
+    "Lat": -29.134,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1960,
+    "Rank": 44,
+    "Country": "NGA",
+    "Name": "Osogbo",
+    "Population": 139888,
+    "Lon": 4.566,
+    "Lat": 7.764,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1960,
+    "Rank": 45,
+    "Country": "DZA",
+    "Name": "Annaba",
+    "Population": 135729,
+    "Lon": 7.752,
+    "Lat": 36.904,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 1960,
+    "Rank": 46,
+    "Country": "ZAF",
+    "Name": "Benoni",
+    "Population": 135467,
+    "Lon": 28.312,
+    "Lat": -26.161,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1960,
+    "Rank": 47,
+    "Country": "ZAR",
+    "Name": "Kananga",
+    "Population": 135282,
+    "Lon": 22.432,
+    "Lat": -5.896,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 1960,
+    "Rank": 48,
+    "Country": "ZAF",
+    "Name": "Springs",
+    "Population": 135231,
+    "Lon": 28.47,
+    "Lat": -26.257,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1960,
+    "Rank": 49,
+    "Country": "UGA",
+    "Name": "Kampala",
+    "Population": 134848,
+    "Lon": 32.58489,
+    "Lat": 0.326137,
+    "Country_name": "Ouganda"
+  },
+  {
+    "Year": 1960,
+    "Rank": 50,
+    "Country": "NGA",
+    "Name": "Ogbomosho",
+    "Population": 129910,
+    "Lon": 4.23,
+    "Lat": 8.118,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1970,
+    "Rank": 1,
+    "Country": "EGY",
+    "Name": "Muhâfaza Le Caire",
+    "Population": 5706767,
+    "Lon": 31.3337,
+    "Lat": 29.9733,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1970,
+    "Rank": 2,
+    "Country": "EGY",
+    "Name": "Alexandrie",
+    "Population": 1906849,
+    "Lon": 29.9118,
+    "Lat": 31.2032,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1970,
+    "Rank": 3,
+    "Country": "ZAF",
+    "Name": "Johannesburg",
+    "Population": 654682,
+    "Lon": 28.113,
+    "Lat": -26.05,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1970,
+    "Rank": 4,
+    "Country": "MAR",
+    "Name": "Casablanca",
+    "Population": 1432085,
+    "Lon": -7.634,
+    "Lat": 33.539,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1970,
+    "Rank": 5,
+    "Country": "NGA",
+    "Name": "Lagos",
+    "Population": 1487000,
+    "Lon": 3.395,
+    "Lat": 6.452,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1970,
+    "Rank": 6,
+    "Country": "DZA",
+    "Name": "Alger",
+    "Population": 1151144,
+    "Lon": 3.051,
+    "Lat": 36.765,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 1970,
+    "Rank": 7,
+    "Country": "ZAF",
+    "Name": "Cape Town",
+    "Population": 722473,
+    "Lon": 18.555,
+    "Lat": -33.969,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1970,
+    "Rank": 8,
+    "Country": "ZAF",
+    "Name": "Durban",
+    "Population": 735934,
+    "Lon": 31.03,
+    "Lat": -29.848,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1970,
+    "Rank": 9,
+    "Country": "ETH",
+    "Name": "ADDIS ABABA CITY ADMINISTRATION",
+    "Population": 795900,
+    "Lon": 38.758,
+    "Lat": 8.982,
+    "Country_name": "Éthiopie"
+  },
+  {
+    "Year": 1970,
+    "Rank": 10,
+    "Country": "NGA",
+    "Name": "Ibadan",
+    "Population": 768000,
+    "Lon": 3.905,
+    "Lat": 7.418,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1970,
+    "Rank": 11,
+    "Country": "TUN",
+    "Name": "Tunis",
+    "Population": 622566,
+    "Lon": 10.175,
+    "Lat": 36.826,
+    "Country_name": "Tunisie"
+  },
+  {
+    "Year": 1970,
+    "Rank": 12,
+    "Country": "ZAR",
+    "Name": "Kinshasa",
+    "Population": 1249348,
+    "Lon": 15.371,
+    "Lat": -4.408,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 1970,
+    "Rank": 13,
+    "Country": "ZAF",
+    "Name": "Pretoria",
+    "Population": 543950,
+    "Lon": 28.19114,
+    "Lat": -25.998955,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1970,
+    "Rank": 14,
+    "Country": "ZWE",
+    "Name": "Harare",
+    "Population": 383394,
+    "Lon": 31.05,
+    "Lat": -17.82,
+    "Country_name": "Zimbabwe"
+  },
+  {
+    "Year": 1970,
+    "Rank": 15,
+    "Country": "DZA",
+    "Name": "Oran",
+    "Population": 376371,
+    "Lon": -0.645,
+    "Lat": 35.699,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 1970,
+    "Rank": 16,
+    "Country": "SUD",
+    "Name": "Khartum",
+    "Population": 664291,
+    "Lon": 32.53333333,
+    "Lat": 15.6,
+    "Country_name": "Soudan"
+  },
+  {
+    "Year": 1970,
+    "Rank": 17,
+    "Country": "GHA",
+    "Name": "Accra",
+    "Population": 624091,
+    "Lon": -0.2,
+    "Lat": 5.548,
+    "Country_name": "Ghana"
+  },
+  {
+    "Year": 1970,
+    "Rank": 18,
+    "Country": "SEN",
+    "Name": "Dakar",
+    "Population": 557256,
+    "Lon": -17.49,
+    "Lat": 14.74,
+    "Country_name": "Sénégal"
+  },
+  {
+    "Year": 1970,
+    "Rank": 19,
+    "Country": "MAR",
+    "Name": "Rabat",
+    "Population": 491453,
+    "Lon": -6.825,
+    "Lat": 33.994,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1970,
+    "Rank": 20,
+    "Country": "ZAF",
+    "Name": "Port Elizabeth",
+    "Population": 386577,
+    "Lon": 25.608,
+    "Lat": -33.914,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1970,
+    "Rank": 21,
+    "Country": "MAR",
+    "Name": "Marrakech",
+    "Population": 321087,
+    "Lon": -8.024,
+    "Lat": 31.633,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1970,
+    "Rank": 22,
+    "Country": "EGY",
+    "Name": "Bûr S'aîd",
+    "Population": 248949,
+    "Lon": 32.2945,
+    "Lat": 31.2637,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1970,
+    "Rank": 23,
+    "Country": "CIV",
+    "Name": "Abidjan",
+    "Population": 580844,
+    "Lon": -4.029,
+    "Lat": 5.353,
+    "Country_name": "Côte d'Ivoire"
+  },
+  {
+    "Year": 1970,
+    "Rank": 24,
+    "Country": "AGO",
+    "Name": "Luanda",
+    "Population": 475328,
+    "Lon": 13.3,
+    "Lat": -8.924,
+    "Country_name": "Angola"
+  },
+  {
+    "Year": 1970,
+    "Rank": 25,
+    "Country": "MAR",
+    "Name": "Fès",
+    "Population": 310555,
+    "Lon": -5.012,
+    "Lat": 34.008,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1970,
+    "Rank": 26,
+    "Country": "NGA",
+    "Name": "Kano",
+    "Population": 390000,
+    "Lon": 8.511,
+    "Lat": 11.979,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1970,
+    "Rank": 27,
+    "Country": "ZAF",
+    "Name": "Germiston",
+    "Population": 210298,
+    "Lon": 28.183,
+    "Lat": -26.217,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1970,
+    "Rank": 28,
+    "Country": "EGY",
+    "Name": "Tantâ",
+    "Population": 273021,
+    "Lon": 30.9971,
+    "Lat": 30.7937,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1970,
+    "Rank": 29,
+    "Country": "EGY",
+    "Name": "Suez",
+    "Population": 232163,
+    "Lon": 32.5148,
+    "Lat": 29.9825,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1970,
+    "Rank": 30,
+    "Country": "EGY",
+    "Name": "al-Mansûra",
+    "Population": 243956,
+    "Lon": 31.3978,
+    "Lat": 31.0395,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1970,
+    "Rank": 31,
+    "Country": "MOZ",
+    "Name": "Maputo",
+    "Population": 354700,
+    "Lon": 32.585344,
+    "Lat": -25.946282,
+    "Country_name": "Mozambique"
+  },
+  {
+    "Year": 1970,
+    "Rank": 32,
+    "Country": "ZAR",
+    "Name": "Lubumbashi",
+    "Population": 267613,
+    "Lon": 27.472,
+    "Lat": -11.655,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 1970,
+    "Rank": 33,
+    "Country": "GHA",
+    "Name": "Kumasi",
+    "Population": 346336,
+    "Lon": -1.586,
+    "Lat": 6.694,
+    "Country_name": "Ghana"
+  },
+  {
+    "Year": 1970,
+    "Rank": 34,
+    "Country": "EGY",
+    "Name": "al-Mahalla al-Kubrâ (qism 1 & 2)",
+    "Population": 237081,
+    "Lon": 31.1551,
+    "Lat": 30.9696,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1970,
+    "Rank": 35,
+    "Country": "MAR",
+    "Name": "Meknes",
+    "Population": 238827,
+    "Lon": -5.539,
+    "Lat": 33.882,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1970,
+    "Rank": 36,
+    "Country": "DZA",
+    "Name": "Constantine",
+    "Population": 278050,
+    "Lon": 6.619,
+    "Lat": 36.355,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 1970,
+    "Rank": 37,
+    "Country": "NGA",
+    "Name": "Ilorin",
+    "Population": 248000,
+    "Lon": 4.533,
+    "Lat": 8.48,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1970,
+    "Rank": 38,
+    "Country": "TZA",
+    "Name": "Dar es Salaam",
+    "Population": 352367,
+    "Lon": 39.2101,
+    "Lat": -6.798,
+    "Country_name": "Tanzanie"
+  },
+  {
+    "Year": 1970,
+    "Rank": 39,
+    "Country": "NGA",
+    "Name": "Abeokuta",
+    "Population": 209000,
+    "Lon": 3.351,
+    "Lat": 7.157,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1970,
+    "Rank": 40,
+    "Country": "NGA",
+    "Name": "Onitsha",
+    "Population": 248000,
+    "Lon": 6.776,
+    "Lat": 6.138,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1970,
+    "Rank": 41,
+    "Country": "NGA",
+    "Name": "Port Harcourt",
+    "Population": 237000,
+    "Lon": 7.024,
+    "Lat": 4.778,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1970,
+    "Rank": 42,
+    "Country": "MAR",
+    "Name": "Tanger",
+    "Population": 181971,
+    "Lon": -5.841,
+    "Lat": 35.742,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1970,
+    "Rank": 43,
+    "Country": "ZAF",
+    "Name": "Bloemfontein Central",
+    "Population": 148282,
+    "Lon": 26.218,
+    "Lat": -29.134,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1970,
+    "Rank": 44,
+    "Country": "NGA",
+    "Name": "Osogbo",
+    "Population": 166000,
+    "Lon": 4.566,
+    "Lat": 7.764,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1970,
+    "Rank": 45,
+    "Country": "DZA",
+    "Name": "Annaba",
+    "Population": 173330,
+    "Lon": 7.752,
+    "Lat": 36.904,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 1970,
+    "Rank": 46,
+    "Country": "ZAF",
+    "Name": "Benoni",
+    "Population": 149563,
+    "Lon": 28.312,
+    "Lat": -26.161,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1970,
+    "Rank": 47,
+    "Country": "ZAR",
+    "Name": "Kananga",
+    "Population": 203398,
+    "Lon": 22.432,
+    "Lat": -5.896,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 1970,
+    "Rank": 48,
+    "Country": "ZAF",
+    "Name": "Springs",
+    "Population": 99047,
+    "Lon": 28.47,
+    "Lat": -26.257,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1970,
+    "Rank": 49,
+    "Country": "UGA",
+    "Name": "Kampala",
+    "Population": 340185,
+    "Lon": 32.58489,
+    "Lat": 0.326137,
+    "Country_name": "Ouganda"
+  },
+  {
+    "Year": 1970,
+    "Rank": 50,
+    "Country": "NGA",
+    "Name": "Ogbomosho",
+    "Population": 134000,
+    "Lon": 4.23,
+    "Lat": 8.118,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1980,
+    "Rank": 1,
+    "Country": "EGY",
+    "Name": "Muhâfaza Le Caire",
+    "Population": 7662514,
+    "Lon": 31.3337,
+    "Lat": 29.9733,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1980,
+    "Rank": 2,
+    "Country": "NGA",
+    "Name": "Lagos",
+    "Population": 2690000,
+    "Lon": 3.395,
+    "Lat": 6.452,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1980,
+    "Rank": 3,
+    "Country": "EGY",
+    "Name": "Alexandrie",
+    "Population": 2397002,
+    "Lon": 29.9118,
+    "Lat": 31.2032,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1980,
+    "Rank": 4,
+    "Country": "ZAR",
+    "Name": "Kinshasa",
+    "Population": 2098741,
+    "Lon": 15.371,
+    "Lat": -4.408,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 1980,
+    "Rank": 5,
+    "Country": "MAR",
+    "Name": "Casablanca",
+    "Population": 1991113,
+    "Lon": -7.634,
+    "Lat": 33.539,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1980,
+    "Rank": 6,
+    "Country": "DZA",
+    "Name": "Alger",
+    "Population": 1523198,
+    "Lon": 3.051,
+    "Lat": 36.765,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 1980,
+    "Rank": 7,
+    "Country": "ETH",
+    "Name": "ADDIS ABABA CITY ADMINISTRATION",
+    "Population": 1287595,
+    "Lon": 38.758,
+    "Lat": 8.982,
+    "Country_name": "Éthiopie"
+  },
+  {
+    "Year": 1980,
+    "Rank": 8,
+    "Country": "CIV",
+    "Name": "Abidjan",
+    "Population": 1251272,
+    "Lon": -4.029,
+    "Lat": 5.353,
+    "Country_name": "Côte d'Ivoire"
+  },
+  {
+    "Year": 1980,
+    "Rank": 9,
+    "Country": "SUD",
+    "Name": "Khartum",
+    "Population": 1184383,
+    "Lon": 32.53333333,
+    "Lat": 15.6,
+    "Country_name": "Soudan"
+  },
+  {
+    "Year": 1980,
+    "Rank": 10,
+    "Country": "NGA",
+    "Name": "Ibadan",
+    "Population": 1117000,
+    "Lon": 3.905,
+    "Lat": 7.418,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1980,
+    "Rank": 11,
+    "Country": "SEN",
+    "Name": "Dakar",
+    "Population": 967051,
+    "Lon": -17.49,
+    "Lat": 14.74,
+    "Country_name": "Sénégal"
+  },
+  {
+    "Year": 1980,
+    "Rank": 12,
+    "Country": "ZAF",
+    "Name": "Cape Town",
+    "Population": 856820,
+    "Lon": 18.555,
+    "Lat": -33.969,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1980,
+    "Rank": 13,
+    "Country": "GHA",
+    "Name": "Accra",
+    "Population": 854659,
+    "Lon": -0.2,
+    "Lat": 5.548,
+    "Country_name": "Ghana"
+  },
+  {
+    "Year": 1980,
+    "Rank": 14,
+    "Country": "TUN",
+    "Name": "Tunis",
+    "Population": 808102,
+    "Lon": 10.175,
+    "Lat": 36.826,
+    "Country_name": "Tunisie"
+  },
+  {
+    "Year": 1980,
+    "Rank": 15,
+    "Country": "TZA",
+    "Name": "Dar es Salaam",
+    "Population": 790173,
+    "Lon": 39.2101,
+    "Lat": -6.798,
+    "Country_name": "Tanzanie"
+  },
+  {
+    "Year": 1980,
+    "Rank": 16,
+    "Country": "AGO",
+    "Name": "Luanda",
+    "Population": 770602,
+    "Lon": 13.3,
+    "Lat": -8.924,
+    "Country_name": "Angola"
+  },
+  {
+    "Year": 1980,
+    "Rank": 17,
+    "Country": "MAR",
+    "Name": "Rabat",
+    "Population": 738250,
+    "Lon": -6.825,
+    "Lat": 33.994,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1980,
+    "Rank": 18,
+    "Country": "NGA",
+    "Name": "Kano",
+    "Population": 715000,
+    "Lon": 8.511,
+    "Lat": 11.979,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1980,
+    "Rank": 19,
+    "Country": "ZAF",
+    "Name": "Johannesburg",
+    "Population": 703980,
+    "Lon": 28.113,
+    "Lat": -26.05,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1980,
+    "Rank": 20,
+    "Country": "ZAF",
+    "Name": "Durban",
+    "Population": 677760,
+    "Lon": 31.03,
+    "Lat": -29.848,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1980,
+    "Rank": 21,
+    "Country": "ZWE",
+    "Name": "Harare",
+    "Population": 596532,
+    "Lon": 31.05,
+    "Lat": -17.82,
+    "Country_name": "Zimbabwe"
+  },
+  {
+    "Year": 1980,
+    "Rank": 22,
+    "Country": "GIN",
+    "Name": "Conakry",
+    "Population": 589594,
+    "Lon": -13.567,
+    "Lat": 9.672,
+    "Country_name": "Guinée"
+  },
+  {
+    "Year": 1980,
+    "Rank": 23,
+    "Country": "CMR",
+    "Name": "Douala",
+    "Population": 570047,
+    "Lon": 9.705,
+    "Lat": 4.046,
+    "Country_name": "Cameroun"
+  },
+  {
+    "Year": 1980,
+    "Rank": 24,
+    "Country": "MOZ",
+    "Name": "Maputo",
+    "Population": 538432,
+    "Lon": 32.585344,
+    "Lat": -25.946282,
+    "Country_name": "Mozambique"
+  },
+  {
+    "Year": 1980,
+    "Rank": 25,
+    "Country": "ZMB",
+    "Name": "Lusaka",
+    "Population": 535830,
+    "Lon": 28.29,
+    "Lat": -15.42,
+    "Country_name": "Zambie"
+  },
+  {
+    "Year": 1980,
+    "Rank": 26,
+    "Country": "DZA",
+    "Name": "Oran",
+    "Population": 518853,
+    "Lon": -0.645,
+    "Lat": 35.699,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 1980,
+    "Rank": 27,
+    "Country": "MLI",
+    "Name": "Bamako",
+    "Population": 494032,
+    "Lon": -7.99,
+    "Lat": 12.65,
+    "Country_name": "Mali"
+  },
+  {
+    "Year": 1980,
+    "Rank": 28,
+    "Country": "UGA",
+    "Name": "Kampala",
+    "Population": 459594,
+    "Lon": 32.58489,
+    "Lat": 0.326137,
+    "Country_name": "Ouganda"
+  },
+  {
+    "Year": 1980,
+    "Rank": 29,
+    "Country": "SOM",
+    "Name": "Muqd?šo",
+    "Population": 458682,
+    "Lon": 45.305,
+    "Lat": 2.059,
+    "Country_name": "Somalie"
+  },
+  {
+    "Year": 1980,
+    "Rank": 30,
+    "Country": "COG",
+    "Name": "Brazzaville",
+    "Population": 449723,
+    "Lon": 15.249,
+    "Lat": -4.242,
+    "Country_name": "République du Congo"
+  },
+  {
+    "Year": 1980,
+    "Rank": 31,
+    "Country": "GHA",
+    "Name": "Kumasi",
+    "Population": 448030,
+    "Lon": -1.586,
+    "Lat": 6.694,
+    "Country_name": "Ghana"
+  },
+  {
+    "Year": 1980,
+    "Rank": 32,
+    "Country": "ZAR",
+    "Name": "Lubumbashi",
+    "Population": 435440,
+    "Lon": 27.472,
+    "Lat": -11.655,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 1980,
+    "Rank": 33,
+    "Country": "ZAF",
+    "Name": "Pretoria",
+    "Population": 435100,
+    "Lon": 28.19114,
+    "Lat": -25.998955,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1980,
+    "Rank": 34,
+    "Country": "MAR",
+    "Name": "Fès",
+    "Population": 420232,
+    "Lon": -5.012,
+    "Lat": 34.008,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1980,
+    "Rank": 35,
+    "Country": "MAR",
+    "Name": "Marrakech",
+    "Population": 415354,
+    "Lon": -8.024,
+    "Lat": 31.633,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1980,
+    "Rank": 36,
+    "Country": "NGA",
+    "Name": "Kaduna",
+    "Population": 407000,
+    "Lon": 7.45,
+    "Lat": 10.53,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1980,
+    "Rank": 37,
+    "Country": "ZAR",
+    "Name": "Mbuji-Mayi",
+    "Population": 404873,
+    "Lon": 23.622,
+    "Lat": -6.141,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 1980,
+    "Rank": 38,
+    "Country": "CMR",
+    "Name": "Yaoundé",
+    "Population": 401225,
+    "Lon": 11.518,
+    "Lat": 3.863,
+    "Country_name": "Cameroun"
+  },
+  {
+    "Year": 1980,
+    "Rank": 39,
+    "Country": "NGA",
+    "Name": "Onitsha",
+    "Population": 392000,
+    "Lon": 6.776,
+    "Lat": 6.138,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1980,
+    "Rank": 40,
+    "Country": "NGA",
+    "Name": "Benin City",
+    "Population": 382000,
+    "Lon": 5.595,
+    "Lat": 6.358,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1980,
+    "Rank": 41,
+    "Country": "ZWE",
+    "Name": "Bulawayo",
+    "Population": 377984,
+    "Lon": 28.58,
+    "Lat": -20.17,
+    "Country_name": "Zimbabwe"
+  },
+  {
+    "Year": 1980,
+    "Rank": 42,
+    "Country": "NGA",
+    "Name": "Port Harcourt",
+    "Population": 371000,
+    "Lon": 7.024,
+    "Lat": 4.778,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1980,
+    "Rank": 43,
+    "Country": "TGO",
+    "Name": "Lomé",
+    "Population": 369926,
+    "Lon": 1.252,
+    "Lat": 6.142,
+    "Country_name": "Togo"
+  },
+  {
+    "Year": 1980,
+    "Rank": 44,
+    "Country": "DZA",
+    "Name": "Constantine",
+    "Population": 368943,
+    "Lon": 6.619,
+    "Lat": 36.355,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 1980,
+    "Rank": 45,
+    "Country": "SLE",
+    "Name": "Freetown",
+    "Population": 361985,
+    "Lon": -13.236,
+    "Lat": 8.488,
+    "Country_name": "Sierra Leone"
+  },
+  {
+    "Year": 1980,
+    "Rank": 46,
+    "Country": "NGA",
+    "Name": "Ilorin",
+    "Population": 361000,
+    "Lon": 4.533,
+    "Lat": 8.48,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1980,
+    "Rank": 47,
+    "Country": "EGY",
+    "Name": "al-Mahalla al-Kubrâ (qism 1 & 2)",
+    "Population": 346417,
+    "Lon": 31.1551,
+    "Lat": 30.9696,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1980,
+    "Rank": 48,
+    "Country": "EGY",
+    "Name": "Tantâ",
+    "Population": 341435,
+    "Lon": 30.9971,
+    "Lat": 30.7937,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1980,
+    "Rank": 49,
+    "Country": "BEN",
+    "Name": "Cotonou",
+    "Population": 336898,
+    "Lon": 2.42,
+    "Lat": 6.37,
+    "Country_name": "Bénin"
+  },
+  {
+    "Year": 1980,
+    "Rank": 50,
+    "Country": "EGY",
+    "Name": "al-Mansûra",
+    "Population": 333015,
+    "Lon": 31.3978,
+    "Lat": 31.0395,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1990,
+    "Rank": 1,
+    "Country": "EGY",
+    "Name": "Muhâfaza Le Caire",
+    "Population": 9934584,
+    "Lon": 31.3337,
+    "Lat": 29.9733,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1990,
+    "Rank": 2,
+    "Country": "NGA",
+    "Name": "Lagos",
+    "Population": 4865000,
+    "Lon": 3.395,
+    "Lat": 6.452,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1990,
+    "Rank": 3,
+    "Country": "EGY",
+    "Name": "Alexandrie",
+    "Population": 2911878,
+    "Lon": 29.9118,
+    "Lat": 31.2032,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1990,
+    "Rank": 4,
+    "Country": "ZAR",
+    "Name": "Kinshasa",
+    "Population": 3632507,
+    "Lon": 15.371,
+    "Lat": -4.408,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 1990,
+    "Rank": 5,
+    "Country": "MAR",
+    "Name": "Casablanca",
+    "Population": 2496472,
+    "Lon": -7.634,
+    "Lat": 33.539,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1990,
+    "Rank": 6,
+    "Country": "DZA",
+    "Name": "Alger",
+    "Population": 1808780,
+    "Lon": 3.051,
+    "Lat": 36.765,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 1990,
+    "Rank": 7,
+    "Country": "ETH",
+    "Name": "ADDIS ABABA CITY ADMINISTRATION",
+    "Population": 1792251,
+    "Lon": 38.758,
+    "Lat": 8.982,
+    "Country_name": "Éthiopie"
+  },
+  {
+    "Year": 1990,
+    "Rank": 8,
+    "Country": "CIV",
+    "Name": "Abidjan",
+    "Population": 2107460,
+    "Lon": -4.029,
+    "Lat": 5.353,
+    "Country_name": "Côte d'Ivoire"
+  },
+  {
+    "Year": 1990,
+    "Rank": 9,
+    "Country": "SUD",
+    "Name": "Khartum",
+    "Population": 2165249,
+    "Lon": 32.53333333,
+    "Lat": 15.6,
+    "Country_name": "Soudan"
+  },
+  {
+    "Year": 1990,
+    "Rank": 10,
+    "Country": "NGA",
+    "Name": "Ibadan",
+    "Population": 1624000,
+    "Lon": 3.905,
+    "Lat": 7.418,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1990,
+    "Rank": 11,
+    "Country": "SEN",
+    "Name": "Dakar",
+    "Population": 1443296,
+    "Lon": -17.49,
+    "Lat": 14.74,
+    "Country_name": "Sénégal"
+  },
+  {
+    "Year": 1990,
+    "Rank": 12,
+    "Country": "ZAF",
+    "Name": "Cape Town",
+    "Population": 854796,
+    "Lon": 18.555,
+    "Lat": -33.969,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1990,
+    "Rank": 13,
+    "Country": "GHA",
+    "Name": "Accra",
+    "Population": 1185614,
+    "Lon": -0.2,
+    "Lat": 5.548,
+    "Country_name": "Ghana"
+  },
+  {
+    "Year": 1990,
+    "Rank": 14,
+    "Country": "TUN",
+    "Name": "Tunis",
+    "Population": 1206599,
+    "Lon": 10.175,
+    "Lat": 36.826,
+    "Country_name": "Tunisie"
+  },
+  {
+    "Year": 1990,
+    "Rank": 15,
+    "Country": "TZA",
+    "Name": "Dar es Salaam",
+    "Population": 1227792,
+    "Lon": 39.2101,
+    "Lat": -6.798,
+    "Country_name": "Tanzanie"
+  },
+  {
+    "Year": 1990,
+    "Rank": 16,
+    "Country": "AGO",
+    "Name": "Luanda",
+    "Population": 1224292,
+    "Lon": 13.3,
+    "Lat": -8.924,
+    "Country_name": "Angola"
+  },
+  {
+    "Year": 1990,
+    "Rank": 17,
+    "Country": "MAR",
+    "Name": "Rabat",
+    "Population": 1032533,
+    "Lon": -6.825,
+    "Lat": 33.994,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1990,
+    "Rank": 18,
+    "Country": "NGA",
+    "Name": "Kano",
+    "Population": 1311000,
+    "Lon": 8.511,
+    "Lat": 11.979,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1990,
+    "Rank": 19,
+    "Country": "ZAF",
+    "Name": "Johannesburg",
+    "Population": 711805,
+    "Lon": 28.113,
+    "Lat": -26.05,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1990,
+    "Rank": 20,
+    "Country": "ZAF",
+    "Name": "Durban",
+    "Population": 712489,
+    "Lon": 31.03,
+    "Lat": -29.848,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1990,
+    "Rank": 21,
+    "Country": "ZWE",
+    "Name": "Harare",
+    "Population": 1043258,
+    "Lon": 31.05,
+    "Lat": -17.82,
+    "Country_name": "Zimbabwe"
+  },
+  {
+    "Year": 1990,
+    "Rank": 22,
+    "Country": "GIN",
+    "Name": "Conakry",
+    "Population": 895821,
+    "Lon": -13.567,
+    "Lat": 9.672,
+    "Country_name": "Guinée"
+  },
+  {
+    "Year": 1990,
+    "Rank": 23,
+    "Country": "CMR",
+    "Name": "Douala",
+    "Population": 964865,
+    "Lon": 9.705,
+    "Lat": 4.046,
+    "Country_name": "Cameroun"
+  },
+  {
+    "Year": 1990,
+    "Rank": 24,
+    "Country": "MOZ",
+    "Name": "Maputo",
+    "Population": 759755,
+    "Lon": 32.585344,
+    "Lat": -25.946282,
+    "Country_name": "Mozambique"
+  },
+  {
+    "Year": 1990,
+    "Rank": 25,
+    "Country": "ZMB",
+    "Name": "Lusaka",
+    "Population": 769353,
+    "Lon": 28.29,
+    "Lat": -15.42,
+    "Country_name": "Zambie"
+  },
+  {
+    "Year": 1990,
+    "Rank": 26,
+    "Country": "DZA",
+    "Name": "Oran",
+    "Population": 624531,
+    "Lon": -0.645,
+    "Lat": 35.699,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 1990,
+    "Rank": 27,
+    "Country": "MLI",
+    "Name": "Bamako",
+    "Population": 741050,
+    "Lon": -7.99,
+    "Lat": 12.65,
+    "Country_name": "Mali"
+  },
+  {
+    "Year": 1990,
+    "Rank": 28,
+    "Country": "UGA",
+    "Name": "Kampala",
+    "Population": 755296,
+    "Lon": 32.58489,
+    "Lat": 0.326137,
+    "Country_name": "Ouganda"
+  },
+  {
+    "Year": 1990,
+    "Rank": 29,
+    "Country": "SOM",
+    "Name": "Muqd?šo",
+    "Population": 668293,
+    "Lon": 45.305,
+    "Lat": 2.059,
+    "Country_name": "Somalie"
+  },
+  {
+    "Year": 1990,
+    "Rank": 30,
+    "Country": "COG",
+    "Name": "Brazzaville",
+    "Population": 702481,
+    "Lon": 15.249,
+    "Lat": -4.242,
+    "Country_name": "République du Congo"
+  },
+  {
+    "Year": 1990,
+    "Rank": 31,
+    "Country": "GHA",
+    "Name": "Kumasi",
+    "Population": 684899,
+    "Lon": -1.586,
+    "Lat": 6.694,
+    "Country_name": "Ghana"
+  },
+  {
+    "Year": 1990,
+    "Rank": 32,
+    "Country": "ZAR",
+    "Name": "Lubumbashi",
+    "Population": 703848,
+    "Lon": 27.472,
+    "Lat": -11.655,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 1990,
+    "Rank": 33,
+    "Country": "ZAF",
+    "Name": "Pretoria",
+    "Population": 517521,
+    "Lon": 28.19114,
+    "Lat": -25.998955,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 1990,
+    "Rank": 34,
+    "Country": "MAR",
+    "Name": "Fès",
+    "Population": 637181,
+    "Lon": -5.012,
+    "Lat": 34.008,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1990,
+    "Rank": 35,
+    "Country": "MAR",
+    "Name": "Marrakech",
+    "Population": 576634,
+    "Lon": -8.024,
+    "Lat": 31.633,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 1990,
+    "Rank": 36,
+    "Country": "NGA",
+    "Name": "Kaduna",
+    "Population": 785000,
+    "Lon": 7.45,
+    "Lat": 10.53,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1990,
+    "Rank": 37,
+    "Country": "ZAR",
+    "Name": "Mbuji-Mayi",
+    "Population": 658720,
+    "Lon": 23.622,
+    "Lat": -6.141,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 1990,
+    "Rank": 38,
+    "Country": "CMR",
+    "Name": "Yaoundé",
+    "Population": 831238,
+    "Lon": 11.518,
+    "Lat": 3.863,
+    "Country_name": "Cameroun"
+  },
+  {
+    "Year": 1990,
+    "Rank": 39,
+    "Country": "NGA",
+    "Name": "Onitsha",
+    "Population": 620000,
+    "Lon": 6.776,
+    "Lat": 6.138,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1990,
+    "Rank": 40,
+    "Country": "NGA",
+    "Name": "Benin City",
+    "Population": 733000,
+    "Lon": 5.595,
+    "Lat": 6.358,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1990,
+    "Rank": 41,
+    "Country": "ZWE",
+    "Name": "Bulawayo",
+    "Population": 494352,
+    "Lon": 28.58,
+    "Lat": -20.17,
+    "Country_name": "Zimbabwe"
+  },
+  {
+    "Year": 1990,
+    "Rank": 42,
+    "Country": "NGA",
+    "Name": "Port Harcourt",
+    "Population": 582000,
+    "Lon": 7.024,
+    "Lat": 4.778,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1990,
+    "Rank": 43,
+    "Country": "TGO",
+    "Name": "Lomé",
+    "Population": 471704,
+    "Lon": 1.252,
+    "Lat": 6.142,
+    "Country_name": "Togo"
+  },
+  {
+    "Year": 1990,
+    "Rank": 44,
+    "Country": "DZA",
+    "Name": "Constantine",
+    "Population": 447619,
+    "Lon": 6.619,
+    "Lat": 36.355,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 1990,
+    "Rank": 45,
+    "Country": "SLE",
+    "Name": "Freetown",
+    "Population": 529538,
+    "Lon": -13.236,
+    "Lat": 8.488,
+    "Country_name": "Sierra Leone"
+  },
+  {
+    "Year": 1990,
+    "Rank": 46,
+    "Country": "NGA",
+    "Name": "Ilorin",
+    "Population": 526000,
+    "Lon": 4.533,
+    "Lat": 8.48,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 1990,
+    "Rank": 47,
+    "Country": "EGY",
+    "Name": "al-Mahalla al-Kubrâ (qism 1 & 2)",
+    "Population": 441712,
+    "Lon": 31.1551,
+    "Lat": 30.9696,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1990,
+    "Rank": 48,
+    "Country": "EGY",
+    "Name": "Tantâ",
+    "Population": 446925,
+    "Lon": 30.9971,
+    "Lat": 30.7937,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 1990,
+    "Rank": 49,
+    "Country": "BEN",
+    "Name": "Cotonou",
+    "Population": 504291,
+    "Lon": 2.42,
+    "Lat": 6.37,
+    "Country_name": "Bénin"
+  },
+  {
+    "Year": 1990,
+    "Rank": 50,
+    "Country": "EGY",
+    "Name": "al-Mansûra",
+    "Population": 432095,
+    "Lon": 31.3978,
+    "Lat": 31.0395,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 2000,
+    "Rank": 1,
+    "Country": "EGY",
+    "Name": "Muhâfaza Le Caire",
+    "Population": 11901302,
+    "Lon": 31.3337,
+    "Lat": 29.9733,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 2000,
+    "Rank": 2,
+    "Country": "NGA",
+    "Name": "Lagos",
+    "Population": 7241000,
+    "Lon": 3.395,
+    "Lat": 6.452,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2000,
+    "Rank": 3,
+    "Country": "ZAR",
+    "Name": "Kinshasa",
+    "Population": 4425321,
+    "Lon": 15.371,
+    "Lat": -4.408,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 2000,
+    "Rank": 4,
+    "Country": "SUD",
+    "Name": "Khartum",
+    "Population": 3454407,
+    "Lon": 32.53333333,
+    "Lat": 15.6,
+    "Country_name": "Soudan"
+  },
+  {
+    "Year": 2000,
+    "Rank": 5,
+    "Country": "EGY",
+    "Name": "Alexandrie",
+    "Population": 3244955,
+    "Lon": 29.9118,
+    "Lat": 31.2032,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 2000,
+    "Rank": 6,
+    "Country": "CIV",
+    "Name": "Abidjan",
+    "Population": 2963906,
+    "Lon": -4.029,
+    "Lat": 5.353,
+    "Country_name": "Côte d'Ivoire"
+  },
+  {
+    "Year": 2000,
+    "Rank": 7,
+    "Country": "MAR",
+    "Name": "Casablanca",
+    "Population": 2848576,
+    "Lon": -7.634,
+    "Lat": 33.539,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 2000,
+    "Rank": 8,
+    "Country": "ZAF",
+    "Name": "Johannesburg",
+    "Population": 2730627,
+    "Lon": 28.113,
+    "Lat": -26.05,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 2000,
+    "Rank": 9,
+    "Country": "ZAF",
+    "Name": "Durban",
+    "Population": 2510568,
+    "Lon": 31.03,
+    "Lat": -29.848,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 2000,
+    "Rank": 10,
+    "Country": "ETH",
+    "Name": "ADDIS ABABA CITY ADMINISTRATION",
+    "Population": 2380943,
+    "Lon": 38.758,
+    "Lat": 8.982,
+    "Country_name": "Éthiopie"
+  },
+  {
+    "Year": 2000,
+    "Rank": 11,
+    "Country": "ZAF",
+    "Name": "Cape Town",
+    "Population": 2219484,
+    "Lon": 18.555,
+    "Lat": -33.969,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 2000,
+    "Rank": 12,
+    "Country": "TZA",
+    "Name": "Dar es Salaam",
+    "Population": 2192993,
+    "Lon": 39.2101,
+    "Lat": -6.798,
+    "Country_name": "Tanzanie"
+  },
+  {
+    "Year": 2000,
+    "Rank": 13,
+    "Country": "DZA",
+    "Name": "Alger",
+    "Population": 2177453,
+    "Lon": 3.051,
+    "Lat": 36.765,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 2000,
+    "Rank": 14,
+    "Country": "NGA",
+    "Name": "Kano",
+    "Population": 2052000,
+    "Lon": 8.511,
+    "Lat": 11.979,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2000,
+    "Rank": 15,
+    "Country": "NGA",
+    "Name": "Ibadan",
+    "Population": 2013000,
+    "Lon": 3.905,
+    "Lat": 7.418,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2000,
+    "Rank": 16,
+    "Country": "AGO",
+    "Name": "Luanda",
+    "Population": 1919042,
+    "Lon": 13.3,
+    "Lat": -8.924,
+    "Country_name": "Angola"
+  },
+  {
+    "Year": 2000,
+    "Rank": 17,
+    "Country": "SEN",
+    "Name": "Dakar",
+    "Population": 1817627,
+    "Lon": -17.49,
+    "Lat": 14.74,
+    "Country_name": "Sénégal"
+  },
+  {
+    "Year": 2000,
+    "Rank": 18,
+    "Country": "GHA",
+    "Name": "Accra",
+    "Population": 1658937,
+    "Lon": -0.2,
+    "Lat": 5.548,
+    "Country_name": "Ghana"
+  },
+  {
+    "Year": 2000,
+    "Rank": 19,
+    "Country": "TUN",
+    "Name": "Tunis",
+    "Population": 1576054,
+    "Lon": 10.175,
+    "Lat": 36.826,
+    "Country_name": "Tunisie"
+  },
+  {
+    "Year": 2000,
+    "Rank": 20,
+    "Country": "CMR",
+    "Name": "Douala",
+    "Population": 1508285,
+    "Lon": 9.705,
+    "Lat": 4.046,
+    "Country_name": "Cameroun"
+  },
+  {
+    "Year": 2000,
+    "Rank": 21,
+    "Country": "NGA",
+    "Name": "Onitsha",
+    "Population": 1450000,
+    "Lon": 6.776,
+    "Lat": 6.138,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2000,
+    "Rank": 22,
+    "Country": "CMR",
+    "Name": "Yaoundé",
+    "Population": 1388402,
+    "Lon": 11.518,
+    "Lat": 3.863,
+    "Country_name": "Cameroun"
+  },
+  {
+    "Year": 2000,
+    "Rank": 23,
+    "Country": "ZWE",
+    "Name": "Harare",
+    "Population": 1384000,
+    "Lon": 31.05,
+    "Lat": -17.82,
+    "Country_name": "Zimbabwe"
+  },
+  {
+    "Year": 2000,
+    "Rank": 24,
+    "Country": "ZAF",
+    "Name": "Pretoria",
+    "Population": 1378403,
+    "Lon": 28.19114,
+    "Lat": -25.998955,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 2000,
+    "Rank": 25,
+    "Country": "MAR",
+    "Name": "Rabat",
+    "Population": 1296424,
+    "Lon": -6.825,
+    "Lat": 33.994,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 2000,
+    "Rank": 26,
+    "Country": "GIN",
+    "Name": "Conakry",
+    "Population": 1192092,
+    "Lon": -13.567,
+    "Lat": 9.672,
+    "Country_name": "Guinée"
+  },
+  {
+    "Year": 2000,
+    "Rank": 27,
+    "Country": "GHA",
+    "Name": "Kumasi",
+    "Population": 1170270,
+    "Lon": -1.586,
+    "Lat": 6.694,
+    "Country_name": "Ghana"
+  },
+  {
+    "Year": 2000,
+    "Rank": 28,
+    "Country": "MLI",
+    "Name": "Bamako",
+    "Population": 1143692,
+    "Lon": -7.99,
+    "Lat": 12.65,
+    "Country_name": "Mali"
+  },
+  {
+    "Year": 2000,
+    "Rank": 29,
+    "Country": "UGA",
+    "Name": "Kampala",
+    "Population": 1111264,
+    "Lon": 32.58489,
+    "Lat": 0.326137,
+    "Country_name": "Ouganda"
+  },
+  {
+    "Year": 2000,
+    "Rank": 30,
+    "Country": "ZMB",
+    "Name": "Lusaka",
+    "Population": 1084703,
+    "Lon": 28.29,
+    "Lat": -15.42,
+    "Country_name": "Zambie"
+  },
+  {
+    "Year": 2000,
+    "Rank": 31,
+    "Country": "COG",
+    "Name": "Brazzaville",
+    "Population": 1017373,
+    "Lon": 15.249,
+    "Lat": -4.242,
+    "Country_name": "République du Congo"
+  },
+  {
+    "Year": 2000,
+    "Rank": 32,
+    "Country": "MOZ",
+    "Name": "Maputo",
+    "Population": 1001571,
+    "Lon": 32.585344,
+    "Lat": -25.946282,
+    "Country_name": "Mozambique"
+  },
+  {
+    "Year": 2000,
+    "Rank": 33,
+    "Country": "BFA",
+    "Name": "Ouagadougou",
+    "Population": 979266,
+    "Lon": -1.526,
+    "Lat": 12.362,
+    "Country_name": "Burkina Faso"
+  },
+  {
+    "Year": 2000,
+    "Rank": 34,
+    "Country": "SOM",
+    "Name": "Muqd?šo",
+    "Population": 973693,
+    "Lon": 45.305,
+    "Lat": 2.059,
+    "Country_name": "Somalie"
+  },
+  {
+    "Year": 2000,
+    "Rank": 35,
+    "Country": "ZAR",
+    "Name": "Lubumbashi",
+    "Population": 945450,
+    "Lon": 27.472,
+    "Lat": -11.655,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 2000,
+    "Rank": 36,
+    "Country": "NGA",
+    "Name": "Benin City",
+    "Population": 907000,
+    "Lon": 5.595,
+    "Lat": 6.358,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2000,
+    "Rank": 37,
+    "Country": "NGA",
+    "Name": "Port Harcourt",
+    "Population": 899000,
+    "Lon": 7.024,
+    "Lat": 4.778,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2000,
+    "Rank": 38,
+    "Country": "NGA",
+    "Name": "Kaduna",
+    "Population": 882000,
+    "Lon": 7.45,
+    "Lat": 10.53,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2000,
+    "Rank": 39,
+    "Country": "MAR",
+    "Name": "Fès",
+    "Population": 868228,
+    "Lon": -5.012,
+    "Lat": 34.008,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 2000,
+    "Rank": 40,
+    "Country": "RWA",
+    "Name": "Kigali",
+    "Population": 790733,
+    "Lon": 30.1313,
+    "Lat": -1.9581,
+    "Country_name": "Rwanda"
+  },
+  {
+    "Year": 2000,
+    "Rank": 41,
+    "Country": "DZA",
+    "Name": "Oran",
+    "Population": 775288,
+    "Lon": -0.645,
+    "Lat": 35.699,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 2000,
+    "Rank": 42,
+    "Country": "ZAR",
+    "Name": "Mbuji-Mayi",
+    "Population": 765242,
+    "Lon": 23.622,
+    "Lat": -6.141,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 2000,
+    "Rank": 43,
+    "Country": "LBR",
+    "Name": "Monrovia",
+    "Population": 763323,
+    "Lon": -10.7476,
+    "Lat": 6.3419,
+    "Country_name": "Liberia"
+  },
+  {
+    "Year": 2000,
+    "Rank": 44,
+    "Country": "MAR",
+    "Name": "Marrakech",
+    "Population": 753737,
+    "Lon": -8.024,
+    "Lat": 31.633,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 2000,
+    "Rank": 45,
+    "Country": "TCD",
+    "Name": "Ndjamena",
+    "Population": 694435,
+    "Lon": 15.061,
+    "Lat": 12.13,
+    "Country_name": "Tchad"
+  },
+  {
+    "Year": 2000,
+    "Rank": 46,
+    "Country": "SLE",
+    "Name": "Freetown",
+    "Population": 688169,
+    "Lon": -13.236,
+    "Lat": 8.488,
+    "Country_name": "Sierra Leone"
+  },
+  {
+    "Year": 2000,
+    "Rank": 47,
+    "Country": "NGA",
+    "Name": "Aba",
+    "Population": 688000,
+    "Lon": 7.393,
+    "Lat": 5.108,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2000,
+    "Rank": 48,
+    "Country": "NER",
+    "Name": "Niamey",
+    "Population": 660907,
+    "Lon": 2.12,
+    "Lat": 13.523,
+    "Country_name": "Niger"
+  },
+  {
+    "Year": 2000,
+    "Rank": 49,
+    "Country": "BEN",
+    "Name": "Cotonou",
+    "Population": 641310,
+    "Lon": 2.42,
+    "Lat": 6.37,
+    "Country_name": "Bénin"
+  },
+  {
+    "Year": 2000,
+    "Rank": 50,
+    "Country": "NGA",
+    "Name": "Ilorin",
+    "Population": 638000,
+    "Lon": 4.533,
+    "Lat": 8.48,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2010,
+    "Rank": 1,
+    "Country": "EGY",
+    "Name": "Muhâfaza Le Caire",
+    "Population": 16179873,
+    "Lon": 31.3337,
+    "Lat": 29.9733,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 2010,
+    "Rank": 2,
+    "Country": "NGA",
+    "Name": "Lagos",
+    "Population": 10778000,
+    "Lon": 3.395,
+    "Lat": 6.452,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2010,
+    "Rank": 3,
+    "Country": "ZAF",
+    "Name": "Johannesburg",
+    "Population": 7180906,
+    "Lon": 28.113,
+    "Lat": -26.05,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 2010,
+    "Rank": 4,
+    "Country": "NGA",
+    "Name": "Onitsha",
+    "Population": 6351000,
+    "Lon": 6.776,
+    "Lat": 6.138,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2010,
+    "Rank": 5,
+    "Country": "ZAR",
+    "Name": "Kinshasa",
+    "Population": 5750000,
+    "Lon": 15.371,
+    "Lat": -4.408,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 2010,
+    "Rank": 6,
+    "Country": "AGO",
+    "Name": "Luanda",
+    "Population": 5140000,
+    "Lon": 13.3,
+    "Lat": -8.924,
+    "Country_name": "Angola"
+  },
+  {
+    "Year": 2010,
+    "Rank": 7,
+    "Country": "SUD",
+    "Name": "Khartum",
+    "Population": 4664746,
+    "Lon": 32.53333333,
+    "Lat": 15.6,
+    "Country_name": "Soudan"
+  },
+  {
+    "Year": 2010,
+    "Rank": 8,
+    "Country": "EGY",
+    "Name": "Alexandrie",
+    "Population": 4459402,
+    "Lon": 29.9118,
+    "Lat": 31.2032,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 2010,
+    "Rank": 9,
+    "Country": "CIV",
+    "Name": "Abidjan",
+    "Population": 3951039,
+    "Lon": -4.029,
+    "Lat": 5.353,
+    "Country_name": "Côte d'Ivoire"
+  },
+  {
+    "Year": 2010,
+    "Rank": 10,
+    "Country": "TZA",
+    "Name": "Dar es Salaam",
+    "Population": 3836184,
+    "Lon": 39.2101,
+    "Lat": -6.798,
+    "Country_name": "Tanzanie"
+  },
+  {
+    "Year": 2010,
+    "Rank": 11,
+    "Country": "MAR",
+    "Name": "Casablanca",
+    "Population": 3321785,
+    "Lon": -7.634,
+    "Lat": 33.539,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 2010,
+    "Rank": 12,
+    "Country": "KEN",
+    "Name": "Nairobi aggl.",
+    "Population": 3298722,
+    "Lon": 36.841,
+    "Lat": -1.284,
+    "Country_name": "Kenya"
+  },
+  {
+    "Year": 2010,
+    "Rank": 13,
+    "Country": "ZAF",
+    "Name": "Cape Town",
+    "Population": 3234533,
+    "Lon": 18.555,
+    "Lat": -33.969,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 2010,
+    "Rank": 14,
+    "Country": "NGA",
+    "Name": "Kano",
+    "Population": 3211000,
+    "Lon": 8.511,
+    "Lat": 11.979,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2010,
+    "Rank": 15,
+    "Country": "DZA",
+    "Name": "Alger",
+    "Population": 3058460,
+    "Lon": 3.051,
+    "Lat": 36.765,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 2010,
+    "Rank": 16,
+    "Country": "ETH",
+    "Name": "ADDIS ABABA CITY ADMINISTRATION",
+    "Population": 2928562,
+    "Lon": 38.758,
+    "Lat": 8.982,
+    "Country_name": "Éthiopie"
+  },
+  {
+    "Year": 2010,
+    "Rank": 17,
+    "Country": "ZAF",
+    "Name": "Durban",
+    "Population": 2926918,
+    "Lon": 31.03,
+    "Lat": -29.848,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 2010,
+    "Rank": 18,
+    "Country": "NGA",
+    "Name": "Ibadan",
+    "Population": 2494000,
+    "Lon": 3.905,
+    "Lat": 7.418,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2010,
+    "Rank": 19,
+    "Country": "SEN",
+    "Name": "Dakar",
+    "Population": 2391784,
+    "Lon": -17.49,
+    "Lat": 14.74,
+    "Country_name": "Sénégal"
+  },
+  {
+    "Year": 2010,
+    "Rank": 20,
+    "Country": "CMR",
+    "Name": "Douala",
+    "Population": 2204587,
+    "Lon": 9.705,
+    "Lat": 4.046,
+    "Country_name": "Cameroun"
+  },
+  {
+    "Year": 2010,
+    "Rank": 21,
+    "Country": "CMR",
+    "Name": "Yaoundé",
+    "Population": 2105991,
+    "Lon": 11.518,
+    "Lat": 3.863,
+    "Country_name": "Cameroun"
+  },
+  {
+    "Year": 2010,
+    "Rank": 22,
+    "Country": "EGY",
+    "Name": "Qism Shibîn al-Kûm",
+    "Population": 1975825,
+    "Lon": 31.011,
+    "Lat": 30.5543,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 2010,
+    "Rank": 23,
+    "Country": "MLI",
+    "Name": "Bamako",
+    "Population": 1892797,
+    "Lon": -7.99,
+    "Lat": 12.65,
+    "Country_name": "Mali"
+  },
+  {
+    "Year": 2010,
+    "Rank": 24,
+    "Country": "TUN",
+    "Name": "Tunis",
+    "Population": 1886872,
+    "Lon": 10.175,
+    "Lat": 36.826,
+    "Country_name": "Tunisie"
+  },
+  {
+    "Year": 2010,
+    "Rank": 25,
+    "Country": "ZMB",
+    "Name": "Lusaka",
+    "Population": 1747152,
+    "Lon": 28.29,
+    "Lat": -15.42,
+    "Country_name": "Zambie"
+  },
+  {
+    "Year": 2010,
+    "Rank": 26,
+    "Country": "BFA",
+    "Name": "Ouagadougou",
+    "Population": 1740078,
+    "Lon": -1.526,
+    "Lat": 12.362,
+    "Country_name": "Burkina Faso"
+  },
+  {
+    "Year": 2010,
+    "Rank": 27,
+    "Country": "MAR",
+    "Name": "Rabat",
+    "Population": 1737585,
+    "Lon": -6.825,
+    "Lat": 33.994,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 2010,
+    "Rank": 28,
+    "Country": "GHA",
+    "Name": "Kumasi",
+    "Population": 1730249,
+    "Lon": -1.586,
+    "Lat": 6.694,
+    "Country_name": "Ghana"
+  },
+  {
+    "Year": 2010,
+    "Rank": 29,
+    "Country": "GHA",
+    "Name": "Accra",
+    "Population": 1665086,
+    "Lon": -0.2,
+    "Lat": 5.548,
+    "Country_name": "Ghana"
+  },
+  {
+    "Year": 2010,
+    "Rank": 30,
+    "Country": "NGA",
+    "Name": "Uyo",
+    "Population": 1609400,
+    "Lon": 7.922,
+    "Lat": 5.01,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2010,
+    "Rank": 31,
+    "Country": "UGA",
+    "Name": "Kampala",
+    "Population": 1530035,
+    "Lon": 32.58489,
+    "Lat": 0.326137,
+    "Country_name": "Ouganda"
+  },
+  {
+    "Year": 2010,
+    "Rank": 32,
+    "Country": "GIN",
+    "Name": "Conakry",
+    "Population": 1523260,
+    "Lon": -13.567,
+    "Lat": 9.672,
+    "Country_name": "Guinée"
+  },
+  {
+    "Year": 2010,
+    "Rank": 33,
+    "Country": "ZWE",
+    "Name": "Harare",
+    "Population": 1476180,
+    "Lon": 31.05,
+    "Lat": -17.82,
+    "Country_name": "Zimbabwe"
+  },
+  {
+    "Year": 2010,
+    "Rank": 34,
+    "Country": "ZAR",
+    "Name": "Lubumbashi",
+    "Population": 1468430,
+    "Lon": 27.472,
+    "Lat": -11.655,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 2010,
+    "Rank": 35,
+    "Country": "COG",
+    "Name": "Brazzaville",
+    "Population": 1451564,
+    "Lon": 15.249,
+    "Lat": -4.242,
+    "Country_name": "République du Congo"
+  },
+  {
+    "Year": 2010,
+    "Rank": 36,
+    "Country": "NGA",
+    "Name": "Nsukka",
+    "Population": 1430000,
+    "Lon": 7.41,
+    "Lat": 6.828,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2010,
+    "Rank": 37,
+    "Country": "SOM",
+    "Name": "Muqd?šo",
+    "Population": 1418657,
+    "Lon": 45.305,
+    "Lat": 2.059,
+    "Country_name": "Somalie"
+  },
+  {
+    "Year": 2010,
+    "Rank": 38,
+    "Country": "NGA",
+    "Name": "Port Harcourt",
+    "Population": 1389000,
+    "Lon": 7.024,
+    "Lat": 4.778,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2010,
+    "Rank": 39,
+    "Country": "NGA",
+    "Name": "Abuja",
+    "Population": 1180000,
+    "Lon": 7.426,
+    "Lat": 9.031,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2010,
+    "Rank": 40,
+    "Country": "NGA",
+    "Name": "Benin City",
+    "Population": 1122000,
+    "Lon": 5.595,
+    "Lat": 6.358,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2010,
+    "Rank": 41,
+    "Country": "ZAF",
+    "Name": "Soshanguve",
+    "Population": 1096648,
+    "Lon": 28.121,
+    "Lat": -25.43,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 2010,
+    "Rank": 42,
+    "Country": "MOZ",
+    "Name": "Maputo",
+    "Population": 1067872,
+    "Lon": 32.585344,
+    "Lat": -25.946282,
+    "Country_name": "Mozambique"
+  },
+  {
+    "Year": 2010,
+    "Rank": 43,
+    "Country": "MAR",
+    "Name": "Fès",
+    "Population": 1038578,
+    "Lon": -5.012,
+    "Lat": 34.008,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 2010,
+    "Rank": 44,
+    "Country": "RWA",
+    "Name": "Kigali",
+    "Population": 1037262,
+    "Lon": 30.1313,
+    "Lat": -1.9581,
+    "Country_name": "Rwanda"
+  },
+  {
+    "Year": 2010,
+    "Rank": 45,
+    "Country": "NGA",
+    "Name": "Aba",
+    "Population": 1019000,
+    "Lon": 7.393,
+    "Lat": 5.108,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2010,
+    "Rank": 46,
+    "Country": "LBR",
+    "Name": "Monrovia",
+    "Population": 1008929,
+    "Lon": -10.7476,
+    "Lat": 6.3419,
+    "Country_name": "Liberia"
+  },
+  {
+    "Year": 2010,
+    "Rank": 47,
+    "Country": "TCD",
+    "Name": "Ndjamena",
+    "Population": 1005570,
+    "Lon": 15.061,
+    "Lat": 12.13,
+    "Country_name": "Tchad"
+  },
+  {
+    "Year": 2010,
+    "Rank": 48,
+    "Country": "NGA",
+    "Name": "Kaduna",
+    "Population": 990000,
+    "Lon": 7.45,
+    "Lat": 10.53,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2010,
+    "Rank": 49,
+    "Country": "KEN",
+    "Name": "Mombasa aggl.",
+    "Population": 970915,
+    "Lon": 39.664,
+    "Lat": -4.051,
+    "Country_name": "Kenya"
+  },
+  {
+    "Year": 2010,
+    "Rank": 50,
+    "Country": "EGY",
+    "Name": "Sûhâg",
+    "Population": 941330,
+    "Lon": 31.6981,
+    "Lat": 26.5451,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 2020,
+    "Rank": 1,
+    "Country": "EGY",
+    "Name": "Muhâfaza Le Caire",
+    "Population": 25751339,
+    "Lon": 31.3337,
+    "Lat": 29.9733,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 2020,
+    "Rank": 2,
+    "Country": "NGA",
+    "Name": "Lagos",
+    "Population": 13701000,
+    "Lon": 3.395,
+    "Lat": 6.452,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2020,
+    "Rank": 3,
+    "Country": "NGA",
+    "Name": "Onitsha",
+    "Population": 9896000,
+    "Lon": 6.776,
+    "Lat": 6.138,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2020,
+    "Rank": 4,
+    "Country": "AGO",
+    "Name": "Luanda",
+    "Population": 9483870,
+    "Lon": 13.3,
+    "Lat": -8.924,
+    "Country_name": "Angola"
+  },
+  {
+    "Year": 2020,
+    "Rank": 5,
+    "Country": "ZAF",
+    "Name": "Johannesburg",
+    "Population": 9447952,
+    "Lon": 28.113,
+    "Lat": -26.05,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 2020,
+    "Rank": 6,
+    "Country": "ZAR",
+    "Name": "Kinshasa",
+    "Population": 8428000,
+    "Lon": 15.371,
+    "Lat": -4.408,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 2020,
+    "Rank": 7,
+    "Country": "EGY",
+    "Name": "Alexandrie",
+    "Population": 7303014,
+    "Lon": 29.9118,
+    "Lat": 31.2032,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 2020,
+    "Rank": 8,
+    "Country": "TZA",
+    "Name": "Dar es Salaam",
+    "Population": 6413198,
+    "Lon": 39.2101,
+    "Lat": -6.798,
+    "Country_name": "Tanzanie"
+  },
+  {
+    "Year": 2020,
+    "Rank": 9,
+    "Country": "SUD",
+    "Name": "Khartum",
+    "Population": 6256763,
+    "Lon": 32.53333333,
+    "Lat": 15.6,
+    "Country_name": "Soudan"
+  },
+  {
+    "Year": 2020,
+    "Rank": 10,
+    "Country": "KEN",
+    "Name": "Nairobi aggl.",
+    "Population": 5165452,
+    "Lon": 36.841,
+    "Lat": -1.284,
+    "Country_name": "Kenya"
+  },
+  {
+    "Year": 2020,
+    "Rank": 11,
+    "Country": "CIV",
+    "Name": "Abidjan",
+    "Population": 5161143,
+    "Lon": -4.029,
+    "Lat": 5.353,
+    "Country_name": "Côte d'Ivoire"
+  },
+  {
+    "Year": 2020,
+    "Rank": 12,
+    "Country": "MAR",
+    "Name": "Casablanca",
+    "Population": 4512808,
+    "Lon": -7.634,
+    "Lat": 33.539,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 2020,
+    "Rank": 13,
+    "Country": "NGA",
+    "Name": "Kano",
+    "Population": 4511000,
+    "Lon": 8.511,
+    "Lat": 11.979,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2020,
+    "Rank": 14,
+    "Country": "DZA",
+    "Name": "Alger",
+    "Population": 4389042,
+    "Lon": 3.051,
+    "Lat": 36.765,
+    "Country_name": "Algérie"
+  },
+  {
+    "Year": 2020,
+    "Rank": 15,
+    "Country": "EGY",
+    "Name": "Sûhâg",
+    "Population": 4219604,
+    "Lon": 31.6981,
+    "Lat": 26.5451,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 2020,
+    "Rank": 16,
+    "Country": "ZAF",
+    "Name": "Cape Town",
+    "Population": 4131587,
+    "Lon": 18.555,
+    "Lat": -33.969,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 2020,
+    "Rank": 17,
+    "Country": "ETH",
+    "Name": "ADDIS ABABA CITY ADMINISTRATION",
+    "Population": 3617438,
+    "Lon": 38.758,
+    "Lat": 8.982,
+    "Country_name": "Éthiopie"
+  },
+  {
+    "Year": 2020,
+    "Rank": 18,
+    "Country": "NGA",
+    "Name": "Ibadan",
+    "Population": 3582000,
+    "Lon": 3.905,
+    "Lat": 7.418,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2020,
+    "Rank": 19,
+    "Country": "ZAF",
+    "Name": "Durban",
+    "Population": 3250970,
+    "Lon": 31.03,
+    "Lat": -29.848,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 2020,
+    "Rank": 20,
+    "Country": "SEN",
+    "Name": "Dakar",
+    "Population": 3248240,
+    "Lon": -17.49,
+    "Lat": 14.74,
+    "Country_name": "Sénégal"
+  },
+  {
+    "Year": 2020,
+    "Rank": 21,
+    "Country": "CMR",
+    "Name": "Douala",
+    "Population": 2946441,
+    "Lon": 9.705,
+    "Lat": 4.046,
+    "Country_name": "Cameroun"
+  },
+  {
+    "Year": 2020,
+    "Rank": 22,
+    "Country": "CMR",
+    "Name": "Yaoundé",
+    "Population": 2827543,
+    "Lon": 11.518,
+    "Lat": 3.863,
+    "Country_name": "Cameroun"
+  },
+  {
+    "Year": 2020,
+    "Rank": 23,
+    "Country": "BFA",
+    "Name": "Ouagadougou",
+    "Population": 2684052,
+    "Lon": -1.526,
+    "Lat": 12.362,
+    "Country_name": "Burkina Faso"
+  },
+  {
+    "Year": 2020,
+    "Rank": 24,
+    "Country": "TUN",
+    "Name": "Tunis",
+    "Population": 2656806,
+    "Lon": 10.175,
+    "Lat": 36.826,
+    "Country_name": "Tunisie"
+  },
+  {
+    "Year": 2020,
+    "Rank": 25,
+    "Country": "ZMB",
+    "Name": "Lusaka",
+    "Population": 2651707,
+    "Lon": 28.29,
+    "Lat": -15.42,
+    "Country_name": "Zambie"
+  },
+  {
+    "Year": 2020,
+    "Rank": 26,
+    "Country": "NGA",
+    "Name": "Uyo",
+    "Population": 2634000,
+    "Lon": 7.922,
+    "Lat": 5.01,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2020,
+    "Rank": 27,
+    "Country": "MLI",
+    "Name": "Bamako",
+    "Population": 2547203,
+    "Lon": -7.99,
+    "Lat": 12.65,
+    "Country_name": "Mali"
+  },
+  {
+    "Year": 2020,
+    "Rank": 28,
+    "Country": "ZAR",
+    "Name": "Lubumbashi",
+    "Population": 2408000,
+    "Lon": 27.472,
+    "Lat": -11.655,
+    "Country_name": "République démocratique du Congo"
+  },
+  {
+    "Year": 2020,
+    "Rank": 29,
+    "Country": "GHA",
+    "Name": "Kumasi",
+    "Population": 2366569,
+    "Lon": -1.586,
+    "Lat": 6.694,
+    "Country_name": "Ghana"
+  },
+  {
+    "Year": 2020,
+    "Rank": 30,
+    "Country": "NGA",
+    "Name": "Abuja",
+    "Population": 2319000,
+    "Lon": 7.426,
+    "Lat": 9.031,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2020,
+    "Rank": 31,
+    "Country": "EGY",
+    "Name": "al-Mansûra",
+    "Population": 2244348,
+    "Lon": 31.3978,
+    "Lat": 31.0395,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 2020,
+    "Rank": 32,
+    "Country": "NGA",
+    "Name": "Port Harcourt",
+    "Population": 2140000,
+    "Lon": 7.024,
+    "Lat": 4.778,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2020,
+    "Rank": 33,
+    "Country": "MAR",
+    "Name": "Rabat",
+    "Population": 2041721,
+    "Lon": -6.825,
+    "Lat": 33.994,
+    "Country_name": "Maroc"
+  },
+  {
+    "Year": 2020,
+    "Rank": 34,
+    "Country": "SOM",
+    "Name": "Muqd?šo",
+    "Population": 2006143,
+    "Lon": 45.305,
+    "Lat": 2.059,
+    "Country_name": "Somalie"
+  },
+  {
+    "Year": 2020,
+    "Rank": 35,
+    "Country": "NGA",
+    "Name": "Aba",
+    "Population": 1957000,
+    "Lon": 7.393,
+    "Lat": 5.108,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2020,
+    "Rank": 36,
+    "Country": "GIN",
+    "Name": "Conakry",
+    "Population": 1911511,
+    "Lon": -13.567,
+    "Lat": 9.672,
+    "Country_name": "Guinée"
+  },
+  {
+    "Year": 2020,
+    "Rank": 37,
+    "Country": "GHA",
+    "Name": "Accra",
+    "Population": 1897130,
+    "Lon": -0.2,
+    "Lat": 5.548,
+    "Country_name": "Ghana"
+  },
+  {
+    "Year": 2020,
+    "Rank": 38,
+    "Country": "ZWE",
+    "Name": "Harare",
+    "Population": 1842436,
+    "Lon": 31.05,
+    "Lat": -17.82,
+    "Country_name": "Zimbabwe"
+  },
+  {
+    "Year": 2020,
+    "Rank": 39,
+    "Country": "NGA",
+    "Name": "Benin City",
+    "Population": 1821000,
+    "Lon": 5.595,
+    "Lat": 6.358,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2020,
+    "Rank": 40,
+    "Country": "COG",
+    "Name": "Brazzaville",
+    "Population": 1737926,
+    "Lon": 15.249,
+    "Lat": -4.242,
+    "Country_name": "République du Congo"
+  },
+  {
+    "Year": 2020,
+    "Rank": 41,
+    "Country": "NGA",
+    "Name": "Kaduna",
+    "Population": 1679000,
+    "Lon": 7.45,
+    "Lat": 10.53,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2020,
+    "Rank": 42,
+    "Country": "NGA",
+    "Name": "Nsukka",
+    "Population": 1659000,
+    "Lon": 7.41,
+    "Lat": 6.828,
+    "Country_name": "Nigeria"
+  },
+  {
+    "Year": 2020,
+    "Rank": 43,
+    "Country": "RWA",
+    "Name": "Kigali",
+    "Population": 1549960,
+    "Lon": 30.1313,
+    "Lat": -1.9581,
+    "Country_name": "Rwanda"
+  },
+  {
+    "Year": 2020,
+    "Rank": 44,
+    "Country": "UGA",
+    "Name": "Kampala",
+    "Population": 1543226,
+    "Lon": 32.58489,
+    "Lat": 0.326137,
+    "Country_name": "Ouganda"
+  },
+  {
+    "Year": 2020,
+    "Rank": 45,
+    "Country": "EGY",
+    "Name": "Asyût",
+    "Population": 1498086,
+    "Lon": 31.1873,
+    "Lat": 27.1856,
+    "Country_name": "Égypte"
+  },
+  {
+    "Year": 2020,
+    "Rank": 46,
+    "Country": "ZAF",
+    "Name": "Soshanguve",
+    "Population": 1472434,
+    "Lon": 28.121,
+    "Lat": -25.43,
+    "Country_name": "Afrique du Sud"
+  },
+  {
+    "Year": 2020,
+    "Rank": 47,
+    "Country": "TCD",
+    "Name": "Ndjamena",
+    "Population": 1414526,
+    "Lon": 15.061,
+    "Lat": 12.13,
+    "Country_name": "Tchad"
+  },
+  {
+    "Year": 2020,
+    "Rank": 48,
+    "Country": "MWI",
+    "Name": "Lilongwe City",
+    "Population": 1346389,
+    "Lon": 33.797604,
+    "Lat": -14.008718,
+    "Country_name": "Malawi"
+  },
+  {
+    "Year": 2020,
+    "Rank": 49,
+    "Country": "KEN",
+    "Name": "Mombasa aggl.",
+    "Population": 1319603,
+    "Lon": 39.664,
+    "Lat": -4.051,
+    "Country_name": "Kenya"
+  },
+  {
+    "Year": 2020,
+    "Rank": 50,
+    "Country": "MAR",
+    "Name": "Fès",
+    "Population": 1270050,
+    "Lon": -5.012,
+    "Lat": 34.008,
+    "Country_name": "Maroc"
+  }
+];
