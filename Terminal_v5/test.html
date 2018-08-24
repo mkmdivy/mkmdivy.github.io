@@ -28,86 +28,33 @@
 
 <body>
 
-<div class="slidecontainer">
-  <span id="year" style="font-weight:bold;color:black"></span>  
-  <input type="range" min="1950" max="2020" value="2020" step="10" class="slider" id="YearRange">
-</div>
-
-
- 
 	<div id="mapid"  style="width: 900px; float:left; height: 900px;"></div>
 	<div id="content" style="width: 600px; float:left; height: 700px;" ></div>
 	<div id="histogram" style="width: 600px; float:left; height: 100px;" ></div>
 <script>
 
-var slideCol= document.getElementById("YearRange")
-var y = document.getElementById("year");
-y.innerHTML=slideCol.value;
-
-
-slideCol.oninput = function() {
 
 
 
 
-    y.innerHTML = this.value;
-	a=this.value;
-
-	
-	/*map part*/
-	inputlist.clearLayers();
-	function YearFilter_in(feature) {
-	if (feature.properties.Year == a) return true}
-	newlist = new L.geoJSON(top50, {filter: YearFilter_in,onEachFeature: onEachFeature,
-    pointToLayer: function (feature, latlng) {
-        return L.circleMarker(latlng, geojsonMarkerOptions);}
-    })	
-	inputlist.addLayer(newlist);
-	
-
-	/*treemap part*/
-	document.getElementById("content").innerHTML = "";
-	var newtree = new d3plus.Treemap()
-  .data(top50_json.filter(d => d.Year === Number(a)))
-  .tooltipConfig({
-    body: function(d) {
-      var table = "<table class='tooltip-table'>";
-      table += "<tr><td class='title'>Country:</td><td class='data'>" + d.Country_name + "</td></tr>";
-      table += "<tr><td class='title'>Name:</td><td class='data'>" + d.Name + "</td></tr>";
-	  table += "<tr><td class='title'>Population:</td><td class='data'>" + formatNumber(d.Population) + "</td></tr>";
-      table += "</table>";
-      return table;
-    },
-    footer: function(d) {
-      return "<sub class='tooltip-footer'>Data Collected in 2015</sub>";
-    },
-    title: function(d) {
-      var txt = d.Name;
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();;
-    }
-  })
-  .select("#content")
-  .groupBy(["Country","Name"])
-  .sum("Population")
-  .render();	
-
-	/*histogram part*/
-	document.getElementById("histogram").innerHTML = "";
-	
-}
-
-new d3plus.BarChart()
-   .color("grey")
+new d3plus.Plot()
+   .baseline(0)
+   .discrete("x")
+   .x("x")
+   .y("Urate")
+   .xSort((a, b) => b.Urate - a.Urate)
+   .shape("Bar")
+   .color("light")
    .tooltipConfig({
     body: function(d) {
       var table = "<table class='tooltip-table'>";
-      table += "<tr><td class='title'>Urbanisation rate:</td><td class='data'>" + Math.round(d.y*100) +"%"+ "</td></tr>";
+      table += "<tr><td class='title'>Urbanisation rate:</td><td class='data'>" + Math.round(d.Urate*100) +"%"+ "</td></tr>";
       table += "</table>";
       return table;
     },
     
     title: function(d) {
-      var txt = d.id;
+      var txt = d.Country;
       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();;
     }
   })
@@ -121,6 +68,11 @@ new d3plus.BarChart()
     barConfig: {"stroke-width": 0},
     title: false,
     ticks: []
+  })
+  .shapeConfig({
+    fill: function(d) {
+      if (d.Country===""){return "cornflowerblue";} else {return "lightgrey";}
+    }
   })
   .data(hist)
   .select("#histogram")
@@ -248,7 +200,61 @@ function myFunction() {
   .groupBy("NAME")
   .sum("PTA2015")
   .render();	
+	
+	//histogram connection
+	document.getElementById("histogram").innerHTML = "";
+	new d3plus.Plot()
+   .baseline(0)
+   .discrete("x")
+   .x("x")
+   .y("Urate")
+   .xSort((a, b) => b.Urate - a.Urate)
+   .shape("Bar")
+   .color("light")
+   .tooltipConfig({
+    body: function(d) {
+      var table = "<table class='tooltip-table'>";
+      table += "<tr><td class='title'>Urbanisation rate:</td><td class='data'>" + Math.round(d.Urate*100) +"%"+ "</td></tr>";
+      table += "</table>";
+      return table;
+    },
+    
+    title: function(d) {
+      var txt = d.Country;
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();;
+    }
+  })
+  .yConfig({
+    barConfig: {"stroke-width": 0},
+    title: false,
+    ticks: [],
+	labels: []
+  })
+  .xConfig({
+    barConfig: {"stroke-width": 0},
+    title: false,
+    ticks: []
+  })
+  .shapeConfig({
+    fill: function(d) {
+      if (d.ISO===feature.properties.ISO3_CODE){return "cornflowerblue";} else {return "lightgrey";}
+    }
+  })
+  .on("click", function(d) {
+    //https://stackoverflow.com/questions/14756420/emulate-click-on-leaflet-map-item
+	mymap.fireEvent('click',{latlng:[11.954708, 17.206068]})
+  })
+  .data(hist)
+  .select("#histogram")
+  .render();
+
+  
+  
+	
 	});
+	
+
+	
 	
 	
     };
@@ -328,7 +334,7 @@ return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1  ")
 	
 	
 function YearFilter(feature) {
-  if (feature.properties.Year === 1950) return true
+  if (feature.properties.Year === "a") return true
 }
 	
 var citieslist=new L.geoJSON(top50, {filter: YearFilter,onEachFeature: onEachFeature,
@@ -336,10 +342,6 @@ var citieslist=new L.geoJSON(top50, {filter: YearFilter,onEachFeature: onEachFea
         return L.circleMarker(latlng, geojsonMarkerOptions);}
     }).addTo(mymap);	
 	
-var inputlist=new L.geoJSON(top50, {filter: YearFilter,onEachFeature: onEachFeature,
-    pointToLayer: function (feature, latlng) {
-        return L.circleMarker(latlng, geojsonMarkerOptions);}
-    }).addTo(mymap);	
 
 
 	
