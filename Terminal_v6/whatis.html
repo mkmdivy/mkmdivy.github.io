@@ -1,0 +1,13 @@
+<input
+  onfocus="hideValue(this,'First Name') /* 'this' is only correct here */"
+  type="text" name="first_name" value="First Name"
+>
+
+
+<script>
+function hideValue(element, value) {
+  if (element.value == value) {
+    element.value = '';
+  }
+}
+</script>

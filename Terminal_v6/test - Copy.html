@@ -1,0 +1,118 @@
+<html>
+
+<head>
+<link rel="stylesheet" href=".\node_modules\leaflet\dist\leaflet.css">
+<link rel="stylesheet" href=".\src\leaflet-gplaces-autocomplete.css">
+   <script src=".\node_modules\leaflet\dist\leaflet.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+  <script src=".\src\Control.GlobeMiniMap.js"></script>
+  <script src=".\src\leaflet-tilelayer-mask.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDr5TfNhMWgtC7F1U0JQrn6o4zZAmwd0dw&libraries=places"></script>
+<script src=".\src\leaflet-gplaces-autocomplete.js"></script>
+
+
+</head>
+
+<body>
+
+    <div id="mapid"  style="width: 1200px; height: 800px;"></div>
+
+<script>
+
+
+
+function myFunction() {
+    var x = document.getElementById("mySelect").selectedIndex;
+    var y = document.getElementById("mySelect").options;
+    var typed= prompt("You selected a "+ y[x].text + ". What is the name of " + y[x].text + "?");
+    if (typed != null) {
+    // var newMarker = new L.marker([13,-3]).addTo(mymap)
+    //      .bindPopup(typed).openPopup();
+
+}
+}
+
+
+
+
+	var mymap = L.map('mapid').setView([17.5,-1], 5);
+
+
+	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+    maxZoom: 18,
+    id: 'mapbox.streets',
+    accessToken: 'pk.eyJ1IjoibWttZCIsImEiOiJjajBqYjJpY2owMDE0Mndsbml0d2V1ZXczIn0.el8wQmA-TSJp2ggX8fJ1rA'
+}).addTo(mymap);
+
+
+		var mask = L.tileLayer.mask('https://api.mapbox.com/styles/v1/mkmd/cjjfjgznh9vke2sqplfgtisoy/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWttZCIsImEiOiJjajBqYjJpY2owMDE0Mndsbml0d2V1ZXczIn0.el8wQmA-TSJp2ggX8fJ1rA', {
+			maskSize: 128,
+			maxZoom: 18,
+			maxNativeZoom: 17
+		}).addTo(mymap);
+
+		mymap.on("mousemove", function(e) {
+			mask.setCenter(e.containerPoint);
+		});
+
+
+    new L.Control.GPlaceAutocomplete({
+    	callback: function(place){
+    		var loc = place.geometry.location;
+    		mymap.setView( [loc.lat(), loc.lng()], 18);
+    	}
+    }).addTo(mymap);
+
+
+var miniMap = new L.Control.GlobeMiniMap({
+     //uncomment to assign colors
+     // land:'#FFFF00',
+     // water:'#3333FF',
+     // marker:'#000000'
+   }).addTo(mymap);
+
+L.marker([17.5, -1]).addTo(mymap)
+  .bindPopup("<b>Hello, this is a SWAC page!</b><br />Select a point to register a building").openPopup();
+
+var popup = L.popup();
+
+
+function onMapClick(e) {
+
+
+  popup
+    .setLatLng(e.latlng)
+    //.setContent("You clicked the map at " + e.latlng.toString())  //this.getLatLng() don't work
+    .setContent("You select the point at" + "<br>Latitude: " + e.latlng.lat.toFixed(3) +"<br>Longtitude: " + e.latlng.lng.toFixed(3) +
+    '<br> <select id="mySelect">  <option>Church</option>  <option>Mosque</option>  <option>Bank</option>  <option>Hospital</option> </select>'+
+    '<button type="button" onclick="myFunction()">Register the building</button>'
+)  //this.getLatLng() don't work
+    .openOn(mymap);
+
+
+}
+
+function assign(e){
+  var newMarker = new L.marker([e.latlng.lat,e.latlng.lng]).addTo(mymap)
+        .bindPopup("typed").openPopup();
+
+}
+
+mymap.on('click', assign);
+mymap.on('click', onMapClick);
+
+
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+
+</html>
