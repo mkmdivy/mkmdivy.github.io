@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>City Population Bubbles Visualization</title>
+  <!-- Load D3.js from CDN -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      overflow: hidden;
+      background: #f0f0f0;
+    }
+    svg {
+      background: #fff;
+      display: block;
+      margin: auto;
+    }
+    .tooltip {
+      position: absolute;
+      text-align: center;
+      padding: 4px;
+      font: 12px sans-serif;
+      background: lightsteelblue;
+      border: 1px solid #d3d3d3;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    .yearText {
+      fill: #aaa;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <!-- SVG container for the visualization -->
+  <svg width="960" height="600"></svg>
+  
+  <script>
+  // Set dimensions for the SVG canvas.
+  const width = 960, height = 600, margin = 50;
+  const svg = d3.select("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+  // Create a tooltip div for interactivity.
+  const tooltip = d3.select("body")
+                    .append("div")
+                    .attr("class", "tooltip")
+                    .style("opacity", 0);
+
+  // Append a text element for the current year display.
+  const yearText = svg.append("text")
+                      .attr("class", "yearText")
+                      .attr("x", width - 80)
+                      .attr("y", height - 20)
+                      .attr("text-anchor", "end")
+                      .text("1950");
+
+  // Define scales for positioning based on longitude and latitude.
+  // (These will be set after the data loads.)
+  let xScale, yScale;
+
+  // A radius scale for population – the domain will be updated each year.
+  const radiusScale = d3.scaleSqrt().range([2, 10]);
+
+  // Color scale for different countries (used as region grouping).
+  const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+
+  // Load the CSV data.
+  d3.csv("./transformed_population_data.csv", d => {
+      return {
+        year: +d["Year"],
+        country: d["Country or Area"],
+        city: d["Urban Agglomeration"],
+        latitude: +d["Latitude"],
+        longitude: +d["Longitude"],
+        population: +d["Population (millions)"]
+      };
+  }).then(data => {
+
+    // Group data by city (unique combination of country and city name).
+    // This produces an array where each element is:
+    // [ key, array of records for that city ]
+    const cityData = d3.groups(data, d => d.country + "||" + d.city);
+
+    // Create an array of city objects, each with fixed geographic info and a map of year to population.
+    const cities = cityData.map(([key, values]) => {
+      const first = values[0];
+      const popByYear = {};
+      values.forEach(d => { popByYear[d.year] = d.population; });
+      return {
+        id: key,
+        country: first.country,
+        city: first.city,
+        latitude: first.latitude,
+        longitude: first.longitude,
+        popByYear: popByYear,
+        // initial positions and radius (will be updated)
+        x: 0,
+        y: 0,
+        radius: 0,
+        currentPopulation: 0
+      };
+    });
+
+    // Set the color domain based on the countries present.
+    colorScale.domain(Array.from(new Set(cities.map(d => d.country))));
+
+    // Create scales for positioning using longitude (x) and latitude (y).
+    const lonExtent = d3.extent(cities, d => d.longitude);
+    const latExtent = d3.extent(cities, d => d.latitude);
+    xScale = d3.scaleLinear()
+               .domain(lonExtent)
+               .range([margin, width - margin]);
+    yScale = d3.scaleLinear()
+               .domain(latExtent)
+               .range([height - margin, margin]); // Invert y so higher latitudes are toward the top.
+
+    // Initialize each city's x and y based on the scaled longitude and latitude.
+    cities.forEach(d => {
+      d.x = xScale(d.longitude);
+      d.y = yScale(d.latitude);
+    });
+
+    // Create circle elements for each city.
+    const circles = svg.selectAll("circle")
+                       .data(cities, d => d.id)
+                       .enter()
+                       .append("circle")
+                       .attr("fill", d => colorScale(d.country))
+                       .attr("stroke", "#fff")
+                       .attr("stroke-width", 1)
+                       .attr("r", 0)
+                       .on("mouseover", (event, d) => {
+                         tooltip.transition().duration(200).style("opacity", 0.9);
+                         tooltip.html("<strong>" + d.city + ", " + d.country + "</strong><br/>Population: " + d.currentPopulation)
+                                .style("left", (event.pageX + 10) + "px")
+                                .style("top", (event.pageY - 28) + "px");
+                       })
+                       .on("mouseout", () => {
+                         tooltip.transition().duration(200).style("opacity", 0);
+                       });
+
+    // Create a simulation to prevent bubbles from overlapping.
+    const simulation = d3.forceSimulation(cities)
+                         .force("x", d3.forceX(d => d.x).strength(0.05))
+                         .force("y", d3.forceY(d => d.y).strength(0.05))
+                         .force("collide", d3.forceCollide(d => d.radius + 1).strength(0.7))
+                         .alphaDecay(0.02)
+                         .on("tick", ticked);
+
+    // Tick function updates circle positions (and labels, if any).
+    function ticked() {
+      circles.attr("cx", d => d.x)
+             .attr("cy", d => d.y);
+      svg.selectAll("text.label")
+         .attr("x", d => d.x)
+         .attr("y", d => d.y);
+    }
+
+    // Set up the animation: years 1950 to 2035.
+    let currentYear = 1950;
+    const endYear = 2035;
+
+    // Function to update bubbles for a given year.
+    function update(year) {
+      // For each city, update its current population for the given year.
+      cities.forEach(d => {
+        d.currentPopulation = d.popByYear[year] || 0;
+      });
+
+      // Update the radius scale domain based on current population values.
+      const popExtent = d3.extent(cities, d => d.currentPopulation);
+      radiusScale.domain(popExtent);
+
+      // Update each city's radius.
+      cities.forEach(d => {
+        d.radius = radiusScale(d.currentPopulation);
+      });
+
+      // Transition the circle radii.
+      circles.transition().duration(250)
+             .attr("r", d => d.radius);
+
+      // Re-apply the collision force using the new radius.
+      simulation.force("collide", d3.forceCollide(d => d.radius + 1).strength(0.7));
+      simulation.alpha(0.5).restart();
+
+      // Determine the top 20 cities by current population.
+      const topCities = cities.filter(d => d.currentPopulation)
+                              .sort((a, b) => d3.descending(a.currentPopulation, b.currentPopulation))
+                              .slice(0, 20);
+
+      // Data join for labels on the top 20 cities.
+      const labels = svg.selectAll("text.label")
+                        .data(topCities, d => d.id);
+
+      // Remove labels that no longer belong.
+      labels.exit().remove();
+
+      // Update existing labels.
+      labels.text(d => d.city)
+            .attr("x", d => d.x)
+            .attr("y", d => d.y);
+
+      // Add new labels.
+      labels.enter()
+            .append("text")
+            .attr("class", "label")
+            .attr("text-anchor", "middle")
+            .attr("dy", ".35em")
+            .style("font-size", "10px")
+            .style("pointer-events", "none")
+            .text(d => d.city)
+            .attr("x", d => d.x)
+            .attr("y", d => d.y);
+
+      // Update the displayed year.
+      yearText.text(year);
+    }
+
+    // Start the animation, updating every 0.3 seconds.
+    update(currentYear); // initial update
+    d3.interval(() => {
+      update(currentYear);
+      currentYear++;
+      if (currentYear > endYear) { currentYear = 1950; }
+    }, 300);
+    
+  });
+  </script>
+</body>
+</html>

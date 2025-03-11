@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>City Population Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        #visualization {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        .bubble {
+            opacity: 0.7;
+            transition: r 0.2s;
+        }
+        .year-display {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+        .bubble-label {
+            font-size: 10px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="visualization"></div>
+    <script>
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        // Create SVG container
+        const svg = d3.select("#visualization")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // Year display
+        const yearDisplay = d3.select("#visualization")
+            .append("div")
+            .attr("class", "year-display");
+
+        // Color scale for regions (countries)
+        const colorScale = d3.scaleOrdinal()
+            .range(d3.schemeCategory10);
+
+        // Load and process data
+        d3.csv("./transformed_population_data.csv").then(data => {
+            // Process data into nested structure
+            const cities = d3.group(data, d => d["Urban Agglomeration"] + d["Country or Area"]);
+            const cityData = Array.from(cities, ([key, values]) => ({
+                name: values[0]["Urban Agglomeration"],
+                country: values[0]["Country or Area"],
+                lat: +values[0].Latitude,
+                lon: +values[0].Longitude,
+                populations: values.map(d => ({
+                    year: +d.Year,
+                    population: +d["Population (millions)"] * 1000000
+                }))
+            }));
+
+            // Get max population for scaling
+            const maxPop = d3.max(cityData, d => d3.max(d.populations, p => p.population));
+            const sizeScale = d3.scaleSqrt()
+                .domain([0, maxPop])
+                .range([2, 30]);  // Smaller range for less overlap and better performance
+
+            // Initial positions using lat/lon as approximate starting points
+            const xScale = d3.scaleLinear()
+                .domain([-180, 180])
+                .range([50, width - 50]);
+            const yScale = d3.scaleLinear()
+                .domain([-90, 90])
+                .range([height - 50, 50]);
+
+            // Force simulation to prevent overlap
+            const simulation = d3.forceSimulation()
+                .force("x", d3.forceX(d => xScale(d.lon)).strength(0.05))
+                .force("y", d3.forceY(d => yScale(d.lat)).strength(0.05))
+                .force("collide", d3.forceCollide(d => sizeScale(d.currentPop) + 1))
+                .alphaDecay(0.01);
+
+            // Create bubbles
+            const bubbles = svg.selectAll(".bubble")
+                .data(cityData)
+                .enter()
+                .append("circle")
+                .attr("class", "bubble")
+                .attr("cx", d => xScale(d.lon))
+                .attr("cy", d => yScale(d.lat))
+                .attr("r", d => {
+                    d.currentPop = d.populations[0].population;
+                    return sizeScale(d.currentPop);
+                })
+                .attr("fill", d => colorScale(d.country));
+
+            // Add labels for top 20 cities
+            const topCities = cityData
+                .sort((a, b) => d3.max(b.populations, p => p.population) - d3.max(a.populations, p => p.population))
+                .slice(0, 20);
+
+            const labels = svg.selectAll(".bubble-label")
+                .data(topCities)
+                .enter()
+                .append("text")
+                .attr("class", "bubble-label")
+                .attr("x", d => xScale(d.lon))
+                .attr("y", d => yScale(d.lat) - 5)
+                .text(d => d.name)
+                .attr("text-anchor", "middle");
+
+            // Update simulation with nodes
+            simulation.nodes(cityData)
+                .on("tick", () => {
+                    bubbles
+                        .attr("cx", d => d.x)
+                        .attr("cy", d => d.y);
+                    labels
+                        .attr("x", d => d.x)
+                        .attr("y", d => d.y - sizeScale(d.currentPop) - 2);
+                });
+
+            // Animation
+            let currentYearIndex = 0;
+            const years = d3.range(1950, 2036);
+
+            function updateYear() {
+                const year = years[currentYearIndex];
+                yearDisplay.text(year);
+
+                bubbles.each(function(d) {
+                    const popData = d.populations.find(p => p.year === year) || 
+                                   d.populations[d.populations.length - 1];
+                    d.currentPop = popData.population;
+                });
+
+                bubbles
+                    .attr("r", d => sizeScale(d.currentPop));
+
+                simulation.alpha(0.3).restart();
+
+                currentYearIndex = (currentYearIndex + 1) % years.length;
+                setTimeout(updateYear, 300); // 0.3 seconds per year
+            }
+
+            // Start animation
+            updateYear();
+        }).catch(error => {
+            console.error("Error loading CSV:", error);
+        });
+    </script>
+</body>
+</html>

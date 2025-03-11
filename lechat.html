@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive City Population Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        #visualization {
+            position: relative;
+            width: 800px;
+            height: 600px;
+        }
+        .bubble {
+            fill-opacity: 0.7;
+            stroke: #fff;
+            stroke-width: 1px;
+        }
+        .year {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 1.5em;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div id="visualization">
+        <div class="year" id="year">1950</div>
+    </div>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        // Set up the SVG container
+        const width = 800;
+        const height = 600;
+        const svg = d3.select("#visualization").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // Load the data
+        d3.csv('./transformed_population_data.csv').then(data => {
+            // Process data
+            const cities = {};
+            data.forEach(d => {
+                const city = d['Urban Agglomeration'];
+                if (!cities[city]) {
+                    cities[city] = {
+                        lat: +d.Latitude,
+                        lon: +d.Longitude,
+                        population: {},
+                        region: d['Country or Area']
+                    };
+                }
+                cities[city].population[d.Year] = +d['Population (millions)'];
+            });
+
+            // Scale for bubble size
+            const maxPopulation = d3.max(data, d => +d['Population (millions)']);
+            const sizeScale = d3.scaleSqrt()
+                .domain([0, maxPopulation])
+                .range([1, 20]);
+
+            // Color scale for regions
+            const regions = [...new Set(data.map(d => d['Country or Area']))];
+            const colorScale = d3.scaleOrdinal(d3.schemeCategory10)
+                .domain(regions);
+
+            // Projection for initial positions
+            const projection = d3.geoMercator()
+                .scale((width - 3) / (2 * Math.PI))
+                .translate([width / 2, height / 2]);
+
+            // Create bubbles
+            const bubbles = svg.selectAll(".bubble")
+                .data(Object.values(cities))
+                .enter().append("circle")
+                .attr("class", "bubble")
+                .attr("cx", d => projection([d.lon, d.lat])[0])
+                .attr("cy", d => projection([d.lon, d.lat])[1])
+                .attr("r", 1)
+                .attr("fill", d => colorScale(d.region));
+
+            // Animate bubbles
+            let year = 1950;
+            const yearDisplay = d3.select("#year");
+            function update() {
+                bubbles.transition()
+                    .duration(300)
+                    .attr("r", d => sizeScale(d.population[year]))
+                    .attr("cx", d => projection([d.lon, d.lat])[0])
+                    .attr("cy", d => projection([d.lon, d.lat])[1]);
+
+                yearDisplay.text(year);
+                year = year + 1;
+            }
+
+            // Start animation
+            d3.interval(update, 300);
+        });
+    </script>
+</body>
+</html>

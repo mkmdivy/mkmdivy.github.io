@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>City Population Bubbles</title>
+    <style>
+        body { font-family: sans-serif; }
+        .container { width: 90%; margin: 20px auto; }
+        #chart { width: 100%; height: 800px; border: 1px solid #ccc; }
+        .city-bubble { stroke: #fff; stroke-width: 0.5; opacity: 0.8; }
+        .city-label { font-size: 9px; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+        .year-label {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            opacity: 0.7;
+        }
+    </style>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>City Population Bubbles (1950-2035)</h1>
+        <div id="chart"></div>
+        <div class="year-label" id="year-display">Year: 1950</div>
+    </div>
+
+    <script>
+        d3.csv('./transformed_population_data.csv').then(function(data) {
+            const width = document.getElementById('chart').offsetWidth;
+            const height = document.getElementById('chart').offsetHeight;
+            const svg = d3.select("#chart").append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            const regions = {
+                "Nigeria": "Africa", "Brazil": "South America", "India": "Asia", "China": "Asia",
+                "United States of America": "North America", "Indonesia": "Asia", "Pakistan": "Asia",
+                "Egypt": "Africa", "Bangladesh": "Asia", "Mexico": "North America", "Japan": "Asia",
+                "Philippines": "Asia", "Germany": "Europe", "Dem. Republic of the Congo": "Africa",
+                "Turkey": "Asia", "Iran (Islamic Republic of)": "Asia", "Thailand": "Asia",
+                "United Kingdom": "Europe", "France": "Europe", "Italy": "Europe", "South Africa": "Africa",
+                "Colombia": "South America", "Spain": "Europe", "Argentina": "South America", "Algeria": "Africa",
+                "Sudan": "Africa", "Uganda": "Africa", "Ukraine": "Europe", "Canada": "North America",
+                "Poland": "Europe", "Morocco": "Africa", "Saudi Arabia": "Asia", "Angola": "Africa",
+                "Peru": "South America", "Malaysia": "Asia", "Ghana": "Africa", "Côte d'Ivoire": "Africa",
+                "Venezuela (Bolivarian Republic of)": "South America", "Cameroon": "Africa", "Niger": "Africa",
+                "Australia": "Oceania", "Romania": "Europe", "Chile": "South America", "Netherlands": "Europe",
+                "Kazakhstan": "Asia", "Ecuador": "South America", "Sri Lanka": "Asia", "Syrian Arab Republic": "Asia",
+                "Guatemala": "North America", "Cambodia": "Asia", "Senegal": "Africa", "Zimbabwe": "Africa",
+                "Chad": "Africa", "Guinea": "Africa", "Rwanda": "Africa", "Benin": "Africa", "Burkina Faso": "Africa",
+                "Tunisia": "Africa", "Haiti": "North America", "Belgium": "Europe", "Greece": "Europe",
+                "Czechia": "Europe", "Sweden": "Europe", "Portugal": "Europe", "Hungary": "Europe",
+                "Belarus": "Europe", "Austria": "Europe", "Switzerland": "Europe", "Serbia": "Europe",
+                "Bulgaria": "Europe", "Denmark": "Europe", "Finland": "Europe", "Slovakia": "Europe",
+                "Norway": "Europe", "Ireland": "Europe", "Croatia": "Europe", "Bosnia and Herzegovina": "Europe",
+                "Albania": "Europe", "Lithuania": "Europe", "North Macedonia": "Europe", "Slovenia": "Europe",
+                "Latvia": "Europe", "Estonia": "Europe", "Montenegro": "Europe", "Luxembourg": "Europe",
+                "Malta": "Europe", "Iceland": "Europe", "Cyprus": "Europe", "Moldova": "Europe",
+                "Georgia": "Asia", "Armenia": "Asia", "Azerbaijan": "Asia", "Kyrgyzstan": "Asia",
+                "Tajikistan": "Asia", "Turkmenistan": "Asia", "Uzbekistan": "Asia", "Mongolia": "Asia",
+                "Nepal": "Asia", "Myanmar": "Asia", "Viet Nam": "Asia", "Republic of Korea": "Asia",
+                "Democratic People's Republic of Korea": "Asia", "Taiwan": "Asia", "Hong Kong SAR, China": "Asia",
+                "Singapore": "Asia", "Malaysia": "Asia", "Thailand": "Asia", "Japan": "Asia",
+                "Russian Federation": "Europe", "Australia": "Oceania", "New Zealand": "Oceania",
+                "Papua New Guinea": "Oceania", "Fiji": "Oceania", "Solomon Islands": "Oceania",
+                "Vanuatu": "Oceania", "Samoa": "Oceania", "Kiribati": "Oceania", "Tonga": "Oceania",
+                "Micronesia (Federated States of)": "Oceania", "Marshall Islands": "Oceania", "Palau": "Oceania",
+                "Nauru": "Oceania", "Tuvalu": "Oceania", "Cook Islands": "Oceania", "Niue": "Oceania",
+                "Tokelau": "Oceania", "Wallis and Futuna Islands": "Oceania", "American Samoa": "Oceania",
+                "French Polynesia": "Oceania", "New Caledonia": "Oceania", "Guam": "Oceania",
+                "Northern Mariana Islands": "Oceania", "Puerto Rico": "North America", "U.S. Virgin Islands": "North America",
+                "Antigua and Barbuda": "North America", "Bahamas": "North America", "Barbados": "North America",
+                "Belize": "North America", "Costa Rica": "North America", "Cuba": "North America",
+                "Dominica": "North America", "Dominican Republic": "North America", "El Salvador": "North America",
+                "Grenada": "North America", "Guatemala": "North America", "Haiti": "North America",
+                "Honduras": "North America", "Jamaica": "North America", "Mexico": "North America",
+                "Nicaragua": "North America", "Panama": "North America", "Saint Kitts and Nevis": "North America",
+                "Saint Lucia": "North America", "Saint Vincent and the Grenadines": "North America", "Trinidad and Tobago": "North America",
+                "Canada": "North America", "United States of America": "North America", "Greenland": "North America",
+                "Saint Pierre and Miquelon": "North America", "Bermuda": "North America", "Aruba": "South America",
+                "Netherlands Antilles": "South America", "Curacao": "South America", "Sint Maarten (Dutch part)": "South America",
+                "Bonaire, Sint Eustatius and Saba": "South America", "Venezuela (Bolivarian Republic of)": "South America",
+                "Colombia": "South America", "Ecuador": "South America", "Peru": "South America", "Bolivia (Plurinational State of)": "South America",
+                "Chile": "South America", "Argentina": "South America", "Paraguay": "South America", "Uruguay": "South America",
+                "Brazil": "South America", "French Guiana": "South America", "Guyana": "South America", "Suriname": "South America",
+                "Falkland Islands (Malvinas)": "South America", "South Georgia and the South Sandwich Islands": "South America",
+                "Algeria": "Africa", "Angola": "Africa", "Benin": "Africa", "Botswana": "Africa", "Burkina Faso": "Africa",
+                "Burundi": "Africa", "Cabo Verde": "Africa", "Cameroon": "Africa", "Central African Republic": "Africa",
+                "Chad": "Africa", "Comoros": "Africa", "Congo": "Africa", "Côte d'Ivoire": "Africa",
+                "Dem. Republic of the Congo": "Africa", "Djibouti": "Africa", "Egypt": "Africa", "Equatorial Guinea": "Africa",
+                "Eritrea": "Africa", "Eswatini": "Africa", "Ethiopia": "Africa", "Gabon": "Africa",
+                "Gambia": "Africa", "Ghana": "Africa", "Guinea": "Africa", "Guinea-Bissau": "Africa",
+                "Kenya": "Africa", "Lesotho": "Africa", "Liberia": "Africa", "Libya": "Africa",
+                "Madagascar": "Africa", "Malawi": "Africa", "Mali": "Africa", "Mauritania": "Africa",
+                "Mauritius": "Africa", "Morocco": "Africa", "Mozambique": "Africa", "Namibia": "Africa",
+                "Niger": "Africa", "Nigeria": "Africa", "Rwanda": "Africa", "Sao Tome and Principe": "Africa",
+                "Senegal": "Africa", "Seychelles": "Africa", "Sierra Leone": "Africa", "Somalia": "Africa",
+                "South Africa": "Africa", "South Sudan": "Africa", "Sudan": "Africa", "Togo": "Africa",
+                "Tunisia": "Africa", "Uganda": "Africa", "United Republic of Tanzania": "Africa", "Zambia": "Africa",
+                "Zimbabwe": "Africa", "Western Sahara": "Africa", "Mayotte": "Africa", "Réunion": "Africa",
+                "Saint Helena, Ascension and Tristan da Cunha": "Africa", "India": "Asia", "China": "Asia",
+                "Indonesia": "Asia", "Pakistan": "Asia", "Bangladesh": "Asia", "Japan": "Asia",
+                "Philippines": "Asia", "Viet Nam": "Asia", "Turkey": "Asia", "Iran (Islamic Republic of)": "Asia",
+                "Thailand": "Asia", "Myanmar": "Asia", "Republic of Korea": "Asia", "Democratic People's Republic of Korea": "Asia",
+                "Taiwan": "Asia", "Malaysia": "Asia", "Nepal": "Asia", "Sri Lanka": "Asia",
+                "Syrian Arab Republic": "Asia", "Kazakhstan": "Asia", "Cambodia": "Asia", "Saudi Arabia": "Asia",
+                "Uzbekistan": "Asia", "Azerbaijan": "Asia", "Jordan": "Asia", "United Arab Emirates": "Asia",
+                "Tajikistan": "Asia", "Israel": "Asia", "Kyrgyzstan": "Asia", "Lebanon": "Asia",
+                "Oman": "Asia", "State of Palestine": "Asia", "Kuwait": "Asia", "Georgia": "Asia",
+                "Armenia": "Asia", "Turkmenistan": "Asia", "Qatar": "Asia", "Mongolia": "Asia",
+                "Timor-Leste": "Asia", "Cyprus": "Asia", "Bhutan": "Asia", "Brunei Darussalam": "Asia",
+                "Hong Kong SAR, China": "Asia", "Macao SAR, China": "Asia", "Singapore": "Asia", "Afghanistan": "Asia",
+                "Yemen": "Asia", "Iraq": "Asia", "Lao People's Democratic Republic": "Asia", "Democratic People's Republic of Korea": "Asia",
+                "Russian Federation": "Europe", "Germany": "Europe", "United Kingdom": "Europe", "France": "Europe",
+                "Italy": "Europe", "Spain": "Europe", "Ukraine": "Europe", "Poland": "Europe",
+                "Romania": "Europe", "Netherlands": "Europe", "Belgium": "Europe", "Greece": "Europe",
+                "Czechia": "Europe", "Sweden": "Europe", "Portugal": "Europe", "Hungary": "Europe",
+                "Belarus": "Europe", "Austria": "Europe", "Switzerland": "Europe", "Serbia": "Europe",
+                "Bulgaria": "Europe", "Denmark": "Europe", "Finland": "Europe", "Slovakia": "Europe",
+                "Norway": "Europe", "Ireland": "Europe", "Croatia": "Europe", "Bosnia and Herzegovina": "Europe",
+                "Albania": "Europe", "Lithuania": "Europe", "North Macedonia": "Europe", "Slovenia": "Europe",
+                "Latvia": "Europe", "Estonia": "Europe", "Montenegro": "Europe", "Luxembourg": "Europe",
+                "Malta": "Europe", "Iceland": "Europe", "Moldova": "Europe", "Andorra": "Europe",
+                "Monaco": "Europe", "Liechtenstein": "Europe", "San Marino": "Europe", "Holy See": "Europe",
+                "Channel Islands": "Europe", "Isle of Man": "Europe", "Gibraltar": "Europe", "Faroe Islands": "Europe",
+                "Åland Islands": "Europe", "Svalbard and Jan Mayen Islands": "Europe", "Guernsey": "Europe", "Jersey": "Europe",
+                "Oceania": "Oceania"
+            };
+
+
+            const cityData = d3.group(data, d => d['Urban Agglomeration']);
+            let cities = Array.from(cityData, ([name, values]) => {
+                const latestData = values[values.length - 1];
+                return {
+                    name: name,
+                    latitude: parseFloat(latestData.Latitude),
+                    longitude: parseFloat(latestData.Longitude),
+                    country: latestData['Country or Area'],
+                    region: regions[latestData['Country or Area']] || 'Other',
+                    populationData: values.map(v => ({ year: parseInt(v.Year), population: parseFloat(v['Population (millions)']) }))
+                };
+            });
+
+
+            cities.sort((a, b) => {
+                const latestPopA = a.populationData[a.populationData.length - 1].population;
+                const latestPopB = b.populationData[b.populationData.length - 1].population;
+                return latestPopB - latestPopA;
+            });
+
+            const topCities = cities.slice(0, 20).map(city => city.name);
+
+            const populationExtent = d3.extent(cities.flatMap(city => city.populationData), d => d.population);
+            const populationScale = d3.scaleSqrt()
+                .domain(populationExtent)
+                .range([2, 50]); // Adjusted range for smaller bubbles
+
+            const regionColors = d3.scaleOrdinal()
+                .domain(Array.from(new Set(cities.map(d => d.region))))
+                .range(d3.schemeCategory10);
+
+            const initialYear = 1950;
+            let currentYear = initialYear;
+
+            const xScale = d3.scaleLinear()
+                .domain(d3.extent(cities, d => d.longitude))
+                .range([50, width - 50]); // Adjusted range for margins
+
+            const yScale = d3.scaleLinear()
+                .domain(d3.extent(cities, d => d.latitude))
+                .range([height - 50, 50]); // Adjusted range for margins
+
+
+            const bubbles = svg.selectAll(".city-bubble")
+                .data(cities)
+                .enter().append("circle")
+                .attr("class", "city-bubble")
+                .attr("cx", d => xScale(d.longitude))
+                .attr("cy", d => yScale(d.latitude))
+                .attr("r", d => populationScale(d.populationData.find(p => p.year === initialYear)?.population || 0))
+                .style("fill", d => regionColors(d.region));
+
+
+            const labels = svg.selectAll(".city-label")
+                .data(cities.filter(city => topCities.includes(city.name)))
+                .enter().append("text")
+                .attr("class", "city-label")
+                .attr("x", d => xScale(d.longitude))
+                .attr("y", d => yScale(d.latitude))
+                .attr("dy", "-1em")
+                .style("font-size", "8px")
+                .style("opacity", 0.7)
+                .text(d => d.name);
+
+
+            function updateBubbles(year) {
+                d3.select("#year-display").text("Year: " + year);
+                bubbles.transition()
+                    .duration(300) // Animation speed in milliseconds (0.3 seconds)
+                    .attr("r", d => {
+                        const popData = d.populationData.find(p => p.year === year);
+                        return popData ? populationScale(popData.population) : 0;
+                    });
+            }
+
+
+            d3.interval(function() {
+                currentYear++;
+                if (currentYear > 2035) {
+                    currentYear = 1950; // Loop back to start
+                }
+                updateBubbles(currentYear);
+            }, 300); // Interval duration in milliseconds (0.3 seconds)
+
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>City Population Bubbles</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        svg {
+            background: #f0f0f0;
+        }
+        .bubble-text {
+            font-size: 10px;
+            pointer-events: none;
+            fill: #333;
+            text-anchor: middle;
+        }
+    </style>
+</head>
+<body>
+    <h2>City Populations by Region</h2>
+    <div id="vis-container"></div>
+
+    <script>
+        const width = 960;
+        const height = 600;
+
+        d3.csv('./transformed_population_data.csv', d => ({
+            Year: +d.Year,
+            'Country or Area': d['Country or Area'],
+            'Urban Agglomeration': d['Urban Agglomeration'],
+            Latitude: +d.Latitude,
+            Longitude: +d.Longitude,
+            'Population (millions)': +d['Population (millions)']
+        })).then(data => {
+            // Process data to get latest entry per city
+            const cities = Array.from(d3.group(data, d => d['Urban Agglomeration']), ([key, entries]) => {
+                const latest = entries.reduce((a, b) => a.Year > b.Year ? a : b);
+                return {
+                    ...latest,
+                    Population: latest['Population (millions)']
+                };
+            });
+
+            // Sort by population descending
+            cities.sort((a, b) => b.Population - a.Population);
+
+            // Create nodes with positional data
+            const nodes = cities.map(city => ({
+                x: (city.Longitude + 180) * (width / 360),
+                y: (90 - city.Latitude) * (height / 180),
+                radius: Math.sqrt(city.Population) * 3,
+                population: city.Population,
+                name: city['Urban Agglomeration'],
+                country: city['Country or Area']
+            }));
+
+            // Setup SVG
+            const svg = d3.select('#vis-container')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .attr('viewBox', [0, 0, width, height]);
+
+            // Color scale
+            const color = d3.scaleOrdinal(d3.schemeCategory10)
+                .domain([...new Set(nodes.map(d => d.country))]);
+
+            // Force simulation
+            const simulation = d3.forceSimulation(nodes)
+                .force('collide', d3.forceCollide().radius(d => d.radius + 1).strength(0.7))
+                .force('x', d3.forceX(d => d.x).strength(0.05))
+                .force('y', d3.forceY(d => d.y).strength(0.05))
+                .alphaDecay(0.05);
+
+            // Draw bubbles
+            const bubbles = svg.selectAll('circle')
+                .data(nodes)
+                .join('circle')
+                .attr('r', d => d.radius)
+                .attr('fill', d => color(d.country))
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 0.5)
+                .attr('opacity', 0.7);
+
+            // Add labels for top 20
+            const labels = svg.selectAll('text')
+                .data(nodes.slice(0, 20))
+                .join('text')
+                .classed('bubble-text', true)
+                .text(d => d.name)
+                .attr('font-size', d => Math.min(14, d.radius / 2));
+
+            // Update positions on tick
+            simulation.on('tick', () => {
+                bubbles
+                    .attr('cx', d => d.x)
+                    .attr('cy', d => d.y);
+                labels
+                    .attr('x', d => d.x)
+                    .attr('y', d => d.y);
+            });
+
+            // Tooltip
+            const tooltip = d3.select('body').append('div')
+                .style('position', 'absolute')
+                .style('background', '#fff')
+                .style('padding', '5px')
+                .style('border', '1px solid #ccc')
+                .style('border-radius', '3px')
+                .style('opacity', 0);
+
+            bubbles.on('mouseover', (event, d) => {
+                    tooltip.transition().duration(200).style('opacity', 0.9);
+                    tooltip.html(`${d.name}<br/>Population: ${d.population.toFixed(2)}M`)
+                        .style('left', `${event.pageX + 5}px`)
+                        .style('top', `${event.pageY - 28}px`);
+                })
+                .on('mouseout', () => {
+                    tooltip.transition().duration(500).style('opacity', 0);
+                });
+        });
+    </script>
+</body>
+</html>

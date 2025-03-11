@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Global City Population Visualization</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #f0f0f0; 
+            margin: 0; 
+            overflow: hidden;
+        }
+        #visualization {
+            width: 100vw;
+            height: 100vh;
+        }
+        #year-display {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            color: #333;
+            opacity: 0.7;
+        }
+        .tooltip {
+            position: absolute;
+            background: white;
+            border: 1px solid #ddd;
+            padding: 5px;
+            pointer-events: none;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div id="year-display"></div>
+    <div id="visualization"></div>
+
+    <script>
+        // Configuration
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const yearStart = 1950;
+        const yearEnd = 2035;
+        const animationSpeed = 300; // milliseconds per year
+        const topCityLabelCount = 20;
+
+        // Color palette for regions (simplified)
+        const regionColors = {
+            'Africa': '#FF6B6B',
+            'Asia': '#4ECDC4', 
+            'Europe': '#A8DADC', 
+            'North America': '#457B9D', 
+            'South America': '#9C6644',
+            'Oceania': '#6A4C93',
+            'Default': '#7E57C2'
+        };
+
+        // SVG setup
+        const svg = d3.select("#visualization")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // Force simulation to prevent overlap
+        const simulation = d3.forceSimulation()
+            .force("charge", d3.forceCollide().radius(d => Math.sqrt(d.population) * 0.5 + 2))
+            .force("center", d3.forceCenter(width / 2, height / 2));
+
+        // Tooltip
+        const tooltip = d3.select("body")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+        d3.csv('./transformed_population_data.csv').then(data => {
+            // Group data by city and year
+            const cityData = d3.group(data, d => d['Urban Agglomeration']);
+            const yearData = {};
+
+            // Preprocess data
+            cityData.forEach((cityYears, cityName) => {
+                cityYears.forEach(entry => {
+                    const year = entry.Year;
+                    if (!yearData[year]) yearData[year] = [];
+                    
+                    yearData[year].push({
+                        city: cityName,
+                        country: entry['Country or Area'],
+                        population: parseFloat(entry['Population (millions)']),
+                        latitude: parseFloat(entry.Latitude),
+                        longitude: parseFloat(entry.Longitude),
+                        region: entry.Region || 'Default'
+                    });
+                });
+            });
+
+            // Year animation
+            let currentYear = yearStart;
+            const yearDisplay = d3.select("#year-display");
+
+            function updateVisualization(year) {
+                const cities = yearData[year] || [];
+                
+                // Sort cities by population to determine top cities
+                cities.sort((a, b) => b.population - a.population);
+                
+                // Scale for population
+                const populationScale = d3.scaleLinear()
+                    .domain([0, d3.max(cities, d => d.population)])
+                    .range([2, 50]);
+
+                // Positioning
+                const xScale = d3.scaleLinear()
+                    .domain([0, 360])
+                    .range([0, width]);
+
+                const yScale = d3.scaleLinear()
+                    .domain([-180, 180])
+                    .range([0, height]);
+
+                // Bubble rendering
+                const bubbles = svg.selectAll(".city-bubble")
+                    .data(cities, d => d.city);
+
+                bubbles.enter()
+                    .append("circle")
+                    .attr("class", "city-bubble")
+                    .attr("cx", d => xScale(d.longitude + 180))
+                    .attr("cy", d => yScale(-d.latitude))
+                    .attr("r", d => Math.max(populationScale(d.population), 1))
+                    .attr("fill", d => regionColors[d.region] || regionColors['Default'])
+                    .attr("opacity", 0.7)
+                    .on("mouseover", (event, d) => {
+                        tooltip.transition().duration(200).style("opacity", .9);
+                        tooltip.html(`${d.city}, ${d.country}<br/>Population: ${d.population.toFixed(2)} million`)
+                            .style("left", (event.pageX + 10) + "px")
+                            .style("top", (event.pageY - 28) + "px");
+                    })
+                    .on("mouseout", () => {
+                        tooltip.transition().duration(500).style("opacity", 0);
+                    });
+
+                bubbles.exit().remove();
+
+                // Text labels for top cities
+                const labels = svg.selectAll(".city-label")
+                    .data(cities.slice(0, topCityLabelCount), d => d.city);
+
+                labels.enter()
+                    .append("text")
+                    .attr("class", "city-label")
+                    .attr("x", d => xScale(d.longitude + 180))
+                    .attr("y", d => yScale(-d.latitude))
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "13px")
+                    .attr("fill", "#333")
+                    .text(d => d.city);
+
+                labels.exit().remove();
+
+                // Year display
+                yearDisplay.text(year);
+            }
+
+            // Animation loop
+            function animate() {
+                if (currentYear <= yearEnd) {
+                    updateVisualization(currentYear);
+                    currentYear++;
+                    setTimeout(animate, animationSpeed);
+                }
+            }
+
+            animate();
+        });
+    </script>
+</body>
+</html>
