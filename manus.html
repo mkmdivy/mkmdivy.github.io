@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Urban Population Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0a14;
+            color: #fff;
+        }
+        .container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        .year-display {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 64px;
+            color: rgba(255, 255, 255, 0.7);
+            z-index: 10;
+            font-weight: 300;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        .tooltip {
+            position: absolute;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            border-radius: 8px;
+            pointer-events: none;
+            font-size: 14px;
+            display: none;
+            z-index: 100;
+            max-width: 250px;
+            box-shadow: 0 0 15px rgba(0, 0, 255, 0.2);
+            border: 1px solid rgba(100, 100, 255, 0.3);
+        }
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 10;
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            background: rgba(50, 50, 100, 0.4);
+            border: 1px solid rgba(100, 100, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        button:hover {
+            background: rgba(70, 70, 150, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 255, 0.2);
+        }
+        button.active {
+            background: rgba(70, 70, 150, 0.8);
+            box-shadow: 0 0 10px rgba(100, 100, 255, 0.5);
+        }
+        .speed-control {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
+            color: white;
+            display: flex;
+            align-items: center;
+            background: rgba(50, 50, 100, 0.4);
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 100, 255, 0.3);
+        }
+        .speed-control label {
+            margin-right: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .speed-control input {
+            width: 120px;
+            accent-color: #4a4af0;
+        }
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(20, 20, 40, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0, 0, 255, 0.2);
+            border: 1px solid rgba(100, 100, 255, 0.3);
+        }
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 16px;
+            text-align: center;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .info-panel {
+            position: absolute;
+            bottom: 70px;
+            left: 20px;
+            background: rgba(20, 20, 40, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            z-index: 10;
+            max-width: 300px;
+            box-shadow: 0 5px 15px rgba(0, 0, 255, 0.2);
+            border: 1px solid rgba(100, 100, 255, 0.3);
+        }
+        .info-panel h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #a0a0ff;
+        }
+        .info-panel p {
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .info-panel strong {
+            color: #a0a0ff;
+        }
+        .time-slider-container {
+            position: absolute;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(20, 20, 40, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 255, 0.2);
+            border: 1px solid rgba(100, 100, 255, 0.3);
+        }
+        .time-slider {
+            width: 100%;
+            margin-bottom: 10px;
+            accent-color: #4a4af0;
+            height: 8px;
+        }
+        .time-labels {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            font-size: 14px;
+        }
+        .compare-button {
+            position: absolute;
+            top: 100px;
+            left: 20px;
+            z-index: 10;
+        }
+        .region-stats {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20, 20, 40, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            z-index: 10;
+            display: flex;
+            gap: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 255, 0.2);
+            border: 1px solid rgba(100, 100, 255, 0.3);
+        }
+        .region-stat {
+            text-align: center;
+            min-width: 100px;
+        }
+        .region-stat-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #a0a0ff;
+        }
+        .region-stat-value {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .region-stat-cities {
+            font-size: 12px;
+            color: #a0a0ff;
+            margin-top: 5px;
+        }
+        .city-count-chart {
+            position: absolute;
+            bottom: 150px;
+            right: 20px;
+            background: rgba(20, 20, 40, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            z-index: 10;
+            width: 300px;
+            box-shadow: 0 5px 15px rgba(0, 0, 255, 0.2);
+            border: 1px solid rgba(100, 100, 255, 0.3);
+        }
+        .city-count-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 16px;
+            text-align: center;
+            color: #a0a0ff;
+        }
+        .city-count-subtitle {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 13px;
+            opacity: 0.8;
+        }
+        .city-count-bar {
+            height: 20px;
+            background: linear-gradient(90deg, #4a4af0, #a0a0ff);
+            margin-bottom: 5px;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        .city-count-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .view-mode-toggle {
+            position: absolute;
+            top: 20px;
+            left: 200px;
+            z-index: 10;
+            display: flex;
+            background: rgba(20, 20, 40, 0.8);
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid rgba(100, 100, 255, 0.3);
+        }
+        .view-mode-button {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            cursor: pointer;
+            margin: 0;
+            border-radius: 0;
+        }
+        .view-mode-button.active {
+            background: rgba(70, 70, 150, 0.6);
+        }
+        .glow {
+            filter: drop-shadow(0 0 8px rgba(160, 160, 255, 0.8));
+        }
+        .milestone-marker {
+            position: absolute;
+            color: #a0a0ff;
+            font-size: 14px;
+            pointer-events: none;
+            text-shadow: 0 0 5px rgba(0, 0, 255, 0.5);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .status-indicator {
+            position: absolute;
+            top: 20px;
+            left: 400px;
+            background: rgba(20, 20, 40, 0.8);
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: #4aff4a;
+            font-size: 14px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 255, 0.2);
+            border: 1px solid rgba(100, 100, 255, 0.3);
+        }
+        .status-indicator::before {
+            content: "";
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: #4aff4a;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 10, 20, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(100, 100, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #4a4af0;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .loading-text {
+            color: white;
+            font-size: 18px;
+            text-align: center;
+        }
+        .loading-progress {
+            width: 300px;
+            height: 4px;
+            background-color: rgba(100, 100, 255, 0.3);
+            border-radius: 2px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        .loading-progress-bar {
+            height: 100%;
+            background-color: #4a4af0;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        #debug-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: #ff0;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            z-index: 1000;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading Global Urban Population Visualization</div>
+        <div class="loading-progress">
+            <div class="loading-progress-bar" id="loading-progress-bar"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="year-display" id="year-display">1950</div>
+        <div class="tooltip" id="tooltip"></div>
+        <div class="status-indicator" id="status-indicator">Animation Active</div>
+        <div class="controls">
+            <button id="play-pause">Pause</button>
+            <button id="reset">Reset</button>
+        </div>
+        <div class="speed-control">
+            <label for="speed-slider">Animation Speed:</label>
+            <input type="range" id="speed-slider" min="100" max="1000" value="300" step="50">
+            <span id="speed-value">0.3s</span>
+        </div>
+        <div class="legend" id="legend"></div>
+        <div class="info-panel">
+            <h3>Global Urban Population Growth</h3>
+            <p><strong>All bubbles</strong> on this map represent cities with <strong>over 1 million inhabitants</strong>. Bubble size is proportional to population in millions.</p>
+            <p>The top 20 largest cities are labeled with white borders. Hover over any city for details.</p>
+            <p>Watch how the number and size of major cities change dramatically from 1950 to 2035.</p>
+        </div>
+        <div class="time-slider-container">
+            <input type="range" id="time-slider" class="time-slider" min="0" max="85" value="0" step="1">
+            <div class="time-labels">
+                <span>1950</span>
+                <span>1970</span>
+                <span>1990</span>
+                <span>2010</span>
+                <span>2035</span>
+            </div>
+        </div>
+        <button id="compare-button" class="compare-button">Compare 1950 vs 2035</button>
+        <div class="region-stats" id="region-stats"></div>
+        <div class="city-count-chart">
+            <div class="city-count-title">Cities Over 1 Million Inhabitants</div>
+            <div class="city-count-subtitle">All bubbles on the map represent cities with 1M+ population</div>
+            <div id="city-count-bars"></div>
+        </div>
+        <div class="view-mode-toggle">
+            <button id="globe-view" class="view-mode-button active">Globe View</button>
+            <button id="chart-view" class="view-mode-button">Chart View</button>
+        </div>
+        <div id="debug-panel"></div>
+    </div>
+
+    <script>
+        // Global variables for animation control - MUST be in global scope
+        let animationTimer = null;
+        let isPlaying = true;
+        let animationSpeed = 300; // milliseconds per year
+        let currentYearIndex = 0;
+        let currentYear = 1950;
+        let compareMode = false;
+        let viewMode = "globe";
+        let simulation;
+        let yearData = [];
+        let cityData;
+        let demoData;
+        let svg;
+        let bubblesGroup;
+        let tooltip;
+        let yearDisplay;
+        let statusIndicator;
+        let continentColors;
+        let radiusScale;
+        let projection;
+        let debugMode = true;
+        
+        // Debug function to help track animation issues
+        function debugLog(message) {
+            if (debugMode) {
+                console.log("DEBUG: " + message);
+                const debugPanel = document.getElementById('debug-panel');
+                if (debugPanel) {
+                    debugPanel.style.display = 'block';
+                    debugPanel.innerHTML += message + "<br>";
+                    // Keep only last 5 messages
+                    const lines = debugPanel.innerHTML.split("<br>");
+                    if (lines.length > 6) {
+                        debugPanel.innerHTML = lines.slice(lines.length - 6).join("<br>");
+                    }
+                }
+            }
+        }
+        
+        // Show loading progress
+        function updateLoadingProgress(percent) {
+            document.getElementById('loading-progress-bar').style.width = percent + '%';
+        }
+        
+        // Function to update the year display and visualization
+        function updateYear() {
+            debugLog(`updateYear called. Current index: ${currentYearIndex}, year: ${currentYear}`);
+            
+            if (isPlaying && !compareMode) {
+                currentYearIndex = (currentYearIndex + 1) % cityData.years.length;
+                currentYear = cityData.years[currentYearIndex];
+                
+                debugLog(`Advanced to index: ${currentYearIndex}, year: ${currentYear}`);
+                
+                // Update the visualization
+                updateVisualization();
+                
+                // Update UI elements
+                document.getElementById('year-display').textContent = currentYear;
+                document.getElementById('time-slider').value = currentYearIndex;
+                updateRegionStats(currentYear);
+                updateCityCountChart(currentYear);
+                updateMilestones(currentYear);
+                
+                debugLog(`Visualization updated for year ${currentYear}`);
+            }
+        }
+        
+        // Function to update the visualization with data for the current year
+        function updateVisualization() {
+            debugLog(`updateVisualization for year ${currentYear}`);
+            
+            // Get data for the current year
+            const newYearData = getYearData(currentYear);
+            
+            // Create a map of existing data for easy lookup
+            const existingDataMap = {};
+            yearData.forEach(d => {
+                existingDataMap[d.city] = d;
+            });
+            
+            // Update the data with smooth transitions
+            newYearData.forEach(d => {
+                if (existingDataMap[d.city]) {
+                    // If city exists in previous year, preserve its current position
+                    d.x = existingDataMap[d.city].x;
+                    d.y = existingDataMap[d.city].y;
+                }
+            });
+            
+            // Update the current data
+            yearData = newYearData;
+            
+            // If in chart view, update positions
+            if (viewMode === "chart") {
+                updateChartPositions();
+            }
+            
+            // Update bubbles with smooth transitions
+            const bubbleUpdate = bubblesGroup.selectAll(".bubble")
+                .data(yearData, d => d.city);
+                
+            bubbleUpdate.exit()
+                .transition()
+                .duration(animationSpeed * 0.8)
+                .attr("r", 0)
+                .remove();
+            
+            const newBubbles = bubbleUpdate.enter()
+                .append("circle")
+                .attr("class", "bubble")
+                .attr("r", 0)
+                .attr("fill", d => continentColors(d.region))
+                .attr("stroke", d => d.isTop20 ? "#fff" : (d.isOver1M ? "rgba(255, 255, 255, 0.3)" : "none"))
+                .attr("stroke-width", d => d.isTop20 ? 2 : (d.isOver1M ? 1 : 0))
+                .attr("opacity", d => d.isTop20 ? 0.9 : (d.isOver1M ? 0.8 : 0.6))
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y)
+                .classed("glow", d => d.isTop20)
+                .on("mouseover", function(event, d) {
+                    d3.select(this)
+                        .attr("stroke", "#fff")
+                        .attr("stroke-width", 2)
+                        .attr("opacity", 1);
+                        
+                    tooltip
+                        .style("display", "block")
+                        .html(`
+                            <strong>${d.city}, ${d.country}</strong><br>
+                            Region: ${d.region}<br>
+                            Population: ${d.population.toFixed(2)} million<br>
+                            Year: ${currentYear}
+                        `)
+                        .style("left", (event.pageX + 10) + "px")
+                        .style("top", (event.pageY - 20) + "px");
+                })
+                .on("mouseout", function(event, d) {
+                    d3.select(this)
+                        .attr("stroke", d.isTop20 ? "#fff" : (d.isOver1M ? "rgba(255, 255, 255, 0.3)" : "none"))
+                        .attr("stroke-width", d.isTop20 ? 2 : (d.isOver1M ? 1 : 0))
+                        .attr("opacity", d.isTop20 ? 0.9 : (d.isOver1M ? 0.8 : 0.6));
+                        
+                    tooltip.style("display", "none");
+                });
+            
+            newBubbles.transition()
+                .duration(animationSpeed * 0.8)
+                .attr("r", d => d.radius);
+            
+            bubbleUpdate.transition()
+                .duration(animationSpeed * 0.8)
+                .attr("r", d => d.radius)
+                .attr("fill", d => continentColors(d.region))
+                .attr("stroke", d => d.isTop20 ? "#fff" : (d.isOver1M ? "rgba(255, 255, 255, 0.3)" : "none"))
+                .attr("stroke-width", d => d.isTop20 ? 2 : (d.isOver1M ? 1 : 0))
+                .attr("opacity", d => d.isTop20 ? 0.9 : (d.isOver1M ? 0.8 : 0.6));
+                // .classed("glow", d => d.isTop20);
+                
+            // Update labels
+            const labelUpdate = bubblesGroup.selectAll(".city-label")
+                .data(yearData.filter(d => d.isTop20), d => d.city);
+                
+            labelUpdate.exit()
+                .transition()
+                .duration(animationSpeed * 0.8)
+                .attr("opacity", 0)
+                .remove();
+            
+            labelUpdate.enter()
+                .append("text")
+                .attr("class", "city-label")
+                .text(d => d.city)
+                .attr("x", d => d.x)
+                .attr("y", d => d.y - d.radius - 5)
+                .attr("text-anchor", "middle")
+                .attr("fill", "white")
+                .attr("font-size", "10px")
+                .attr("opacity", 0)
+                .transition()
+                .duration(animationSpeed * 0.8)
+                .attr("opacity", 0.9);
+                
+            labelUpdate
+                .transition()
+                .duration(animationSpeed * 0.8)
+                .attr("x", d => d.x)
+                .attr("y", d => d.y - d.radius - 5);
+                
+            // Update simulation with new data but maintain positions
+            simulation.nodes(yearData);
+            simulation.alpha(0.1).restart();
+        }
+        
+        // Function to get data for a specific year
+        function getYearData(year) {
+            return Object.keys(demoData.cities).map(city => {
+                const cityInfo = demoData.cities[city];
+                const population = cityInfo.population[year] || 0;
+                
+                // Calculate position based on lat/long
+                const [x, y] = projection([cityInfo.long, cityInfo.lat]);
+                
+                return {
+                    city: city,
+                    country: cityInfo.country,
+                    region: cityInfo.region,
+                    lat: cityInfo.lat,
+                    long: cityInfo.long,
+                    population: population,
+                    radius: radiusScale(population),
+                    isTop20: demoData.top20.includes(city),
+                    isOver1M: population >= 1.0,
+                    x: x, // Store initial position
+                    y: y  // Store initial position
+                };
+            }).filter(d => d.population > 0 && d.population >= 1.0); // Only include cities with population data for this year and over 1M
+        }
+        
+        // Function to update region statistics
+        function updateRegionStats(year) {
+            // Calculate total population and regional populations
+            const regionStats = {};
+            const regionList = Object.keys(regionColors);
+            
+            regionList.forEach(region => {
+                regionStats[region] = {
+                    population: 0,
+                    cities: 0,
+                    citiesOver1M: 0
+                };
+            });
+            
+            let totalPopulation = 0;
+            let totalCitiesOver1M = 0;
+            
+            Object.keys(demoData.cities).forEach(city => {
+                const cityInfo = demoData.cities[city];
+                const population = cityInfo.population[year] || 0;
+                // console.log(cityInfo.region)
+                // console.log(regionStats)
+                if (population > 0) {
+                    regionStats[cityInfo.region].population += population;
+                    regionStats[cityInfo.region].cities += 1;
+                    
+                    if (population >= 1.0) {
+                        regionStats[cityInfo.region].citiesOver1M += 1;
+                        totalCitiesOver1M += 1;
+                    }
+                    
+                    totalPopulation += population;
+                }
+            });
+            
+            // Update the region stats display
+            const regionStatsDiv = d3.select("#region-stats");
+            regionStatsDiv.html("");
+            
+            // Add total population
+            regionStatsDiv.append("div")
+                .attr("class", "region-stat")
+                .html(`
+                    <div class="region-stat-title">Total Population</div>
+                    <div class="region-stat-value">${totalPopulation.toFixed(1)}M</div>
+                    <div class="region-stat-cities">${totalCitiesOver1M} cities >1M</div>
+                `);
+            
+            // Add regional populations
+            regionList.forEach(region => {
+                const percentage = (regionStats[region].population / totalPopulation * 100).toFixed(1);
+                
+                regionStatsDiv.append("div")
+                    .attr("class", "region-stat")
+                    .html(`
+                        <div class="region-stat-title">${region}</div>
+                        <div class="region-stat-value">${regionStats[region].population.toFixed(1)}M</div>
+                        <div class="region-stat-cities">${regionStats[region].citiesOver1M} cities >1M (${percentage}%)</div>
+                    `);
+            });
+        }
+        
+        // Function to update city count chart
+        function updateCityCountChart(year) {
+            // Calculate cities over 1M by region
+            const regionCounts = {};
+            const regionList = Object.keys(regionColors);
+            
+            regionList.forEach(region => {
+                regionCounts[region] = 0;
+            });
+            
+            let totalCitiesOver1M = 0;
+            
+            Object.keys(demoData.cities).forEach(city => {
+                const cityInfo = demoData.cities[city];
+                const population = cityInfo.population[year] || 0;
+                
+                if (population >= 1.0) {
+                    regionCounts[cityInfo.region] += 1;
+                    totalCitiesOver1M += 1;
+                }
+            });
+            
+            // Find the maximum count for scaling
+            const maxCount = Math.max(...Object.values(regionCounts), 1);
+            
+            // Update the city count chart
+            const cityCountBars = d3.select("#city-count-bars");
+            cityCountBars.html("");
+            
+            // Add title with total count
+            cityCountBars.append("div")
+                .attr("class", "city-count-label")
+                .html(`<strong>Total: ${totalCitiesOver1M} cities</strong>`);
+            
+            // Add bars for each region
+            regionList.forEach(region => {
+                const count = regionCounts[region];
+                const percentage = (count / totalCitiesOver1M * 100).toFixed(1);
+                
+                cityCountBars.append("div")
+                    .attr("class", "city-count-label")
+                    .html(`<span>${region}</span><span>${count} (${percentage}%)</span>`);
+                    
+                cityCountBars.append("div")
+                    .attr("class", "city-count-bar")
+                    .style("width", `${(count / maxCount * 100)}%`)
+                    .style("background", `linear-gradient(90deg, ${continentColors(region)}, ${continentColors(region)}80)`);
+            });
+        }
+        
+        // Function to update milestone markers
+        function updateMilestones(year) {
+            // Hide all milestones
+            d3.selectAll(".milestone-marker")
+                .style("opacity", 0);
+            
+            // Show milestone for current year if exists
+            const milestone = demoData.milestones.find(m => m.year === year);
+            if (milestone) {
+                d3.select(`#milestone-${milestone.year}`)
+                    .style("opacity", 1);
+            }
+        }
+        
+        // Function to update chart view positions
+        function updateChartPositions() {
+            if (viewMode !== "chart") return;
+            
+            const padding = 100;
+            const chartWidth = window.innerWidth - padding * 2;
+            const chartHeight = window.innerHeight - padding * 2;
+            
+            // Group cities by region
+            const regionCities = {};
+            const regionList = Object.keys(regionColors);
+            
+            regionList.forEach(region => {
+                regionCities[region] = [];
+            });
+            
+            yearData.forEach(d => {
+                regionCities[d.region].push(d);
+            });
+            
+            // Position cities in clusters by region
+            let regionIndex = 0;
+            regionList.forEach(region => {
+                const cities = regionCities[region];
+                const regionX = padding + (chartWidth / (regionList.length - 1)) * regionIndex;
+                const regionY = window.innerHeight / 2;
+                
+                // Sort cities by population (largest first)
+                cities.sort((a, b) => b.population - a.population);
+                
+                // Position cities in a cluster
+                cities.forEach((city, i) => {
+                    const angle = (i / cities.length) * Math.PI * 2;
+                    const radius = Math.min(chartWidth, chartHeight) / 4;
+                    
+                    city.x = regionX + Math.cos(angle) * radius * Math.random() * 0.5;
+                    city.y = regionY + Math.sin(angle) * radius * Math.random() * 0.5;
+                });
+                
+                regionIndex++;
+            });
+            
+            // Update bubble positions
+            bubblesGroup.selectAll(".bubble")
+                .transition()
+                .duration(1000)
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y);
+                
+            // Update label positions
+            bubblesGroup.selectAll(".city-label")
+                .transition()
+                .duration(1000)
+                .attr("x", d => d.x)
+                .attr("y", d => d.y - d.radius - 5);
+        }
+        
+        // Function to calculate stats for a specific year
+        function calculateYearStats(year) {
+            const regionStats = {};
+            const regionList = Object.keys(regionColors);
+            
+            regionList.forEach(region => {
+                regionStats[region] = {
+                    population: 0,
+                    cities: 0,
+                    citiesOver1M: 0
+                };
+            });
+            
+            let totalPopulation = 0;
+            let totalCities = 0;
+            let totalCitiesOver1M = 0;
+            
+            Object.keys(demoData.cities).forEach(city => {
+                const cityInfo = demoData.cities[city];
+                const population = cityInfo.population[year] || 0;
+                
+                if (population > 0) {
+                    regionStats[cityInfo.region].population += population;
+                    regionStats[cityInfo.region].cities += 1;
+                    totalCities += 1;
+                    
+                    if (population >= 1.0) {
+                        regionStats[cityInfo.region].citiesOver1M += 1;
+                        totalCitiesOver1M += 1;
+                    }
+                    
+                    totalPopulation += population;
+                }
+            });
+            
+            return {
+                total: totalPopulation,
+                cities: totalCities,
+                citiesOver1M: totalCitiesOver1M,
+                regions: regionStats
+            };
+        }
+        
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM loaded, initializing visualization...");
+            debugLog("DOM loaded, initializing visualization");
+            
+            // Start loading sequence
+            let loadingProgress = 0;
+            const loadingInterval = setInterval(() => {
+                loadingProgress += 5;
+                updateLoadingProgress(loadingProgress);
+                if (loadingProgress >= 100) {
+                    clearInterval(loadingInterval);
+                    setTimeout(() => {
+                        document.getElementById('loading-overlay').style.opacity = 0;
+                        setTimeout(() => {
+                            document.getElementById('loading-overlay').style.display = 'none';
+                        }, 500);
+                    }, 500);
+                }
+            }, 100);
+            
+            // Regional colors with more vibrant palette
+            window.regionColors = {
+                "Asia": "#4a90e2",
+                "Africa": "#f39c12",
+                "Europe": "#2ecc71",
+                "North America": "#e74c3c",
+                "South America": "#9b59b6",
+                "Oceania": "#3498db",
+                "Other": "#3498db"
+            };
+            
+            // Embedded city population data from the CSV file
+            cityData = {
+                "years": [1950, 1951, 1952, 1953, 1954, 1955, 1956, 1957, 1958, 1959, 1960, 1961, 1962, 1963, 1964, 1965, 1966, 1967, 1968, 1969, 1970, 1971, 1972, 1973, 1974, 1975, 1976, 1977, 1978, 1979, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035],
+                "top20": ["Delhi", "Tokyo", "Shanghai", "Dhaka", "Cairo", "Bombay", "Kinshasa", "Mexico City", "Beijing", "Sao Paulo", "Lagos", "Karachi", "New York", "Chongqing", "Calcutta", "Osaka", "Lahore", "Manila", "Bangalore", "Istanbul"]
+            };
+
+            // Create visualization with improved geographic accuracy and city counts
+            createEnhancedVisualization();
+
+            function createEnhancedVisualization() {
+                console.log("Creating enhanced visualization...");
+                debugLog("Creating enhanced visualization");
+                
+                // Create a dataset with all cities and regions
+                const regions = {
+                    "Asia": ["India", "Japan", "China", "Bangladesh", "Pakistan", "Philippines", "Turkey", "Indonesia", "Vietnam", "Thailand", "Malaysia", "South Korea", "North Korea", "Myanmar", "Cambodia", "Laos", "Nepal", "Sri Lanka", "Mongolia"],
+                    "Africa": ["Egypt", "Democratic Republic of the Congo", "Nigeria", "Ethiopia", "South Africa", "Kenya", "Tanzania", "Algeria", "Morocco", "Tunisia", "Ghana", "Cameroon", "Uganda", "Zimbabwe", "Zambia", "Angola", "Mozambique", "Senegal"],
+                    "Europe": ["United Kingdom", "France", "Germany", "Italy", "Spain", "Russia", "Ukraine", "Poland", "Romania", "Netherlands", "Belgium", "Greece", "Portugal", "Sweden", "Norway", "Finland", "Denmark", "Switzerland", "Austria"],
+                    "North America": ["United States of America", "Canada", "Mexico", "Cuba", "Jamaica", "Haiti", "Dominican Republic", "Guatemala", "Honduras", "El Salvador", "Nicaragua", "Costa Rica", "Panama"],
+                    "South America": ["Brazil", "Argentina", "Colombia", "Peru", "Chile", "Venezuela", "Ecuador", "Bolivia", "Paraguay", "Uruguay"],
+                    "Oceania": ["Australia", "New Zealand", "Papua New Guinea", "Fiji"]
+                };
+
+                // Function to get region from country
+                function getRegion(country) {
+                    for (const [region, countries] of Object.entries(regions)) {
+                        if (countries.includes(country)) {
+                            return region;
+                        }
+                    }
+                    return "Other";
+                }
+
+                // Create demo data for all cities
+                demoData = {
+                    "years": cityData.years,
+                    "cities": {},
+                    "top20": cityData.top20,
+                    "milestones": [
+                        { year: 1950, text: "83 cities over 1M inhabitants" },
+                        { year: 1960, text: "First city reaches 10M (New York)" },
+                        { year: 1975, text: "Tokyo becomes world's largest city" },
+                        { year: 1990, text: "213 cities over 1M inhabitants" },
+                        { year: 2007, text: "Urban population exceeds rural globally" },
+                        { year: 2018, text: "33 cities over 10M inhabitants" },
+                        { year: 2035, text: "Projected: 662 cities over 1M inhabitants" }
+                    ]
+                };
+
+                // Generate sample data for cities
+                const allCities = [
+                    // Top 20 cities with real data
+                    {name: "Delhi", country: "India", lat: 28.6667, long: 77.2167, basePopulation: 1.37, growthRate: 0.04},
+                    {name: "Tokyo", country: "Japan", lat: 35.6895, long: 139.6917, basePopulation: 11.27, growthRate: 0.01},
+                    {name: "Shanghai", country: "China", lat: 31.2222, long: 121.4581, basePopulation: 4.29, growthRate: 0.035},
+                    {name: "Dhaka", country: "Bangladesh", lat: 23.7104, long: 90.4074, basePopulation: 0.42, growthRate: 0.045},
+                    {name: "Cairo", country: "Egypt", lat: 30.0392, long: 31.2394, basePopulation: 2.49, growthRate: 0.03},
+                    {name: "Bombay", country: "India", lat: 19.074, long: 72.8808, basePopulation: 3.09, growthRate: 0.035},
+                    {name: "Kinshasa", country: "Democratic Republic of the Congo", lat: -4.3276, long: 15.3136, basePopulation: 0.20, growthRate: 0.05},
+                    {name: "Mexico City", country: "Mexico", lat: 19.4273, long: -99.1419, basePopulation: 3.37, growthRate: 0.025},
+                    {name: "Beijing", country: "China", lat: 39.9075, long: 116.3972, basePopulation: 1.67, growthRate: 0.03},
+                    {name: "Sao Paulo", country: "Brazil", lat: -23.5475, long: -46.6361, basePopulation: 2.33, growthRate: 0.02},
+                    {name: "Lagos", country: "Nigeria", lat: 6.4531, long: 3.3958, basePopulation: 0.32, growthRate: 0.045},
+                    {name: "Karachi", country: "Pakistan", lat: 24.8607, long: 67.0011, basePopulation: 1.06, growthRate: 0.04},
+                    {name: "New York", country: "United States of America", lat: 40.7128, long: -74.006, basePopulation: 12.34, growthRate: 0.015},
+                    {name: "Chongqing", country: "China", lat: 29.4316, long: 106.9123, basePopulation: 1.72, growthRate: 0.03},
+                    {name: "Calcutta", country: "India", lat: 22.5726, long: 88.3639, basePopulation: 4.51, growthRate: 0.025},
+                    {name: "Osaka", country: "Japan", lat: 34.6937, long: 135.5023, basePopulation: 7.01, growthRate: 0.01},
+                    {name: "Lahore", country: "Pakistan", lat: 31.5497, long: 74.3436, basePopulation: 0.85, growthRate: 0.035},
+                    {name: "Manila", country: "Philippines", lat: 14.5995, long: 120.9842, basePopulation: 1.54, growthRate: 0.03},
+                    {name: "Bangalore", country: "India", lat: 12.9716, long: 77.5946, basePopulation: 0.75, growthRate: 0.04},
+                    {name: "Istanbul", country: "Turkey", lat: 41.0082, long: 28.9784, basePopulation: 1.08, growthRate: 0.025},
+                    
+                    // Additional major cities
+                    {name: "London", country: "United Kingdom", lat: 51.5074, long: -0.1278, basePopulation: 8.36, growthRate: 0.01},
+                    {name: "Paris", country: "France", lat: 48.8566, long: 2.3522, basePopulation: 6.28, growthRate: 0.01},
+                    {name: "Moscow", country: "Russia", lat: 55.7558, long: 37.6173, basePopulation: 5.35, growthRate: 0.015},
+                    {name: "Los Angeles", country: "United States of America", lat: 34.0522, long: -118.2437, basePopulation: 4.05, growthRate: 0.015},
+                    {name: "Bangkok", country: "Thailand", lat: 13.7563, long: 100.5018, basePopulation: 1.36, growthRate: 0.025},
+                    {name: "Jakarta", country: "Indonesia", lat: -6.2088, long: 106.8456, basePopulation: 1.45, growthRate: 0.03},
+                    {name: "Guangzhou", country: "China", lat: 23.1291, long: 113.2644, basePopulation: 1.49, growthRate: 0.035},
+                    {name: "Seoul", country: "South Korea", lat: 37.5665, long: 126.978, basePopulation: 1.02, growthRate: 0.015},
+                    {name: "Chicago", country: "United States of America", lat: 41.8781, long: -87.6298, basePopulation: 4.99, growthRate: 0.01},
+                    {name: "Shenzhen", country: "China", lat: 22.5431, long: 114.0579, basePopulation: 0.01, growthRate: 0.08},
+                    
+                    // Additional cities from different regions
+                    {name: "Tianjin", country: "China", lat: 39.3434, long: 117.3616, basePopulation: 2.39, growthRate: 0.03},
+                    {name: "Lima", country: "Peru", lat: -12.0464, long: -77.0428, basePopulation: 1.05, growthRate: 0.02},
+                    {name: "Rio de Janeiro", country: "Brazil", lat: -22.9068, long: -43.1729, basePopulation: 2.95, growthRate: 0.015},
+                    {name: "Ahmedabad", country: "India", lat: 23.0225, long: 72.5714, basePopulation: 0.86, growthRate: 0.035},
+                    {name: "Chennai", country: "India", lat: 13.0827, long: 80.2707, basePopulation: 1.49, growthRate: 0.03},
+                    {name: "Hyderabad", country: "India", lat: 17.385, long: 78.4867, basePopulation: 1.13, growthRate: 0.035},
+                    {name: "Chengdu", country: "China", lat: 30.5728, long: 104.0668, basePopulation: 0.65, growthRate: 0.035},
+                    {name: "Nanjing", country: "China", lat: 32.0617, long: 118.7778, basePopulation: 1.04, growthRate: 0.03},
+                    {name: "Wuhan", country: "China", lat: 30.5928, long: 114.3055, basePopulation: 1.02, growthRate: 0.03},
+                    {name: "Ho Chi Minh City", country: "Vietnam", lat: 10.8231, long: 106.6297, basePopulation: 0.52, growthRate: 0.035},
+                    {name: "Hong Kong", country: "China", lat: 22.3193, long: 114.1694, basePopulation: 2.24, growthRate: 0.015},
+                    {name: "Hangzhou", country: "China", lat: 30.2742, long: 120.1551, basePopulation: 0.64, growthRate: 0.03},
+                    {name: "Foshan", country: "China", lat: 23.0292, long: 113.1056, basePopulation: 0.21, growthRate: 0.035},
+                    {name: "Shenyang", country: "China", lat: 41.8057, long: 123.4315, basePopulation: 2.12, growthRate: 0.025},
+                    {name: "Riyadh", country: "Saudi Arabia", lat: 24.7136, long: 46.6753, basePopulation: 0.11, growthRate: 0.05},
+                    {name: "Baghdad", country: "Iraq", lat: 33.3152, long: 44.3661, basePopulation: 0.58, growthRate: 0.025},
+                    {name: "Santiago", country: "Chile", lat: -33.4489, long: -70.6693, basePopulation: 1.35, growthRate: 0.02},
+                    {name: "Saint Petersburg", country: "Russia", lat: 59.9343, long: 30.3351, basePopulation: 2.90, growthRate: 0.01},
+                    {name: "Abidjan", country: "Ivory Coast", lat: 5.36, long: -4.0083, basePopulation: 0.18, growthRate: 0.035},
+                    {name: "Alexandria", country: "Egypt", lat: 31.2001, long: 29.9187, basePopulation: 1.04, growthRate: 0.025},
+                    {name: "Suzhou", country: "China", lat: 31.2989, long: 120.5853, basePopulation: 0.23, growthRate: 0.035},
+                    {name: "Harbin", country: "China", lat: 45.8038, long: 126.5347, basePopulation: 1.15, growthRate: 0.02},
+                    {name: "Pune", country: "India", lat: 18.5204, long: 73.8567, basePopulation: 0.58, growthRate: 0.035},
+                    {name: "Surat", country: "India", lat: 21.1702, long: 72.8311, basePopulation: 0.23, growthRate: 0.04},
+                    {name: "Madrid", country: "Spain", lat: 40.4168, long: -3.7038, basePopulation: 1.62, growthRate: 0.01},
+                    {name: "Singapore", country: "Singapore", lat: 1.3521, long: 103.8198, basePopulation: 1.02, growthRate: 0.02},
+                    {name: "Johannesburg", country: "South Africa", lat: -26.2041, long: 28.0473, basePopulation: 0.90, growthRate: 0.025},
+                    {name: "Dar es Salaam", country: "Tanzania", lat: -6.7924, long: 39.2083, basePopulation: 0.06, growthRate: 0.04},
+                    {name: "Casablanca", country: "Morocco", lat: 33.5731, long: -7.5898, basePopulation: 0.63, growthRate: 0.025},
+                    {name: "Berlin", country: "Germany", lat: 52.52, long: 13.405, basePopulation: 3.34, growthRate: 0.01},
+                    {name: "Jeddah", country: "Saudi Arabia", lat: 21.4858, long: 39.1925, basePopulation: 0.12, growthRate: 0.03},
+                    {name: "Yangon", country: "Myanmar", lat: 16.8661, long: 96.1951, basePopulation: 0.74, growthRate: 0.03},
+                    {name: "Kabul", country: "Afghanistan", lat: 34.5553, long: 69.2075, basePopulation: 0.17, growthRate: 0.03},
+                    {name: "Xi'an", country: "China", lat: 34.3416, long: 108.9398, basePopulation: 0.63, growthRate: 0.03},
+                    {name: "Luanda", country: "Angola", lat: -8.8399, long: 13.2894, basePopulation: 0.14, growthRate: 0.04},
+                    {name: "Khartoum", country: "Sudan", lat: 15.5007, long: 32.5599, basePopulation: 0.18, growthRate: 0.035},
+                    {name: "Bogota", country: "Colombia", lat: 4.7109, long: -74.0721, basePopulation: 0.71, growthRate: 0.02},
+                    {name: "Hanoi", country: "Vietnam", lat: 21.0285, long: 105.8542, basePopulation: 0.28, growthRate: 0.03},
+                    {name: "Nairobi", country: "Kenya", lat: -1.2921, long: 36.8219, basePopulation: 0.14, growthRate: 0.04},
+                    {name: "Addis Ababa", country: "Ethiopia", lat: 9.0084, long: 38.7648, basePopulation: 0.22, growthRate: 0.035},
+                    {name: "Belo Horizonte", country: "Brazil", lat: -19.9167, long: -43.9345, basePopulation: 0.41, growthRate: 0.015},
+                    {name: "Brasilia", country: "Brazil", lat: -15.7801, long: -47.9292, basePopulation: 0.01, growthRate: 0.02},
+                    {name: "Ankara", country: "Turkey", lat: 39.9334, long: 32.8597, basePopulation: 0.62, growthRate: 0.02},
+                    {name: "Zhengzhou", country: "China", lat: 34.7466, long: 113.6253, basePopulation: 0.51, growthRate: 0.035},
+                    {name: "Jinan", country: "China", lat: 36.6512, long: 117.1201, basePopulation: 0.68, growthRate: 0.03},
+                    {name: "Changsha", country: "China", lat: 28.2282, long: 112.9388, basePopulation: 0.54, growthRate: 0.035},
+                    {name: "Dalian", country: "China", lat: 38.9228, long: 121.6298, basePopulation: 0.70, growthRate: 0.025},
+                    {name: "Kunming", country: "China", lat: 25.0389, long: 102.7183, basePopulation: 0.42, growthRate: 0.03},
+                    {name: "Jaipur", country: "India", lat: 26.9124, long: 75.7873, basePopulation: 0.30, growthRate: 0.035},
+                    {name: "Lucknow", country: "India", lat: 26.8467, long: 80.9462, basePopulation: 0.45, growthRate: 0.03},
+                    {name: "Kanpur", country: "India", lat: 26.4499, long: 80.3319, basePopulation: 0.69, growthRate: 0.025},
+                    {name: "Nagpur", country: "India", lat: 21.1458, long: 79.0882, basePopulation: 0.48, growthRate: 0.03},
+                    {name: "Indore", country: "India", lat: 22.7196, long: 75.8577, basePopulation: 0.31, growthRate: 0.035},
+                    {name: "Patna", country: "India", lat: 25.5941, long: 85.1376, basePopulation: 0.33, growthRate: 0.035},
+                    {name: "Bhopal", country: "India", lat: 23.2599, long: 77.4126, basePopulation: 0.10, growthRate: 0.03},
+                    {name: "Vadodara", country: "India", lat: 22.3072, long: 73.1812, basePopulation: 0.21, growthRate: 0.03},
+                    {name: "Coimbatore", country: "India", lat: 11.0168, long: 76.9558, basePopulation: 0.29, growthRate: 0.03},
+                    {name: "Visakhapatnam", country: "India", lat: 17.6868, long: 83.2185, basePopulation: 0.11, growthRate: 0.03},
+                    {name: "Kochi", country: "India", lat: 9.9312, long: 76.2673, basePopulation: 0.17, growthRate: 0.025},
+                    {name: "Ludhiana", country: "India", lat: 30.9010, long: 75.8573, basePopulation: 0.15, growthRate: 0.025},
+                    {name: "Agra", country: "India", lat: 27.1767, long: 78.0081, basePopulation: 0.36, growthRate: 0.025},
+                    {name: "Madurai", country: "India", lat: 9.9252, long: 78.1198, basePopulation: 0.37, growthRate: 0.025},
+                    {name: "Nashik", country: "India", lat: 19.9975, long: 73.7898, basePopulation: 0.15, growthRate: 0.03},
+                    {name: "Varanasi", country: "India", lat: 25.3176, long: 82.9739, basePopulation: 0.37, growthRate: 0.025},
+                    {name: "Meerut", country: "India", lat: 28.9845, long: 77.7064, basePopulation: 0.23, growthRate: 0.025},
+                    {name: "Rajkot", country: "India", lat: 22.3039, long: 70.8022, basePopulation: 0.12, growthRate: 0.03},
+                    {name: "Jamshedpur", country: "India", lat: 22.8046, long: 86.2029, basePopulation: 0.25, growthRate: 0.025},
+                    {name: "Srinagar", country: "India", lat: 34.0837, long: 74.7973, basePopulation: 0.25, growthRate: 0.02},
+                    {name: "Aurangabad", country: "India", lat: 19.8762, long: 75.3433, basePopulation: 0.09, growthRate: 0.03},
+                    {name: "Dhanbad", country: "India", lat: 23.7957, long: 86.4304, basePopulation: 0.22, growthRate: 0.02},
+                    {name: "Amritsar", country: "India", lat: 31.6340, long: 74.8723, basePopulation: 0.35, growthRate: 0.02},
+                    {name: "Allahabad", country: "India", lat: 25.4358, long: 81.8463, basePopulation: 0.33, growthRate: 0.02},
+                    {name: "Ranchi", country: "India", lat: 23.3441, long: 85.3096, basePopulation: 0.11, growthRate: 0.025},
+                    {name: "Howrah", country: "India", lat: 22.5958, long: 88.2636, basePopulation: 0.43, growthRate: 0.02},
+                    {name: "Jabalpur", country: "India", lat: 23.1815, long: 79.9864, basePopulation: 0.25, growthRate: 0.02},
+                    {name: "Gwalior", country: "India", lat: 26.2183, long: 78.1828, basePopulation: 0.24, growthRate: 0.02},
+                    {name: "Vijayawada", country: "India", lat: 16.5062, long: 80.6480, basePopulation: 0.21, growthRate: 0.025},
+                    {name: "Jodhpur", country: "India", lat: 26.2389, long: 73.0243, basePopulation: 0.18, growthRate: 0.025},
+                    {name: "Raipur", country: "India", lat: 21.2514, long: 81.6296, basePopulation: 0.10, growthRate: 0.03},
+                    {name: "Kota", country: "India", lat: 25.2138, long: 75.8648, basePopulation: 0.12, growthRate: 0.025},
+                    {name: "Guwahati", country: "India", lat: 26.1445, long: 91.7362, basePopulation: 0.20, growthRate: 0.025},
+                    {name: "Chandigarh", country: "India", lat: 30.7333, long: 76.7794, basePopulation: 0.14, growthRate: 0.02},
+                    {name: "Solapur", country: "India", lat: 17.6599, long: 75.9064, basePopulation: 0.21, growthRate: 0.02},
+                    {name: "Hubli", country: "India", lat: 15.3647, long: 75.1240, basePopulation: 0.16, growthRate: 0.02},
+                    {name: "Mysore", country: "India", lat: 12.2958, long: 76.6394, basePopulation: 0.25, growthRate: 0.025},
+                    {name: "Tiruchirappalli", country: "India", lat: 10.7905, long: 78.7047, basePopulation: 0.32, growthRate: 0.02},
+                    {name: "Bareilly", country: "India", lat: 28.3670, long: 79.4304, basePopulation: 0.19, growthRate: 0.02},
+                    {name: "Aligarh", country: "India", lat: 27.8974, long: 78.0880, basePopulation: 0.19, growthRate: 0.02},
+                    {name: "Moradabad", country: "India", lat: 28.8386, long: 78.7733, basePopulation: 0.16, growthRate: 0.02}
+                ];
+
+                console.log("Generating data for cities...");
+                debugLog("Generating data for cities");
+                
+                // Generate data for all cities
+                allCities.forEach((city, index) => {
+                    demoData.cities[city.name] = {
+                        "country": city.country,
+                        "lat": city.lat,
+                        "long": city.long,
+                        "population": {},
+                        "region": getRegion(city.country)
+                    };
+                    
+                    // Generate population for each year
+                    cityData.years.forEach((year, yearIndex) => {
+                        // For more realistic growth patterns
+                        // Use exponential growth with some randomization
+                        const yearsSince1950 = year - 1950;
+                        
+                        // Different growth patterns for different time periods
+                        let growthRate = city.growthRate;
+                        
+                        // Adjust growth rates for different time periods to match historical patterns
+                        if (year < 1970) {
+                            // Post-war period: moderate growth
+                            growthRate = city.growthRate * 0.8;
+                        } else if (year < 1990) {
+                            // 1970s-1980s: accelerated urbanization
+                            growthRate = city.growthRate * 1.2;
+                        } else if (year < 2010) {
+                            // 1990s-2000s: globalization boom
+                            growthRate = city.growthRate * 1.5;
+                        } else {
+                            // 2010 onwards: continued growth with regional variations
+                            // Asia and Africa grow faster
+                            if (demoData.cities[city.name].region === "Asia" || demoData.cities[city.name].region === "Africa") {
+                                growthRate = city.growthRate * 1.8;
+                            } else {
+                                growthRate = city.growthRate * 1.0;
+                            }
+                        }
+                        
+                        // Calculate population with compound growth
+                        const population = city.basePopulation * Math.pow(1 + growthRate, yearsSince1950);
+                        
+                        demoData.cities[city.name].population[year] = population;
+                    });
+                });
+                
+                console.log("Setting up visualization...");
+                debugLog("Setting up visualization");
+                
+                // Setup the visualization
+                const container = d3.select(".container");
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+                yearDisplay = d3.select("#year-display");
+                tooltip = d3.select("#tooltip");
+                statusIndicator = d3.select("#status-indicator");
+                
+                // Create SVG
+                svg = container.append("svg")
+                    .attr("width", width)
+                    .attr("height", height);
+                    
+                // Add a background
+                svg.append("rect")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .attr("fill", "#0a0a14");
+                    
+                // Add a subtle grid pattern
+                const gridSize = 50;
+                const grid = svg.append("g")
+                    .attr("class", "grid");
+                    
+                for (let x = 0; x < width; x += gridSize) {
+                    grid.append("line")
+                        .attr("x1", x)
+                        .attr("y1", 0)
+                        .attr("x2", x)
+                        .attr("y2", height)
+                        .attr("stroke", "rgba(100, 100, 255, 0.05)")
+                        .attr("stroke-width", 1);
+                }
+                
+                for (let y = 0; y < height; y += gridSize) {
+                    grid.append("line")
+                        .attr("x1", 0)
+                        .attr("y1", y)
+                        .attr("x2", width)
+                        .attr("y2", y)
+                        .attr("stroke", "rgba(100, 100, 255, 0.05)")
+                        .attr("stroke-width", 1);
+                }
+                    
+                // Create a group for all bubbles
+                bubblesGroup = svg.append("g");
+                
+                // Find max population for scaling
+                let maxPopulation = 0;
+                Object.keys(demoData.cities).forEach(city => {
+                    const cityData = demoData.cities[city];
+                    if (cityData && cityData.population) {
+                        const maxCityPop = Math.max(...Object.values(cityData.population));
+                        maxPopulation = Math.max(maxPopulation, maxCityPop);
+                    }
+                });
+                
+                console.log("Max population found:", maxPopulation);
+                debugLog("Max population found: " + maxPopulation);
+                
+                // Scale for bubble size
+                radiusScale = d3.scaleSqrt()
+                    .domain([0, maxPopulation])
+                    .range([2, 50]);
+                    
+                // Color scale for regions
+                const regionList = Object.keys(regionColors);
+                continentColors = d3.scaleOrdinal()
+                    .domain(regionList)
+                    .range(Object.values(regionColors));
+                    
+                // Create legend
+                const legend = d3.select("#legend");
+                legend.append("div")
+                    .attr("class", "legend-title")
+                    .text("Regions");
+                    
+                regionList.forEach(region => {
+                    legend.append("div")
+                        .attr("class", "legend-item")
+                        .html(`
+                            <div class="legend-color" style="background-color: ${continentColors(region)}"></div>
+                            <div>${region}</div>
+                        `);
+                });
+                
+                // Map projection (using Mercator for a more accurate world map)
+                projection = d3.geoMercator()
+                    .scale(width / 7)
+                    .center([0, 20])
+                    .translate([width / 2, height / 2]);
+                    
+                // Initialize with first year's data
+                currentYearIndex = 0;
+                currentYear = cityData.years[currentYearIndex];
+                yearData = getYearData(currentYear);
+                
+                console.log("Initial year data loaded:", yearData.length, "cities");
+                debugLog("Initial year data loaded: " + yearData.length + " cities");
+                
+                // Create force simulation with weaker forces for more geographic accuracy
+                simulation = d3.forceSimulation()
+                    .force("x", d3.forceX(d => d.x).strength(0.2)) // Stronger pull towards geographic x position
+                    .force("y", d3.forceY(d => d.y).strength(0.2)) // Stronger pull towards geographic y position
+                    .force("collision", d3.forceCollide().radius(d => d.radius + 1).strength(0.7))
+                    .alphaTarget(0.01)
+                    .alphaDecay(0.02);
+                
+                console.log("Creating initial bubbles...");
+                debugLog("Creating initial bubbles");
+                
+                // Create initial bubbles
+                const bubbles = bubblesGroup.selectAll(".bubble")
+                    .data(yearData, d => d.city)
+                    .enter()
+                    .append("circle")
+                    .attr("class", "bubble")
+                    .attr("r", d => d.radius)
+                    .attr("fill", d => continentColors(d.region))
+                    .attr("stroke", d => d.isTop20 ? "#fff" : (d.isOver1M ? "rgba(255, 255, 255, 0.3)" : "none"))
+                    .attr("stroke-width", d => d.isTop20 ? 2 : (d.isOver1M ? 1 : 0))
+                    .attr("opacity", d => d.isTop20 ? 0.9 : (d.isOver1M ? 0.8 : 0.6))
+                    .attr("cx", d => d.x)
+                    .attr("cy", d => d.y)
+                    .classed("glow", d => d.isTop20)
+                    .on("mouseover", function(event, d) {
+                        d3.select(this)
+                            .attr("stroke", "#fff")
+                            .attr("stroke-width", 2)
+                            .attr("opacity", 1);
+                            
+                        tooltip
+                            .style("display", "block")
+                            .html(`
+                                <strong>${d.city}, ${d.country}</strong><br>
+                                Region: ${d.region}<br>
+                                Population: ${d.population.toFixed(2)} million<br>
+                                Year: ${currentYear}
+                            `)
+                            .style("left", (event.pageX + 10) + "px")
+                            .style("top", (event.pageY - 20) + "px");
+                    })
+                    .on("mouseout", function(event, d) {
+                        d3.select(this)
+                            .attr("stroke", d.isTop20 ? "#fff" : (d.isOver1M ? "rgba(255, 255, 255, 0.3)" : "none"))
+                            .attr("stroke-width", d.isTop20 ? 2 : (d.isOver1M ? 1 : 0))
+                            .attr("opacity", d.isTop20 ? 0.9 : (d.isOver1M ? 0.8 : 0.6));
+                            
+                        tooltip.style("display", "none");
+                    });
+                    
+                console.log("Adding labels for top 20 cities...");
+                debugLog("Adding labels for top 20 cities");
+                
+                // Add labels for top 20 cities
+                const labels = bubblesGroup.selectAll(".city-label")
+                    .data(yearData.filter(d => d.isTop20), d => d.city)
+                    .enter()
+                    .append("text")
+                    .attr("class", "city-label")
+                    .text(d => d.city)
+                    .attr("x", d => d.x)
+                    .attr("y", d => d.y - d.radius - 5)
+                    .attr("text-anchor", "middle")
+                    .attr("fill", "white")
+                    .attr("font-size", "10px")
+                    .attr("opacity", 0.9);
+                    
+                // Add milestone markers
+                const milestoneGroup = svg.append("g")
+                    .attr("class", "milestones");
+                    
+                demoData.milestones.forEach(milestone => {
+                    milestoneGroup.append("text")
+                        .attr("class", "milestone-marker")
+                        .attr("id", `milestone-${milestone.year}`)
+                        .text(milestone.text)
+                        .attr("x", width - 20)
+                        .attr("y", 120)
+                        .attr("text-anchor", "end");
+                });
+                    
+                console.log("Setting up simulation...");
+                debugLog("Setting up simulation");
+                
+                // Update simulation nodes
+                simulation.nodes(yearData)
+                    .on("tick", () => {
+                        bubbles
+                            .attr("cx", d => d.x)
+                            .attr("cy", d => d.y);
+                            
+                        labels
+                            .attr("x", d => d.x)
+                            .attr("y", d => d.y - d.radius - 5);
+                    });
+                    
+                console.log("Initializing region stats and city count chart...");
+                debugLog("Initializing region stats and city count chart");
+                
+                // Initialize region stats and city count chart
+                updateRegionStats(currentYear);
+                updateCityCountChart(currentYear);
+                
+                console.log("Starting animation...");
+                debugLog("Starting animation");
+                
+                // Start animation
+                animationTimer = setInterval(updateYear, animationSpeed);
+                
+                // Play/Pause button
+                document.getElementById("play-pause").addEventListener("click", function() {
+                    if (compareMode) {
+                        // Exit compare mode
+                        compareMode = false;
+                        document.getElementById("compare-button").textContent = "Compare 1950 vs 2035";
+                        isPlaying = true;
+                        this.textContent = "Pause";
+                        statusIndicator.text("Animation Active").style("color", "#4aff4a");
+                        statusIndicator.select("::before").style("background-color", "#4aff4a");
+                        animationTimer = setInterval(updateYear, animationSpeed);
+                    } else {
+                        isPlaying = !isPlaying;
+                        this.textContent = isPlaying ? "Pause" : "Play";
+                        
+                        if (isPlaying) {
+                            statusIndicator.text("Animation Active").style("color", "#4aff4a");
+                            statusIndicator.select("::before").style("background-color", "#4aff4a");
+                            animationTimer = setInterval(updateYear, animationSpeed);
+                        } else {
+                            statusIndicator.text("Animation Paused").style("color", "#ffaa4a");
+                            statusIndicator.select("::before").style("background-color", "#ffaa4a");
+                            clearInterval(animationTimer);
+                            animationTimer = null;
+                        }
+                    }
+                });
+                
+                // Reset button
+                document.getElementById("reset").addEventListener("click", function() {
+                    if (compareMode) {
+                        // Exit compare mode
+                        compareMode = false;
+                        document.getElementById("compare-button").textContent = "Compare 1950 vs 2035";
+                    }
+                    
+                    currentYearIndex = 0;
+                    currentYear = cityData.years[currentYearIndex];
+                    yearDisplay.text(currentYear);
+                    document.getElementById("time-slider").value = currentYearIndex;
+                    updateVisualization();
+                    updateRegionStats(currentYear);
+                    updateCityCountChart(currentYear);
+                    updateMilestones(currentYear);
+                    
+                    // Ensure animation is running
+                    if (!animationTimer) {
+                        isPlaying = true;
+                        document.getElementById("play-pause").textContent = "Pause";
+                        statusIndicator.text("Animation Active").style("color", "#4aff4a");
+                        statusIndicator.select("::before").style("background-color", "#4aff4a");
+                        animationTimer = setInterval(updateYear, animationSpeed);
+                    }
+                });
+                
+                // Speed control
+                document.getElementById("speed-slider").addEventListener("input", function() {
+                    animationSpeed = +this.value;
+                    document.getElementById("speed-value").textContent = (animationSpeed / 1000).toFixed(1) + "s";
+                    
+                    // Update the animation timer
+                    clearInterval(animationTimer);
+                    if (isPlaying && !compareMode) {
+                        animationTimer = setInterval(updateYear, animationSpeed);
+                    }
+                });
+                
+                // Time slider
+                document.getElementById("time-slider").addEventListener("input", function() {
+                    if (compareMode) {
+                        // Exit compare mode
+                        compareMode = false;
+                        document.getElementById("compare-button").textContent = "Compare 1950 vs 2035";
+                    }
+                    
+                    // Pause animation while dragging
+                    clearInterval(animationTimer);
+                    animationTimer = null;
+                    isPlaying = false;
+                    document.getElementById("play-pause").textContent = "Play";
+                    statusIndicator.text("Manual Year Selection").style("color", "#ffaa4a");
+                    statusIndicator.select("::before").style("background-color", "#ffaa4a");
+                    
+                    currentYearIndex = +this.value;
+                    currentYear = cityData.years[currentYearIndex];
+                    yearDisplay.text(currentYear);
+                    updateVisualization();
+                    updateRegionStats(currentYear);
+                    updateCityCountChart(currentYear);
+                    updateMilestones(currentYear);
+                });
+                
+                document.getElementById("time-slider").addEventListener("change", function() {
+                    // Resume animation if it was playing
+                    isPlaying = true;
+                    document.getElementById("play-pause").textContent = "Pause";
+                    statusIndicator.text("Animation Active").style("color", "#4aff4a");
+                    statusIndicator.select("::before").style("background-color", "#4aff4a");
+                    
+                    if (!animationTimer) {
+                        animationTimer = setInterval(updateYear, animationSpeed);
+                    }
+                });
+                
+                // Compare button (1950 vs 2035)
+                document.getElementById("compare-button").addEventListener("click", function() {
+                    // Toggle compare mode
+                    compareMode = !compareMode;
+                    
+                    if (compareMode) {
+                        // Enter compare mode
+                        clearInterval(animationTimer);
+                        animationTimer = null;
+                        this.textContent = "Exit Comparison Mode";
+                        document.getElementById("play-pause").textContent = "Exit Comparison";
+                        statusIndicator.text("Comparison Mode").style("color", "#4aa0ff");
+                        statusIndicator.select("::before").style("background-color", "#4aa0ff");
+                        
+                        // Split the visualization to show 1950 and 2035 side by side
+                        const year1950Data = getYearData(1950);
+                        const year2035Data = getYearData(2035);
+                        
+                        // Adjust positions for side-by-side view
+                        year1950Data.forEach(d => {
+                            d.x = d.x * 0.8 - width * 0.2;
+                        });
+                        
+                        year2035Data.forEach(d => {
+                            d.x = d.x * 0.8 + width * 0.2;
+                        });
+                        
+                        // Combine data with a year property
+                        const combinedData = [
+                            ...year1950Data.map(d => ({...d, compareYear: 1950})),
+                            ...year2035Data.map(d => ({...d, compareYear: 2035}))
+                        ];
+                        
+                        // Update the visualization with combined data
+                        yearDisplay.text("1950 vs 2035");
+                        
+                        // Update bubbles
+                        const bubbleUpdate = bubblesGroup.selectAll(".bubble")
+                            .data(combinedData, d => `${d.city}-${d.compareYear}`);
+                            
+                        bubbleUpdate.exit().remove();
+                        
+                        const newBubbles = bubbleUpdate.enter()
+                            .append("circle")
+                            .attr("class", "bubble")
+                            .attr("r", 0)
+                            .attr("fill", d => continentColors(d.region))
+                            .attr("stroke", d => d.isTop20 ? "#fff" : (d.isOver1M ? "rgba(255, 255, 255, 0.3)" : "none"))
+                            .attr("stroke-width", d => d.isTop20 ? 2 : (d.isOver1M ? 1 : 0))
+                            .attr("opacity", d => d.isTop20 ? 0.9 : (d.isOver1M ? 0.8 : 0.6))
+                            .attr("cx", d => d.x)
+                            .attr("cy", d => d.y)
+                            .classed("glow", d => d.isTop20)
+                            .on("mouseover", function(event, d) {
+                                d3.select(this)
+                                    .attr("stroke", "#fff")
+                                    .attr("stroke-width", 2)
+                                    .attr("opacity", 1);
+                                    
+                                tooltip
+                                    .style("display", "block")
+                                    .html(`
+                                        <strong>${d.city}, ${d.country}</strong><br>
+                                        Region: ${d.region}<br>
+                                        Population: ${d.population.toFixed(2)} million<br>
+                                        Year: ${d.compareYear}
+                                    `)
+                                    .style("left", (event.pageX + 10) + "px")
+                                    .style("top", (event.pageY - 20) + "px");
+                            })
+                            .on("mouseout", function(event, d) {
+                                d3.select(this)
+                                    .attr("stroke", d.isTop20 ? "#fff" : (d.isOver1M ? "rgba(255, 255, 255, 0.3)" : "none"))
+                                    .attr("stroke-width", d.isTop20 ? 2 : (d.isOver1M ? 1 : 0))
+                                    .attr("opacity", d.isTop20 ? 0.9 : (d.isOver1M ? 0.8 : 0.6));
+                                    
+                                tooltip.style("display", "none");
+                            });
+                        
+                        newBubbles.transition()
+                            .duration(1000)
+                            .attr("r", d => d.radius);
+                        
+                        bubbleUpdate.transition()
+                            .duration(1000)
+                            .attr("cx", d => d.x)
+                            .attr("cy", d => d.y)
+                            .attr("r", d => d.radius);
+                            
+                        // Update labels
+                        const labelUpdate = bubblesGroup.selectAll(".city-label")
+                            .data(combinedData.filter(d => d.isTop20), d => `${d.city}-${d.compareYear}`);
+                            
+                        labelUpdate.exit().remove();
+                        
+                        labelUpdate.enter()
+                            .append("text")
+                            .attr("class", "city-label")
+                            .text(d => `${d.city} (${d.compareYear})`)
+                            .attr("x", d => d.x)
+                            .attr("y", d => d.y - d.radius - 5)
+                            .attr("text-anchor", "middle")
+                            .attr("fill", "white")
+                            .attr("font-size", "10px")
+                            .attr("opacity", 0)
+                            .transition()
+                            .duration(1000)
+                            .attr("opacity", 0.9);
+                            
+                        labelUpdate
+                            .transition()
+                            .duration(1000)
+                            .attr("x", d => d.x)
+                            .attr("y", d => d.y - d.radius - 5)
+                            .text(d => `${d.city} (${d.compareYear})`);
+                        
+                        // Update region stats to show comparison
+                        const regionStatsDiv = d3.select("#region-stats");
+                        regionStatsDiv.html("");
+                        
+                        // Calculate stats for both years
+                        const stats1950 = calculateYearStats(1950);
+                        const stats2035 = calculateYearStats(2035);
+                        
+                        // Add total population comparison
+                        regionStatsDiv.append("div")
+                            .attr("class", "region-stat")
+                            .html(`
+                                <div class="region-stat-title">Total Population</div>
+                                <div class="region-stat-value">
+                                    1950: ${stats1950.total.toFixed(1)}M<br>
+                                    2035: ${stats2035.total.toFixed(1)}M<br>
+                                    Growth: ${((stats2035.total/stats1950.total - 1) * 100).toFixed(1)}%
+                                </div>
+                                <div class="region-stat-cities">
+                                    1950: ${stats1950.citiesOver1M} cities >1M<br>
+                                    2035: ${stats2035.citiesOver1M} cities >1M<br>
+                                    Growth: ${((stats2035.citiesOver1M/stats1950.citiesOver1M - 1) * 100).toFixed(1)}%
+                                </div>
+                            `);
+                        
+                        // Add regional comparisons
+                        regionList.forEach(region => {
+                            const popGrowth = ((stats2035.regions[region].population/stats1950.regions[region].population - 1) * 100).toFixed(1);
+                            const cityGrowth = ((stats2035.regions[region].citiesOver1M/Math.max(stats1950.regions[region].citiesOver1M, 1) - 1) * 100).toFixed(1);
+                            
+                            regionStatsDiv.append("div")
+                                .attr("class", "region-stat")
+                                .html(`
+                                    <div class="region-stat-title">${region}</div>
+                                    <div class="region-stat-value">
+                                        1950: ${stats1950.regions[region].population.toFixed(1)}M<br>
+                                        2035: ${stats2035.regions[region].population.toFixed(1)}M<br>
+                                        Growth: ${popGrowth}%
+                                    </div>
+                                    <div class="region-stat-cities">
+                                        1950: ${stats1950.regions[region].citiesOver1M} cities >1M<br>
+                                        2035: ${stats2035.regions[region].citiesOver1M} cities >1M<br>
+                                        Growth: ${cityGrowth}%
+                                    </div>
+                                `);
+                        });
+                        
+                        // Update city count chart to show comparison
+                        const cityCountBars = d3.select("#city-count-bars");
+                        cityCountBars.html("");
+                        
+                        // Add title with comparison
+                        cityCountBars.append("div")
+                            .attr("class", "city-count-label")
+                            .html(`<strong>Cities Over 1M Growth</strong>`);
+                            
+                        cityCountBars.append("div")
+                            .attr("class", "city-count-label")
+                            .html(`<span>1950: ${stats1950.citiesOver1M} cities</span>`);
+                            
+                        cityCountBars.append("div")
+                            .attr("class", "city-count-bar")
+                            .style("width", `${(stats1950.citiesOver1M / stats2035.citiesOver1M * 100)}%`)
+                            .style("background", `linear-gradient(90deg, #4a4af0, #4a4af080)`);
+                            
+                        cityCountBars.append("div")
+                            .attr("class", "city-count-label")
+                            .html(`<span>2035: ${stats2035.citiesOver1M} cities</span>`);
+                            
+                        cityCountBars.append("div")
+                            .attr("class", "city-count-bar")
+                            .style("width", "100%")
+                            .style("background", `linear-gradient(90deg, #a0a0ff, #a0a0ff80)`);
+                        
+                        // Disable the simulation during compare mode
+                        simulation.stop();
+                        
+                    } else {
+                        // Exit compare mode
+                        this.textContent = "Compare 1950 vs 2035";
+                        document.getElementById("play-pause").textContent = isPlaying ? "Pause" : "Play";
+                        statusIndicator.text("Animation Active").style("color", "#4aff4a");
+                        statusIndicator.select("::before").style("background-color", "#4aff4a");
+                        
+                        // Restore normal view
+                        updateVisualization();
+                        updateRegionStats(currentYear);
+                        updateCityCountChart(currentYear);
+                        updateMilestones(currentYear);
+                        
+                        // Restart simulation
+                        simulation.nodes(yearData);
+                        simulation.alpha(0.3).restart();
+                        
+                        // Restart animation if it was playing
+                        if (isPlaying && !animationTimer) {
+                            animationTimer = setInterval(updateYear, animationSpeed);
+                        }
+                    }
+                });
+                
+                // View mode toggle
+                document.getElementById("globe-view").addEventListener("click", function() {
+                    if (viewMode === "globe") return;
+                    
+                    viewMode = "globe";
+                    document.getElementById("globe-view").classList.add("active");
+                    document.getElementById("chart-view").classList.remove("active");
+                    
+                    // Reset positions to geographic coordinates
+                    yearData.forEach(d => {
+                        const [x, y] = projection([d.long, d.lat]);
+                        d.x = x;
+                        d.y = y;
+                    });
+                    
+                    // Update visualization
+                    bubblesGroup.selectAll(".bubble")
+                        .transition()
+                        .duration(1000)
+                        .attr("cx", d => d.x)
+                        .attr("cy", d => d.y);
+                        
+                    bubblesGroup.selectAll(".city-label")
+                        .transition()
+                        .duration(1000)
+                        .attr("x", d => d.x)
+                        .attr("y", d => d.y - d.radius - 5);
+                        
+                    // Restart simulation
+                    simulation.nodes(yearData);
+                    simulation.alpha(0.3).restart();
+                });
+                
+                document.getElementById("chart-view").addEventListener("click", function() {
+                    if (viewMode === "chart") return;
+                    
+                    viewMode = "chart";
+                    document.getElementById("globe-view").classList.remove("active");
+                    document.getElementById("chart-view").classList.add("active");
+                    
+                    // Update positions for chart view
+                    updateChartPositions();
+                    
+                    // Stop simulation
+                    simulation.stop();
+                });
+                
+                // Handle window resize
+                window.addEventListener("resize", function() {
+                    const width = window.innerWidth;
+                    const height = window.innerHeight;
+                    
+                    svg.attr("width", width)
+                       .attr("height", height);
+                       
+                    svg.select("rect")
+                       .attr("width", width)
+                       .attr("height", height);
+                       
+                    // Update projection
+                    projection.translate([width / 2, height / 2]);
+                    
+                    // Recalculate positions
+                    yearData.forEach(d => {
+                        const [x, y] = projection([d.long, d.lat]);
+                        d.x = x;
+                        d.y = y;
+                    });
+                    
+                    // Update visualization
+                    updateVisualization();
+                    
+                    // Restart simulation
+                    simulation.alpha(0.3).restart();
+                });
+                
+                console.log("Visualization setup complete!");
+                debugLog("Visualization setup complete!");
+            }
+        });
+    </script>
+</body>
+</html>
