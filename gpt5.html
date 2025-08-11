@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Urban Bubbles - Population Growth</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --fg:#e6edf7;
+      --muted:#9aa3b2;
+      --panel:#111735cc;
+      --accent:#8ecae6;
+      --grid:#1a2140;
+    }
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#070b18 0%, #0b1020 60%, #0a0f1f 100%);
+      color:var(--fg);
+      font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial;
+      overflow:hidden;
+    }
+    #ui {
+      position:fixed;
+      inset:12px 12px auto 12px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding:10px 12px;
+      background:var(--panel);
+      backdrop-filter: blur(8px);
+      border:1px solid #222b50;
+      border-radius:12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      z-index:10;
+    }
+    #ui .group{display:flex;align-items:center;gap:8px}
+    #yearLabel{font-variant-numeric: tabular-nums; font-weight:700; letter-spacing:0.5px}
+    input[type="range"]{
+      width:min(44vw,600px);
+      accent-color: var(--accent);
+      cursor:pointer;
+    }
+    button{
+      background:var(--accent);
+      color:#04121a;
+      border:none;
+      padding:8px 12px;
+      border-radius:10px;
+      font-weight:700;
+      cursor:pointer;
+      transition:transform .08s ease;
+    }
+    button:active{transform:scale(0.98)}
+    #legend{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap; opacity:.9
+    }
+    .key{display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--muted)}
+    .swatch{width:12px; height:12px; border-radius:50%; outline:1px solid #0006}
+    #tooltip{
+      position:fixed;
+      pointer-events:none;
+      background:#0c122a;
+      color:var(--fg);
+      border:1px solid #233060;
+      padding:8px 10px;
+      border-radius:10px;
+      font-size:12px;
+      box-shadow:0 10px 30px rgba(0,0,0,.35);
+      opacity:0;
+      transform:translate(-50%,-140%);
+      transition:opacity .12s linear;
+      z-index:20;
+      white-space:nowrap;
+    }
+    #credits{
+      position:fixed;
+      right:12px; bottom:10px;
+      font-size:12px; color:var(--muted); opacity:.8;
+      background:transparent;
+      padding:4px 8px; border-radius:8px;
+      user-select:none;
+    }
+    canvas{display:block}
+  </style>
+</head>
+<body>
+  <div id="ui">
+    <div class="group">
+      <button id="playBtn" title="Play or pause">Play</button>
+      <span id="yearLabel">Year</span>
+    </div>
+    <input id="yearRange" type="range" min="1950" max="2025" step="1" value="1950" />
+    <div id="legend" class="group" aria-label="Region colors"></div>
+    <div class="group" style="margin-left:auto; font-size:12px; color:var(--muted)">
+      <span>Drag to pan. Scroll to zoom. Hover for details.</span>
+    </div>
+  </div>
+  <div id="tooltip"></div>
+  <div id="credits">Urban bubbles sized by population (millions). Top 20 show labels.</div>
+  <canvas id="stage"></canvas>
+
+  <!-- D3 v7 -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+  <script>
+  (function(){
+    const file = 'transformed_population_data.csv'; // keep the CSV in the same folder
+    const canvas = document.getElementById('stage');
+    const ctx = canvas.getContext('2d');
+    const ui = {
+      play: document.getElementById('playBtn'),
+      range: document.getElementById('yearRange'),
+      yearLabel: document.getElementById('yearLabel'),
+      legend: document.getElementById('legend'),
+      tooltip: document.getElementById('tooltip')
+    };
+
+    // Resize canvas
+    function fit(){
+      const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      draw(); // redraw on resize
+    }
+    window.addEventListener('resize', fit);
+
+    // Regions from lat lon for color coding
+    function roughRegion(lat, lon){
+      if (lon >= -170 && lon <= -30 && lat >= -60 && lat <= 80) return 'Americas';
+      if (lat >= -35 && lat <= 37 && lon >= -20 && lon <= 52) return 'Africa';
+      if (lat >= 35 && lat <= 72 && lon >= -25 && lon <= 60) return 'Europe';
+      if (lat >= 5 && lat <= 80 && lon > 60 && lon <= 180) return 'Asia';
+      if (lat >= -50 && lat <= 0 && lon >= 110 && lon <= 180) return 'Oceania';
+      return 'Other';
+    }
+    const palette = {
+      Africa: '#e76f51',
+      Europe: '#2a9d8f',
+      Asia: '#e9c46a',
+      Americas: '#457b9d',
+      Oceania: '#f4a261',
+      Other: '#8ab17d'
+    };
+
+    // Legend
+    function renderLegend(){
+      ui.legend.innerHTML = '';
+      Object.entries(palette).forEach(([name, col])=>{
+        const span = document.createElement('span');
+        span.className = 'key';
+        span.innerHTML = `<span class="swatch" style="background:${col}"></span>${name}`;
+        ui.legend.appendChild(span);
+      });
+    }
+    renderLegend();
+
+    // Scales for positioning from lon lat without a map
+    let width = window.innerWidth, height = window.innerHeight;
+    const margin = {top:40, right:20, bottom:30, left:20};
+    function projectX(lon){
+      return d3.scaleLinear().domain([-180,180]).range([margin.left, width - margin.right])(lon);
+    }
+    function projectY(lat){
+      return d3.scaleLinear().domain([85,-60]).range([margin.top, height - margin.bottom])(lat);
+    }
+
+    // Zoom and pan
+    let transform = d3.zoomIdentity;
+    const zoom = d3.zoom()
+      .scaleExtent([0.6, 4])
+      .on('zoom', (event) => {
+        transform = event.transform;
+        draw();
+      });
+    d3.select(canvas).call(zoom);
+
+    // Data containers
+    let nodes = [];                 // one node per city
+    let years = [];                 // all years
+    let yearIndex = 0;
+    let maxPop = 1;
+    let top20Set = new Set();       // labels for top 20 in current year
+    let quadtree = null;            // for hover
+    const byCity = new Map();       // city key to data
+    const keyOf = d => `${d['Country or Area']}|${d['Urban Agglomeration']}`;
+
+    // Forces
+    let simulation = null;
+
+    // Radius scale with extra compression for tiny cities
+    function makeRadiusScale(maxP){
+      const sqrt = d3.scaleSqrt().domain([0, maxP]).range([0.4, 16]); // small by design
+      return (p) => {
+        let r = sqrt(Math.max(0, p));
+        if (p < 0.2) r *= 0.35;
+        else if (p < 0.5) r *= 0.55;
+        else if (p < 1) r *= 0.8;
+        return Math.max(0.35, r);
+      };
+    }
+    let radiusOf = makeRadiusScale(maxPop);
+
+    // Load
+    d3.csv(file, d3.autoType).then(rows=>{
+      // Normalize rows
+      rows = rows.filter(d => d.Latitude != null && d.Longitude != null && d['Urban Agglomeration']);
+
+      // Collect years
+      const yearSet = new Set(rows.map(d=>+d.Year));
+      years = Array.from(yearSet).sort((a,b)=>a-b);
+
+      // Group by city
+      rows.forEach(d=>{
+        const key = keyOf(d);
+        if(!byCity.has(key)){
+          byCity.set(key, {
+            key,
+            city: d['Urban Agglomeration'],
+            country: d['Country or Area'],
+            lat: +d.Latitude,
+            lon: +d.Longitude,
+            popByYear: new Map()
+          });
+        }
+        byCity.get(key).popByYear.set(+d.Year, +d['Population (millions)']);
+      });
+
+      // Build nodes
+      width = window.innerWidth; height = window.innerHeight;
+      const jitter = () => (Math.random() - 0.5) * 5;
+
+      nodes = Array.from(byCity.values()).map((c,i)=>{
+        const x0 = projectX(c.lon);
+        const y0 = projectY(c.lat);
+        const region = roughRegion(c.lat, c.lon);
+        const p0 = c.popByYear.get(years[0]) || 0;
+        return {
+          id:i,
+          key: c.key,
+          city: c.city,
+          country: c.country,
+          lat: c.lat,
+          lon: c.lon,
+          region,
+          x: x0 + jitter(),
+          y: y0 + jitter(),
+          x0, y0,
+          vx: 0, vy: 0,
+          pop: p0,
+          r: 0,  // will set below
+        };
+      });
+
+      // Max population across all years for scale
+      maxPop = d3.max(rows, d=>+d['Population (millions)']) || 1;
+      radiusOf = makeRadiusScale(maxPop);
+
+      // Init radii
+      nodes.forEach(n => n.r = radiusOf(n.pop));
+
+      // Setup forces
+      simulation = d3.forceSimulation(nodes)
+        .alphaMin(0.001)
+        .alpha(0.8)
+        .velocityDecay(0.4) // keeps it alive but not too much motion
+        .force('x', d3.forceX(d => d.x0).strength(0.05))
+        .force('y', d3.forceY(d => d.y0).strength(0.05))
+        .force('collide', d3.forceCollide().radius(d => d.r + 0.6).iterations(1))
+        .on('tick', ticked);
+
+      // UI init
+      ui.range.min = years[0];
+      ui.range.max = years[years.length - 1];
+      ui.range.value = years[0];
+      ui.yearLabel.textContent = years[0];
+
+      fit(); // sets canvas size and draws once
+      updateYear(+ui.range.value, false); // set top 20 labels
+    }).catch(err=>{
+      console.error(err);
+    });
+
+    // Update for a new year
+    function updateYear(year, warmStart=true){
+      if (!nodes.length) return;
+      ui.yearLabel.textContent = year;
+      yearIndex = years.indexOf(year);
+
+      // Update population and radius
+      for(const n of nodes){
+        const city = byCity.get(n.key);
+        n.pop = city && city.popByYear.get(year) || 0;
+        n.r = radiusOf(n.pop);
+      }
+
+      // Top 20 for labels
+      const top20 = nodes.slice().sort((a,b)=>b.pop - a.pop).slice(0,20);
+      top20Set = new Set(top20.map(d=>d.id));
+
+      // Refresh collision radius
+      if (simulation){
+        simulation.force('collide', d3.forceCollide().radius(d => d.r + 0.6).iterations(1));
+        simulation.alpha(warmStart ? 0.35 : 0.12).restart();
+      }
+
+      buildQuadtree();
+      draw();
+    }
+
+    // Build quadtree for hover
+    function buildQuadtree(){
+      quadtree = d3.quadtree()
+        .x(d=>d.x)
+        .y(d=>d.y)
+        .addAll(nodes);
+    }
+
+    // Draw grid for subtle spatial cue
+    function drawGrid(){
+      const step = 100;
+      ctx.save();
+      ctx.strokeStyle = '#121a35';
+      ctx.lineWidth = 1;
+      const t = transform;
+      const minX = (-t.x) / t.k;
+      const minY = (-t.y) / t.k;
+      const maxX = minX + canvas.width / (window.devicePixelRatio||1) / t.k;
+      const maxY = minY + canvas.height / (window.devicePixelRatio||1) / t.k;
+      const startX = Math.floor(minX / step) * step;
+      const startY = Math.floor(minY / step) * step;
+      ctx.beginPath();
+      for(let x = startX; x <= maxX; x += step){
+        ctx.moveTo(x, minY);
+        ctx.lineTo(x, maxY);
+      }
+      for(let y = startY; y <= maxY; y += step){
+        ctx.moveTo(minX, y);
+        ctx.lineTo(maxX, y);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Draw
+    function draw(){
+      if (!nodes.length) return;
+      width = window.innerWidth; height = window.innerHeight;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.save();
+      ctx.translate(transform.x, transform.y);
+      ctx.scale(transform.k, transform.k);
+
+      drawGrid();
+
+      // sort so bigger bubbles draw under labels and smaller ones on top
+      const ordered = nodes.slice().sort((a,b)=>b.r - a.r);
+
+      // Bubbles
+      for(const n of ordered){
+        const col = palette[n.region] || palette.Other;
+        const alpha = n.r < 0.8 ? 0.65 : 0.9;
+        ctx.globalAlpha = alpha;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
+        ctx.fillStyle = col;
+        ctx.fill();
+
+        // subtle stroke
+        ctx.globalAlpha = 0.6;
+        ctx.lineWidth = 0.6;
+        ctx.strokeStyle = '#0b0f25';
+        ctx.stroke();
+      }
+
+      // Labels for top 20 only
+      ctx.globalAlpha = 1;
+      ctx.font = '700 11px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      for(const n of ordered){
+        if (!top20Set.has(n.id) || n.r < 3) continue;
+        const label = `${n.city}`;
+        // halo for contrast
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = 'rgba(8,12,28,0.85)';
+        ctx.strokeText(label, n.x, n.y);
+        ctx.fillStyle = '#eaf2ff';
+        ctx.fillText(label, n.x, n.y);
+      }
+
+      ctx.restore();
+    }
+
+    function ticked(){
+      // keep within bounds to avoid drifting out
+      const pad = 18;
+      for(const n of nodes){
+        n.x = Math.max(pad, Math.min(width - pad, n.x));
+        n.y = Math.max(pad, Math.min(height - pad, n.y));
+      }
+      draw();
+    }
+
+    // Hover tooltip
+    let pointer = {x:0,y:0};
+    canvas.addEventListener('mousemove', (ev)=>{
+      const rect = canvas.getBoundingClientRect();
+      const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
+      const x = (ev.clientX - rect.left) * dpr;
+      const y = (ev.clientY - rect.top) * dpr;
+
+      // invert transform
+      const invX = (x/dpr - transform.x) / transform.k;
+      const invY = (y/dpr - transform.y) / transform.k;
+      pointer = {x: invX, y: invY};
+      const hit = findHit(invX, invY);
+      if (hit){
+        ui.tooltip.style.left = ev.clientX + 'px';
+        ui.tooltip.style.top = ev.clientY + 'px';
+        ui.tooltip.innerHTML = `
+          <strong>${hit.city}</strong> • ${hit.country}<br/>
+          ${ui.yearLabel.textContent} • ${hit.pop.toFixed(3)} M
+        `;
+        ui.tooltip.style.opacity = 1;
+      } else {
+        ui.tooltip.style.opacity = 0;
+      }
+    });
+    canvas.addEventListener('mouseleave', ()=> ui.tooltip.style.opacity = 0);
+
+    function findHit(x,y){
+      if (!quadtree) return null;
+      const r = 12; // search window
+      let best = null, bestD2 = Infinity;
+      quadtree.visit((node, x0, y0, x1, y1)=>{
+        const outside = x0 > x + r || x1 < x - r || y0 > y + r || y1 < y - r;
+        if(outside) return true;
+        if(!node.length){
+          do{
+            const d = node.data;
+            const dx = x - d.x, dy = y - d.y;
+            const d2 = dx*dx + dy*dy;
+            if (d2 <= (d.r+2)*(d.r+2) && d2 < bestD2){
+              best = d; bestD2 = d2;
+            }
+          } while (node = node.next);
+        }
+        return false;
+      });
+      return best;
+    }
+
+    // Year controls
+    let timer = null;
+    function setPlaying(on){
+      if (on){
+        ui.play.textContent = 'Pause';
+        if (timer) clearInterval(timer);
+        timer = setInterval(()=>{
+          const idx = years.indexOf(+ui.range.value);
+          const next = years[(idx + 1) % years.length];
+          ui.range.value = next;
+          updateYear(next);
+        }, 200);
+      } else {
+        ui.play.textContent = 'Play';
+        if (timer) clearInterval(timer);
+        timer = null;
+      }
+    }
+    ui.play.addEventListener('click', ()=>{
+      setPlaying(!timer);
+    });
+    ui.range.addEventListener('input', (e)=>{
+      const y = +e.target.value;
+      updateYear(y);
+    });
+
+    // Keep quadtree updated as simulation runs a bit
+    setInterval(()=> buildQuadtree(), 5);
+
+    // Initial fit
+    fit();
+  })();
+  </script>
+</body>
+</html>
