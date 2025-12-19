@@ -1,0 +1,49 @@
+{
+  "feature_count": 34,
+  "valid_wind_samples": 34,
+  "bounds": {
+    "minx": 29.0,
+    "miny": -11.75,
+    "maxx": 40.5,
+    "maxy": -0.95
+  },
+  "columns": [
+    "date_last_researched",
+    "country/area",
+    "project_name",
+    "phase_name",
+    "project_name_in_local_language_/_script",
+    "other_name(s)",
+    "capacity_(mw)",
+    "installation_type",
+    "status",
+    "start_year",
+    "retired_year",
+    "operator",
+    "operator_name_in_local_language_/_script",
+    "owner",
+    "owner_name_in_local_language_/_script",
+    "hydrogen",
+    "latitude",
+    "longitude",
+    "location_accuracy",
+    "city",
+    "local_area_(taluk,_county)",
+    "major_area_(prefecture,_district)",
+    "state/province",
+    "subregion",
+    "region",
+    "gem_location_id",
+    "gem_phase_id",
+    "other_ids_(location)",
+    "other_ids_(unit/phase)",
+    "wiki_url",
+    "geometry",
+    "wind_speed"
+  ],
+  "wind_speed_stats": {
+    "min": 4.164161205291748,
+    "max": 9.125126838684082,
+    "mean": 6.303614055409151
+  }
+}

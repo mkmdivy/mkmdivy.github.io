@@ -1,0 +1,30 @@
+{
+  "feature_count": 1209,
+  "iucn_categories": [
+    "Not Reported",
+    "IV",
+    "Ib",
+    "II",
+    "VI",
+    "III",
+    "Not Applicable",
+    "V",
+    "Not Assigned"
+  ],
+  "bounds": {
+    "minx": 29.0,
+    "miny": -11.75,
+    "maxx": 40.5,
+    "maxy": -0.95
+  },
+  "columns": [
+    "geometry",
+    "IUCN_CAT",
+    "NAME",
+    "DESIG",
+    "DESIG_ENG",
+    "STATUS",
+    "GOV_TYPE",
+    "OWN_TYPE"
+  ]
+}

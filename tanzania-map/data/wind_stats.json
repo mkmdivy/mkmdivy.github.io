@@ -1,0 +1,14 @@
+{
+  "min": 0.49803295731544495,
+  "max": 20.612321853637695,
+  "mean": 4.495909214019775,
+  "threshold_top10": 6.1421380043029785,
+  "bounds": {
+    "minx": 29.0,
+    "miny": -11.75,
+    "maxx": 40.5,
+    "maxy": -0.95
+  },
+  "units": "m/s",
+  "description": "Wind speed at 100m height"
+}

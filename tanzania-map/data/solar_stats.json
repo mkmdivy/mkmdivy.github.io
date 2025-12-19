@@ -1,0 +1,14 @@
+{
+  "min": 2.9560000896453857,
+  "max": 5.366000175476074,
+  "mean": 4.527207374572754,
+  "threshold_top10": 4.901000022888184,
+  "bounds": {
+    "minx": 29.0,
+    "miny": -11.75,
+    "maxx": 40.5,
+    "maxy": -0.95
+  },
+  "units": "kWh/kWp/day",
+  "description": "Photovoltaic power output - daily average"
+}

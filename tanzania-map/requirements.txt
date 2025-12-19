@@ -1,0 +1,20 @@
+# Tanzania Energy Map - Python Dependencies
+
+# Core geospatial libraries
+numpy>=1.20.0
+rasterio>=1.3.0
+geopandas>=0.12.0
+shapely>=2.0.0
+fiona>=1.9.0
+pyproj>=3.4.0
+
+# NetCDF support for land cover data
+xarray>=2023.0.0
+netCDF4>=1.6.0
+
+# Image processing for tile generation
+Pillow>=9.0.0
+
+# Optional: for more advanced raster processing
+# rio-cogeo>=4.0.0
+# rio-tiler>=4.0.0

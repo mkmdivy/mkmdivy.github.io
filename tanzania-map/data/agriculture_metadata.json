@@ -1,0 +1,19 @@
+{
+  "agriculture_classes": {
+    "10": "Cropland, rainfed",
+    "11": "Cropland, rainfed, herbaceous cover",
+    "12": "Cropland, rainfed, tree or shrub cover",
+    "20": "Cropland, irrigated or post-flooding",
+    "30": "Mosaic cropland (>50%) / natural vegetation",
+    "40": "Mosaic natural vegetation (>50%) / cropland"
+  },
+  "bounds": {
+    "minx": 29.0,
+    "miny": -11.75,
+    "maxx": 40.5,
+    "maxy": -0.95
+  },
+  "pixel_count_agriculture": 4281535,
+  "pixel_count_total": 16096320,
+  "percentage_agriculture": 26.59946497087533
+}

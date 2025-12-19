@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanzania Energy Resources Map</title>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        #map { position: absolute; top: 0; bottom: 0; left: 300px; right: 0; }
+        .sidebar {
+            position: absolute; top: 0; left: 0; width: 300px; height: 100%;
+            background: #1a1a2e; color: #fff; overflow-y: auto; z-index: 1;
+        }
+        .sidebar h1 { padding: 20px; font-size: 18px; background: #16213e; border-bottom: 1px solid #0f3460; }
+        .layer-section { padding: 15px; border-bottom: 1px solid #0f3460; }
+        .layer-section h3 { margin-bottom: 10px; font-size: 14px; color: #e94560; }
+        .layer-item { display: flex; align-items: center; margin: 8px 0; }
+        .layer-item input[type="checkbox"] { margin-right: 10px; width: 18px; height: 18px; cursor: pointer; }
+        .layer-item label { font-size: 13px; cursor: pointer; }
+        .sub-options { margin-left: 28px; margin-top: 8px; }
+        .sub-options label { font-size: 12px; color: #aaa; display: block; margin-top: 8px; }
+        .sub-options label:first-child { margin-top: 0; }
+        select {
+            width: 100%; padding: 8px; margin-top: 5px;
+            background: #16213e; color: #fff; border: 1px solid #0f3460; border-radius: 4px;
+        }
+        .iucn-checkboxes { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+        .iucn-checkboxes label {
+            display: flex; align-items: center; font-size: 11px;
+            background: #16213e; padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-top: 0;
+        }
+        .iucn-checkboxes input { margin-right: 5px; width: 14px; height: 14px; }
+        .export-section { padding: 15px; }
+        .export-btn {
+            width: 100%; padding: 12px; background: #e94560; color: #fff;
+            border: none; border-radius: 4px; font-size: 14px; cursor: pointer; transition: background 0.3s;
+        }
+        .export-btn:hover { background: #ff6b6b; }
+        .legend { padding: 15px; border-top: 1px solid #0f3460; }
+        .legend h3 { margin-bottom: 10px; font-size: 14px; color: #e94560; }
+        .legend-item { display: flex; align-items: center; margin: 5px 0; font-size: 12px; }
+        .legend-color { width: 20px; height: 20px; margin-right: 10px; border-radius: 3px; }
+        .loading-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8); display: flex; justify-content: center;
+            align-items: center; z-index: 1000; color: #fff; font-size: 18px;
+        }
+        .loading-overlay.hidden { display: none; }
+        .mapboxgl-popup-content { color: #333; }
+    </style>
+</head>
+<body>
+    <div id="loading" class="loading-overlay">Loading map data...</div>
+    
+    <div class="sidebar">
+        <h1>Tanzania Energy Resources</h1>
+        
+        <div class="layer-section">
+            <h3>Resource Layers</h3>
+            <div class="layer-item">
+                <span style="font-weight: 600;">Wind Power:</span>
+            </div>
+            <div class="sub-options" id="wind-options">
+                <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 5px;">
+                    <label style="display: flex; align-items: center; gap: 3px;">
+                        <input type="checkbox" id="wind-5" checked>
+                        <span style="background: #1a5276; width: 12px; height: 12px; display: inline-block;"></span> Top 5%
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 3px;">
+                        <input type="checkbox" id="wind-10" checked>
+                        <span style="background: #3498db; width: 12px; height: 12px; display: inline-block;"></span> Top 10%
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 3px;">
+                        <input type="checkbox" id="wind-20" checked>
+                        <span style="background: #85c1e9; width: 12px; height: 12px; display: inline-block;"></span> Top 20%
+                    </label>
+                </div>
+                <label>Power Grid Distance:</label>
+                <select id="wind-buffer">
+                    <option value="none">No Filter</option>
+                    <option value="20">Within 20km</option>
+                    <option value="50">Within 50km</option>
+                    <option value="100">Within 100km</option>
+                </select>
+            </div>
+            
+            <div class="layer-item" style="margin-top: 10px;">
+                <span style="font-weight: 600;">Solar Power:</span>
+            </div>
+            <div class="sub-options" id="solar-options">
+                <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 5px;">
+                    <label style="display: flex; align-items: center; gap: 3px;">
+                        <input type="checkbox" id="solar-5" checked>
+                        <span style="background: #b7950b; width: 12px; height: 12px; display: inline-block;"></span> Top 5%
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 3px;">
+                        <input type="checkbox" id="solar-10" checked>
+                        <span style="background: #f39c12; width: 12px; height: 12px; display: inline-block;"></span> Top 10%
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 3px;">
+                        <input type="checkbox" id="solar-20" checked>
+                        <span style="background: #f9e79f; width: 12px; height: 12px; display: inline-block;"></span> Top 20%
+                    </label>
+                </div>
+                <label>Power Grid Distance:</label>
+                <select id="solar-buffer">
+                    <option value="none">No Filter</option>
+                    <option value="20">Within 20km</option>
+                    <option value="50">Within 50km</option>
+                    <option value="100">Within 100km</option>
+                </select>
+            </div>
+            
+            <div class="layer-item">
+                <input type="checkbox" id="agriculture-layer">
+                <label for="agriculture-layer">Agriculture Land</label>
+            </div>
+        </div>
+        
+        <div class="layer-section">
+            <h3>Infrastructure</h3>
+            <div class="layer-item">
+                <input type="checkbox" id="grid-layer" checked>
+                <label for="grid-layer">Power Grid</label>
+            </div>
+            <div class="layer-item">
+                <input type="checkbox" id="turbines-layer">
+                <label for="turbines-layer">Wind Turbines</label>
+            </div>
+            <div class="layer-item">
+                <input type="checkbox" id="panels-layer">
+                <label for="panels-layer">Solar Panels</label>
+            </div>
+        </div>
+        
+        <div class="layer-section">
+            <h3>Protected Areas</h3>
+            <div class="layer-item">
+                <input type="checkbox" id="protected-layer" checked>
+                <label for="protected-layer">Protected Areas</label>
+            </div>
+            <div class="sub-options">
+                <label>IUCN Categories:</label>
+                <div class="iucn-checkboxes">
+                    <label><input type="checkbox" class="iucn-cat" value="Ia" checked> Ia</label>
+                    <label><input type="checkbox" class="iucn-cat" value="Ib" checked> Ib</label>
+                    <label><input type="checkbox" class="iucn-cat" value="II" checked> II</label>
+                    <label><input type="checkbox" class="iucn-cat" value="III" checked> III</label>
+                    <label><input type="checkbox" class="iucn-cat" value="IV"> IV</label>
+                    <label><input type="checkbox" class="iucn-cat" value="V"> V</label>
+                    <label><input type="checkbox" class="iucn-cat" value="VI"> VI</label>
+                    <label><input type="checkbox" class="iucn-cat" value="Not Reported"> NR</label>
+                    <label><input type="checkbox" class="iucn-cat" value="Not Applicable"> NA</label>
+                    <label><input type="checkbox" class="iucn-cat" value="Not Assigned"> NS</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="layer-section">
+            <h3>Boundary</h3>
+            <div class="layer-item">
+                <input type="checkbox" id="boundary-layer" checked>
+                <label for="boundary-layer">Tanzania Boundary</label>
+            </div>
+        </div>
+        
+        <div class="export-section">
+            <button class="export-btn" onclick="exportMap()">Export Map as PNG</button>
+        </div>
+        
+        <div class="legend">
+            <h3>Legend</h3>
+            <div class="legend-item"><div class="legend-color" style="background: #1a5276;"></div><span>Wind Top 5%</span></div>
+            <div class="legend-item"><div class="legend-color" style="background: #3498db;"></div><span>Wind Top 10%</span></div>
+            <div class="legend-item"><div class="legend-color" style="background: #85c1e9;"></div><span>Wind Top 20%</span></div>
+            <div class="legend-item"><div class="legend-color" style="background: #b7950b;"></div><span>Solar Top 5%</span></div>
+            <div class="legend-item"><div class="legend-color" style="background: #f39c12;"></div><span>Solar Top 10%</span></div>
+            <div class="legend-item"><div class="legend-color" style="background: #f9e79f;"></div><span>Solar Top 20%</span></div>
+            <div class="legend-item"><div class="legend-color" style="background: #27ae60;"></div><span>Agriculture</span></div>
+            <div class="legend-item"><div class="legend-color" style="background: #e74c3c; height: 3px;"></div><span>Power Grid</span></div>
+            <div class="legend-item"><div class="legend-color" style="background: #2ecc71;"></div><span>Protected Areas</span></div>
+            <div class="legend-item"><div class="legend-color" style="background: #9b59b6; border-radius: 50%; width: 12px; height: 12px;"></div><span>Wind Turbines</span></div>
+            <div class="legend-item"><div class="legend-color" style="background: #e67e22; border-radius: 50%; width: 12px; height: 12px;"></div><span>Solar Panels</span></div>
+        </div>
+    </div>
+    
+    <div id="map"></div>
+    
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoibWttZCIsImEiOiJjbWk3N21sMWUwNzE1MmxzNmR1NDBjYW9qIn0.pqaDQa8tnxCSbn9BtMGnvA';
+        
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/light-v11',
+            center: [34.75, -6.35],
+            zoom: 5.5,
+            preserveDrawingBuffer: true
+        });
+        
+        map.addControl(new mapboxgl.NavigationControl());
+        map.addControl(new mapboxgl.ScaleControl());
+        
+        let windData = {};
+        let solarData = {};
+        let agricultureData = null;
+        
+        map.on('load', async () => {
+            try {
+                // Load all data files - all combinations of percentiles and buffer distances
+                const files = await Promise.all([
+                    fetch('data/tanzania_boundary.geojson').then(r => r.json()),
+                    // Wind: 3 percentiles × 4 buffer options (none, 20, 50, 100)
+                    fetch('data/wind_top5pct.geojson').then(r => r.json()),
+                    fetch('data/wind_top5pct_20km.geojson').then(r => r.json()),
+                    fetch('data/wind_top5pct_50km.geojson').then(r => r.json()),
+                    fetch('data/wind_top5pct_100km.geojson').then(r => r.json()),
+                    fetch('data/wind_top10pct.geojson').then(r => r.json()),
+                    fetch('data/wind_top10pct_20km.geojson').then(r => r.json()),
+                    fetch('data/wind_top10pct_50km.geojson').then(r => r.json()),
+                    fetch('data/wind_top10pct_100km.geojson').then(r => r.json()),
+                    fetch('data/wind_top20pct.geojson').then(r => r.json()),
+                    fetch('data/wind_top20pct_20km.geojson').then(r => r.json()),
+                    fetch('data/wind_top20pct_50km.geojson').then(r => r.json()),
+                    fetch('data/wind_top20pct_100km.geojson').then(r => r.json()),
+                    // Solar: 3 percentiles × 4 buffer options
+                    fetch('data/solar_top5pct.geojson').then(r => r.json()),
+                    fetch('data/solar_top5pct_20km.geojson').then(r => r.json()),
+                    fetch('data/solar_top5pct_50km.geojson').then(r => r.json()),
+                    fetch('data/solar_top5pct_100km.geojson').then(r => r.json()),
+                    fetch('data/solar_top10pct.geojson').then(r => r.json()),
+                    fetch('data/solar_top10pct_20km.geojson').then(r => r.json()),
+                    fetch('data/solar_top10pct_50km.geojson').then(r => r.json()),
+                    fetch('data/solar_top10pct_100km.geojson').then(r => r.json()),
+                    fetch('data/solar_top20pct.geojson').then(r => r.json()),
+                    fetch('data/solar_top20pct_20km.geojson').then(r => r.json()),
+                    fetch('data/solar_top20pct_50km.geojson').then(r => r.json()),
+                    fetch('data/solar_top20pct_100km.geojson').then(r => r.json()),
+                    // Other layers
+                    fetch('data/agriculture_areas.geojson').then(r => r.json()),
+                    fetch('data/power_grid_tanzania.geojson').then(r => r.json()),
+                    fetch('data/protected_areas_tanzania.geojson').then(r => r.json()),
+                    fetch('data/wind_turbines_tanzania.geojson').then(r => r.json()),
+                    fetch('data/solar_panels_tanzania.geojson').then(r => r.json())
+                ]);
+                
+                const [
+                    tanzaniaBoundary,
+                    wind5, wind5_20, wind5_50, wind5_100,
+                    wind10, wind10_20, wind10_50, wind10_100,
+                    wind20, wind20_20, wind20_50, wind20_100,
+                    solar5, solar5_20, solar5_50, solar5_100,
+                    solar10, solar10_20, solar10_50, solar10_100,
+                    solar20, solar20_20, solar20_50, solar20_100,
+                    agricultureAreas, powerGrid, protectedAreas, windTurbines, solarPanels
+                ] = files;
+                
+                // Store all wind data combinations
+                windData = {
+                    '5_none': wind5, '5_20': wind5_20, '5_50': wind5_50, '5_100': wind5_100,
+                    '10_none': wind10, '10_20': wind10_20, '10_50': wind10_50, '10_100': wind10_100,
+                    '20_none': wind20, '20_20': wind20_20, '20_50': wind20_50, '20_100': wind20_100
+                };
+                
+                // Store all solar data combinations
+                solarData = {
+                    '5_none': solar5, '5_20': solar5_20, '5_50': solar5_50, '5_100': solar5_100,
+                    '10_none': solar10, '10_20': solar10_20, '10_50': solar10_50, '10_100': solar10_100,
+                    '20_none': solar20, '20_20': solar20_20, '20_50': solar20_50, '20_100': solar20_100
+                };
+                
+                agricultureData = agricultureAreas;
+                
+                map.addSource('tanzania-boundary', { type: 'geojson', data: tanzaniaBoundary });
+                map.addSource('wind-5', { type: 'geojson', data: wind5 });
+                map.addSource('wind-10', { type: 'geojson', data: wind10 });
+                map.addSource('wind-20', { type: 'geojson', data: wind20 });
+                map.addSource('solar-5', { type: 'geojson', data: solar5 });
+                map.addSource('solar-10', { type: 'geojson', data: solar10 });
+                map.addSource('solar-20', { type: 'geojson', data: solar20 });
+                map.addSource('agriculture', { type: 'geojson', data: agricultureAreas });
+                map.addSource('power-grid', { type: 'geojson', data: powerGrid });
+                map.addSource('protected-areas', { type: 'geojson', data: protectedAreas });
+                map.addSource('wind-turbines', { type: 'geojson', data: windTurbines });
+                map.addSource('solar-panels', { type: 'geojson', data: solarPanels });
+                
+                map.addLayer({
+                    id: 'tanzania-boundary-fill', type: 'fill', source: 'tanzania-boundary',
+                    paint: { 'fill-color': '#f5f5f5', 'fill-opacity': 0.3 }
+                });
+                
+                map.addLayer({
+                    id: 'agriculture-layer', type: 'fill', source: 'agriculture',
+                    paint: { 'fill-color': '#27ae60', 'fill-opacity': 0.7 },
+                    layout: { visibility: 'none' }
+                });
+                
+                // Wind layers with gradient colors (darker = higher percentile)
+                map.addLayer({
+                    id: 'wind-20-layer', type: 'fill', source: 'wind-20',
+                    paint: { 'fill-color': '#85c1e9', 'fill-opacity': 0.7 }
+                });
+                map.addLayer({
+                    id: 'wind-10-layer', type: 'fill', source: 'wind-10',
+                    paint: { 'fill-color': '#3498db', 'fill-opacity': 0.7 }
+                });
+                map.addLayer({
+                    id: 'wind-5-layer', type: 'fill', source: 'wind-5',
+                    paint: { 'fill-color': '#1a5276', 'fill-opacity': 0.7 }
+                });
+                
+                // Solar layers with gradient colors (darker = higher percentile)
+                map.addLayer({
+                    id: 'solar-20-layer', type: 'fill', source: 'solar-20',
+                    paint: { 'fill-color': '#f9e79f', 'fill-opacity': 0.7 }
+                });
+                map.addLayer({
+                    id: 'solar-10-layer', type: 'fill', source: 'solar-10',
+                    paint: { 'fill-color': '#f39c12', 'fill-opacity': 0.7 }
+                });
+                map.addLayer({
+                    id: 'solar-5-layer', type: 'fill', source: 'solar-5',
+                    paint: { 'fill-color': '#b7950b', 'fill-opacity': 0.7 }
+                });
+                
+                map.addLayer({
+                    id: 'protected-areas-layer', type: 'fill', source: 'protected-areas',
+                    paint: { 'fill-color': '#2ecc71', 'fill-opacity': 0.5 },
+                    filter: ['in', ['get', 'IUCN_CAT'], ['literal', ['Ia', 'Ib', 'II', 'III']]]
+                });
+                
+                map.addLayer({
+                    id: 'protected-areas-outline', type: 'line', source: 'protected-areas',
+                    paint: { 'line-color': '#1e8449', 'line-width': 1 },
+                    filter: ['in', ['get', 'IUCN_CAT'], ['literal', ['Ia', 'Ib', 'II', 'III']]]
+                });
+                
+                map.addLayer({
+                    id: 'power-grid-layer', type: 'line', source: 'power-grid',
+                    paint: { 'line-color': '#e74c3c', 'line-width': 2 }
+                });
+                
+                map.addLayer({
+                    id: 'tanzania-boundary-line', type: 'line', source: 'tanzania-boundary',
+                    paint: { 'line-color': '#2c3e50', 'line-width': 2 }
+                });
+                
+                map.addLayer({
+                    id: 'wind-turbines-layer', type: 'circle', source: 'wind-turbines',
+                    paint: { 'circle-radius': 6, 'circle-color': '#9b59b6', 'circle-stroke-color': '#fff', 'circle-stroke-width': 2 },
+                    layout: { visibility: 'none' }
+                });
+                
+                map.addLayer({
+                    id: 'solar-panels-layer', type: 'circle', source: 'solar-panels',
+                    paint: { 'circle-radius': 6, 'circle-color': '#e67e22', 'circle-stroke-color': '#fff', 'circle-stroke-width': 2 },
+                    layout: { visibility: 'none' }
+                });
+                
+                document.getElementById('loading').classList.add('hidden');
+                setupLayerControls();
+                setupPopups();
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loading').textContent = 'Error loading data: ' + error.message;
+            }
+        });
+        
+        function setupLayerControls() {
+            // Wind layer controls
+            document.getElementById('wind-5').addEventListener('change', updateWindLayers);
+            document.getElementById('wind-10').addEventListener('change', updateWindLayers);
+            document.getElementById('wind-20').addEventListener('change', updateWindLayers);
+            document.getElementById('wind-buffer').addEventListener('change', updateWindLayers);
+            
+            // Solar layer controls
+            document.getElementById('solar-5').addEventListener('change', updateSolarLayers);
+            document.getElementById('solar-10').addEventListener('change', updateSolarLayers);
+            document.getElementById('solar-20').addEventListener('change', updateSolarLayers);
+            document.getElementById('solar-buffer').addEventListener('change', updateSolarLayers);
+            
+            document.getElementById('agriculture-layer').addEventListener('change', function() {
+                map.setLayoutProperty('agriculture-layer', 'visibility', this.checked ? 'visible' : 'none');
+            });
+            document.getElementById('grid-layer').addEventListener('change', function() {
+                map.setLayoutProperty('power-grid-layer', 'visibility', this.checked ? 'visible' : 'none');
+            });
+            document.getElementById('turbines-layer').addEventListener('change', function() {
+                map.setLayoutProperty('wind-turbines-layer', 'visibility', this.checked ? 'visible' : 'none');
+            });
+            document.getElementById('panels-layer').addEventListener('change', function() {
+                map.setLayoutProperty('solar-panels-layer', 'visibility', this.checked ? 'visible' : 'none');
+            });
+            document.getElementById('protected-layer').addEventListener('change', function() {
+                const visibility = this.checked ? 'visible' : 'none';
+                map.setLayoutProperty('protected-areas-layer', 'visibility', visibility);
+                map.setLayoutProperty('protected-areas-outline', 'visibility', visibility);
+            });
+            document.getElementById('boundary-layer').addEventListener('change', function() {
+                map.setLayoutProperty('tanzania-boundary-line', 'visibility', this.checked ? 'visible' : 'none');
+                map.setLayoutProperty('tanzania-boundary-fill', 'visibility', this.checked ? 'visible' : 'none');
+            });
+            document.querySelectorAll('.iucn-cat').forEach(checkbox => {
+                checkbox.addEventListener('change', updateIUCNFilter);
+            });
+        }
+        
+        function updateWindLayers() {
+            const show5 = document.getElementById('wind-5').checked;
+            const show10 = document.getElementById('wind-10').checked;
+            const show20 = document.getElementById('wind-20').checked;
+            const buffer = document.getElementById('wind-buffer').value;
+            
+            // Update visibility
+            map.setLayoutProperty('wind-5-layer', 'visibility', show5 ? 'visible' : 'none');
+            map.setLayoutProperty('wind-10-layer', 'visibility', show10 ? 'visible' : 'none');
+            map.setLayoutProperty('wind-20-layer', 'visibility', show20 ? 'visible' : 'none');
+            
+            // Update data based on buffer
+            const data5 = windData['5_' + buffer];
+            const data10 = windData['10_' + buffer];
+            const data20 = windData['20_' + buffer];
+            
+            if (data5) map.getSource('wind-5').setData(data5);
+            if (data10) map.getSource('wind-10').setData(data10);
+            if (data20) map.getSource('wind-20').setData(data20);
+        }
+        
+        function updateSolarLayers() {
+            const show5 = document.getElementById('solar-5').checked;
+            const show10 = document.getElementById('solar-10').checked;
+            const show20 = document.getElementById('solar-20').checked;
+            const buffer = document.getElementById('solar-buffer').value;
+            
+            // Update visibility
+            map.setLayoutProperty('solar-5-layer', 'visibility', show5 ? 'visible' : 'none');
+            map.setLayoutProperty('solar-10-layer', 'visibility', show10 ? 'visible' : 'none');
+            map.setLayoutProperty('solar-20-layer', 'visibility', show20 ? 'visible' : 'none');
+            
+            // Update data based on buffer
+            const data5 = solarData['5_' + buffer];
+            const data10 = solarData['10_' + buffer];
+            const data20 = solarData['20_' + buffer];
+            
+            if (data5) map.getSource('solar-5').setData(data5);
+            if (data10) map.getSource('solar-10').setData(data10);
+            if (data20) map.getSource('solar-20').setData(data20);
+        }
+        
+        function updateIUCNFilter() {
+            const selectedCategories = Array.from(document.querySelectorAll('.iucn-cat:checked')).map(cb => cb.value);
+            const filter = selectedCategories.length > 0
+                ? ['in', ['get', 'IUCN_CAT'], ['literal', selectedCategories]]
+                : ['==', 1, 0];
+            map.setFilter('protected-areas-layer', filter);
+            map.setFilter('protected-areas-outline', filter);
+        }
+        
+        function setupPopups() {
+            map.on('click', 'protected-areas-layer', (e) => {
+                const props = e.features[0].properties;
+                new mapboxgl.Popup().setLngLat(e.lngLat)
+                    .setHTML('<strong>' + (props.NAME || 'Protected Area') + '</strong><br>IUCN: ' + (props.IUCN_CAT || 'N/A'))
+                    .addTo(map);
+            });
+            map.on('click', 'wind-turbines-layer', (e) => {
+                const props = e.features[0].properties;
+                new mapboxgl.Popup().setLngLat(e.lngLat)
+                    .setHTML('<strong>Wind Turbine</strong><br>Wind Speed: ' + (props.wind_speed ? props.wind_speed.toFixed(2) + ' m/s' : 'N/A'))
+                    .addTo(map);
+            });
+            map.on('click', 'solar-panels-layer', (e) => {
+                const props = e.features[0].properties;
+                new mapboxgl.Popup().setLngLat(e.lngLat)
+                    .setHTML('<strong>Solar Panel</strong><br>PV Output: ' + (props.pvout ? props.pvout.toFixed(2) + ' kWh/kWp/day' : 'N/A'))
+                    .addTo(map);
+            });
+            
+            // Wind potential popups
+            ['wind-5-layer', 'wind-10-layer', 'wind-20-layer'].forEach((layer, i) => {
+                const pct = ['5', '10', '20'][i];
+                map.on('click', layer, (e) => {
+                    new mapboxgl.Popup().setLngLat(e.lngLat)
+                        .setHTML('<strong>Wind Potential</strong><br>Top ' + pct + '% Wind Speed Area')
+                        .addTo(map);
+                });
+            });
+            
+            // Solar potential popups
+            ['solar-5-layer', 'solar-10-layer', 'solar-20-layer'].forEach((layer, i) => {
+                const pct = ['5', '10', '20'][i];
+                map.on('click', layer, (e) => {
+                    new mapboxgl.Popup().setLngLat(e.lngLat)
+                        .setHTML('<strong>Solar Potential</strong><br>Top ' + pct + '% PV Output Area')
+                        .addTo(map);
+                });
+            });
+            
+            ['protected-areas-layer', 'wind-turbines-layer', 'solar-panels-layer', 
+             'wind-5-layer', 'wind-10-layer', 'wind-20-layer',
+             'solar-5-layer', 'solar-10-layer', 'solar-20-layer'].forEach(layer => {
+                map.on('mouseenter', layer, () => { map.getCanvas().style.cursor = 'pointer'; });
+                map.on('mouseleave', layer, () => { map.getCanvas().style.cursor = ''; });
+            });
+        }
+        
+        function exportMap() {
+            const canvas = map.getCanvas();
+            const link = document.createElement('a');
+            link.download = 'tanzania-energy-map.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+</html>
