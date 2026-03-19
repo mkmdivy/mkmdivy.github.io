@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoVault Dealership</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f2f5;color:#1a1a2e;min-height:100vh}
+.page{display:none;min-height:100vh}
+.page.active{display:flex;flex-direction:column;min-height:100vh}
+
+/* NAV */
+nav{background:#1a1a2e;color:#fff;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:58px;flex-shrink:0}
+.nav-brand{font-size:1.3rem;font-weight:800;letter-spacing:-0.5px;color:#fff;display:flex;align-items:center;gap:8px}
+.nav-brand span{color:#3b82f6}
+.nav-right{display:flex;align-items:center;gap:1rem;font-size:13.5px}
+.nav-right .welcome{color:#94a3b8}
+.nav-logout{background:none;border:1px solid #334155;color:#94a3b8;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:13px}
+.nav-logout:hover{background:#334155;color:#fff}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:5rem 2rem;text-align:center}
+.hero h1{font-size:3rem;font-weight:800;margin-bottom:1rem;line-height:1.1}
+.hero h1 span{color:#3b82f6}
+.hero p{color:#94a3b8;font-size:1.1rem;margin-bottom:2rem}
+.stat-box{display:inline-block;background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.4);border-radius:12px;padding:1rem 2.5rem;margin-bottom:2rem}
+.stat-box .num{font-size:2.5rem;font-weight:800;color:#3b82f6}
+.stat-box .label{font-size:13px;color:#94a3b8;margin-top:2px}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:8px;border:none;cursor:pointer;font-size:14px;font-weight:600;transition:all .15s;text-decoration:none}
+.btn-primary{background:#3b82f6;color:#fff}
+.btn-primary:hover{background:#2563eb}
+.btn-secondary{background:#fff;color:#1a1a2e;border:1px solid #d1d5db}
+.btn-secondary:hover{background:#f9fafb}
+.btn-outline{background:transparent;color:#3b82f6;border:1px solid #3b82f6}
+.btn-outline:hover{background:#3b82f6;color:#fff}
+.btn-danger{background:#ef4444;color:#fff}
+.btn-danger:hover{background:#dc2626}
+.btn-green{background:#22c55e;color:#fff}
+.btn-green:hover{background:#16a34a}
+.btn-sm{padding:6px 14px;font-size:12.5px}
+.btn-lg{padding:13px 28px;font-size:15px}
+.btn-block{width:100%;justify-content:center}
+
+/* LAYOUT */
+.container{max-width:1100px;margin:0 auto;padding:2rem}
+.content{flex:1;padding:2rem}
+
+/* CARDS */
+.card{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden}
+.card-header{padding:1.2rem 1.5rem;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between}
+.card-header h2{font-size:1.05rem;font-weight:700;color:#1a1a2e}
+.card-body{padding:1.5rem}
+
+/* FORMS */
+.form-group{margin-bottom:1.1rem}
+label{display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px}
+input[type=text],input[type=password],input[type=date],input[type=number],select,textarea{width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:7px;font-size:14px;outline:none;transition:border .15s;background:#fff;color:#1a1a2e}
+input:focus,select:focus,textarea:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+.form-row-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.8rem}
+select{cursor:pointer}
+
+/* ALERTS */
+.alert{padding:10px 14px;border-radius:7px;font-size:13.5px;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.alert-error{background:#fef2f2;border:1px solid #fecaca;color:#dc2626}
+.alert-success{background:#f0fdf4;border:1px solid #bbf7d0;color:#16a34a}
+.alert-info{background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8}
+
+/* TABLES */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;padding:10px 14px;background:#f8fafc;color:#6b7280;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e5e7eb}
+td{padding:11px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+tr:hover td{background:#f8fafc;cursor:pointer}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11.5px;font-weight:600}
+.badge-blue{background:#dbeafe;color:#1d4ed8}
+.badge-green{background:#dcfce7;color:#15803d}
+.badge-yellow{background:#fef9c3;color:#a16207}
+.badge-red{background:#fee2e2;color:#dc2626}
+.badge-gray{background:#f3f4f6;color:#4b5563}
+.badge-purple{background:#f3e8ff;color:#7c3aed}
+
+/* DASHBOARD GRID */
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-top:1.5rem}
+.dash-card{background:#fff;border-radius:12px;padding:1.4rem 1.2rem;text-align:center;cursor:pointer;border:2px solid transparent;box-shadow:0 1px 3px rgba(0,0,0,.07);transition:all .18s}
+.dash-card:hover{border-color:#3b82f6;box-shadow:0 4px 12px rgba(59,130,246,.15);transform:translateY(-2px)}
+.dash-card .dash-icon{font-size:2rem;margin-bottom:0.5rem}
+.dash-card .dash-label{font-size:13px;font-weight:600;color:#374151}
+.dash-card.disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+
+/* SEARCH FORM */
+.search-panel{background:#fff;border-radius:12px;padding:1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:1.5rem}
+.search-panel h3{font-size:14px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:1rem}
+
+/* VEHICLE CARD */
+.vehicle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.2rem}
+.vehicle-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08);cursor:pointer;transition:all .18s;border:2px solid transparent}
+.vehicle-card:hover{border-color:#3b82f6;box-shadow:0 6px 20px rgba(59,130,246,.15)}
+.vehicle-img{height:160px;background:linear-gradient(135deg,#1e3a5f,#2563eb);display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative}
+.vehicle-img .year-badge{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.5);color:#fff;font-size:12px;padding:3px 8px;border-radius:5px}
+.vehicle-info{padding:1.1rem}
+.vehicle-info h3{font-size:1rem;font-weight:700;margin-bottom:4px}
+.vehicle-info .meta{font-size:12.5px;color:#6b7280;margin-bottom:8px}
+.vehicle-info .price{font-size:1.2rem;font-weight:800;color:#2563eb}
+.vehicle-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+
+/* DETAIL PAGE */
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.detail-section{background:#fff;border-radius:12px;padding:1.4rem;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.detail-section h3{font-size:14px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #f1f5f9;padding-bottom:0.7rem;margin-bottom:1rem}
+.detail-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f8fafc;font-size:13.5px}
+.detail-row:last-child{border-bottom:none}
+.detail-row .dk{color:#6b7280;font-weight:500}
+.detail-row .dv{font-weight:600;color:#1a1a2e;text-align:right}
+.price-hero{background:linear-gradient(135deg,#1a1a2e,#0f3460);color:#fff;border-radius:12px;padding:2rem;text-align:center;margin-bottom:1.5rem}
+.price-hero .ph-label{font-size:13px;color:#94a3b8;margin-bottom:4px}
+.price-hero .ph-price{font-size:2.5rem;font-weight:800;color:#3b82f6}
+
+/* STEPS */
+.steps{display:flex;gap:0;margin-bottom:1.5rem;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.step-item{flex:1;padding:12px;text-align:center;font-size:12.5px;color:#9ca3af;border-right:1px solid #f1f5f9;position:relative}
+.step-item:last-child{border-right:none}
+.step-item.active{background:#eff6ff;color:#1d4ed8;font-weight:700}
+.step-item.done{background:#f0fdf4;color:#15803d}
+.step-item .sn{font-size:10px;display:block;margin-bottom:2px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+
+/* PARTS TABLE */
+.parts-status-ordered{color:#d97706}
+.parts-status-received{color:#2563eb}
+.parts-status-installed{color:#16a34a}
+
+/* REPORT */
+.report-stat{background:#fff;border-radius:10px;padding:1.2rem 1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.08);text-align:center}
+.report-stat .rs-val{font-size:1.8rem;font-weight:800;color:#1a1a2e}
+.report-stat .rs-label{font-size:12px;color:#6b7280;margin-top:2px}
+.report-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem}
+
+/* HIGHLIGHT ROW */
+tr.highlight-red td{background:#fff5f5}
+
+/* ROLE TAGS */
+.role-tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600;margin-right:4px}
+.role-owner{background:#f3e8ff;color:#7c3aed}
+.role-sales{background:#dcfce7;color:#15803d}
+.role-acq{background:#fef9c3;color:#a16207}
+.role-ops{background:#dbeafe;color:#1d4ed8}
+
+/* SECTION HEADER */
+.page-title{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.page-title h1{font-size:1.5rem;font-weight:800;color:#1a1a2e}
+.back-btn{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:#6b7280;cursor:pointer;padding:6px 12px;border-radius:7px;border:1px solid #e5e7eb;background:#fff;font-weight:600}
+.back-btn:hover{background:#f9fafb;color:#1a1a2e}
+
+/* LOGIN PAGE */
+.login-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem;background:linear-gradient(135deg,#1a1a2e 0%,#0f3460 100%)}
+.login-box{background:#fff;border-radius:16px;padding:2.5rem;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.login-logo{text-align:center;margin-bottom:2rem}
+.login-logo h2{font-size:1.5rem;font-weight:800;color:#1a1a2e}
+.login-logo p{color:#6b7280;font-size:13px;margin-top:4px}
+
+/* RESULT COUNT */
+.result-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;font-size:13px;color:#6b7280}
+.result-meta strong{color:#1a1a2e}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:3rem;color:#9ca3af}
+.empty .ei{font-size:3rem;margin-bottom:1rem}
+.empty p{font-size:14px}
+
+/* MODAL OVERLAY */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:14px;padding:2rem;max-width:500px;width:90%;max-height:90vh;overflow-y:auto}
+.modal h3{font-size:1.1rem;font-weight:700;margin-bottom:1.2rem}
+.modal-footer{display:flex;gap:.8rem;justify-content:flex-end;margin-top:1.5rem}
+
+/* SOLD BANNER */
+.sold-banner{background:#fee2e2;border:1px solid #fecaca;border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:13.5px;color:#dc2626;font-weight:600;margin-bottom:1rem}
+
+/* RESPONSIVE */
+@media(max-width:700px){.form-row,.form-row-3,.form-row-4{grid-template-columns:1fr}.detail-grid{grid-template-columns:1fr}.vehicle-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 1: PUBLIC LANDING
+═══════════════════════════════════════════ -->
+<div class="page active" id="page-landing">
+  <nav>
+    <div class="nav-brand">🚗 <span>Auto</span>Vault</div>
+    <div class="nav-right">
+      <button class="btn btn-primary btn-sm" onclick="go('page-login')">Staff Login</button>
+    </div>
+  </nav>
+  <div class="hero">
+    <h1>Find Your Perfect <span>Vehicle</span></h1>
+    <p>Browse our certified pre-owned inventory with transparent pricing</p>
+    <div class="stat-box">
+      <div class="num" id="available-count">47</div>
+      <div class="label">Total Vehicles Available for Sale</div>
+    </div>
+    <div class="hero-btns">
+      <button class="btn btn-primary btn-lg" onclick="go('page-search')">🔍 Browse Inventory</button>
+      <button class="btn btn-secondary btn-lg" onclick="go('page-login')">👤 Staff Login</button>
+    </div>
+  </div>
+
+  <!-- WHY US -->
+  <div style="background:#fff;padding:3rem 2rem">
+    <div style="max-width:900px;margin:0 auto;text-align:center">
+      <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:0.5rem">Why AutoVault?</h2>
+      <p style="color:#6b7280;margin-bottom:2rem">Trusted by thousands of customers in the region</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.5rem">
+        <div style="padding:1.5rem;background:#f8fafc;border-radius:12px">
+          <div style="font-size:2rem;margin-bottom:0.5rem">✅</div>
+          <h3 style="font-weight:700;margin-bottom:0.3rem;font-size:0.95rem">Certified Inventory</h3>
+          <p style="font-size:13px;color:#6b7280">Every vehicle inspected before listing</p>
+        </div>
+        <div style="padding:1.5rem;background:#f8fafc;border-radius:12px">
+          <div style="font-size:2rem;margin-bottom:0.5rem">💰</div>
+          <h3 style="font-weight:700;margin-bottom:0.3rem;font-size:0.95rem">Fair Pricing</h3>
+          <p style="font-size:13px;color:#6b7280">Transparent, no-haggle sale prices</p>
+        </div>
+        <div style="padding:1.5rem;background:#f8fafc;border-radius:12px">
+          <div style="font-size:2rem;margin-bottom:0.5rem">🔧</div>
+          <h3 style="font-weight:700;margin-bottom:0.3rem;font-size:0.95rem">Fully Serviced</h3>
+          <p style="font-size:13px;color:#6b7280">Parts installed and inspected before sale</p>
+        </div>
+        <div style="padding:1.5rem;background:#f8fafc;border-radius:12px">
+          <div style="font-size:2rem;margin-bottom:0.5rem">📋</div>
+          <h3 style="font-weight:700;margin-bottom:0.3rem;font-size:0.95rem">Vehicle History</h3>
+          <p style="font-size:13px;color:#6b7280">Full purchase history on every car</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#1a1a2e;color:#94a3b8;text-align:center;padding:1.2rem;font-size:12.5px">
+    &copy; 2025 AutoVault Dealership &nbsp;|&nbsp; DB Systems Concepts &amp; Design — Project 2
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 2: STAFF LOGIN
+═══════════════════════════════════════════ -->
+<div class="page" id="page-login">
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="login-logo">
+        <div style="font-size:2.5rem;margin-bottom:0.5rem">🚗</div>
+        <h2>AutoVault Staff</h2>
+        <p>Sign in to your account</p>
+      </div>
+      <div id="login-error" class="alert alert-error" style="display:none"></div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="login-user" placeholder="Enter your username" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="login-pass" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div style="font-size:12px;color:#9ca3af;margin-bottom:1rem;background:#f8fafc;border-radius:7px;padding:8px 12px">
+        <strong>Demo accounts:</strong><br>
+        owner / owner123 &nbsp;|&nbsp; sales / sales123<br>
+        acq / acq123 &nbsp;|&nbsp; manager / mgr123
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" onclick="doLogin()">Sign In →</button>
+      <button class="btn btn-secondary btn-block" style="margin-top:0.7rem" onclick="go('page-landing')">← Back to Public Site</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 3: STAFF DASHBOARD
+═══════════════════════════════════════════ -->
+<div class="page" id="page-dashboard">
+  <nav>
+    <div class="nav-brand">🚗 <span>Auto</span>Vault</div>
+    <div class="nav-right">
+      <span class="welcome" id="dash-welcome"></span>
+      <div id="dash-roles"></div>
+      <button class="nav-logout" onclick="doLogout()">Sign Out</button>
+    </div>
+  </nav>
+  <div class="content">
+    <div class="container" style="padding-top:1rem">
+      <h1 style="font-size:1.6rem;font-weight:800;margin-bottom:0.3rem" id="dash-greeting"></h1>
+      <p style="color:#6b7280;font-size:14px;margin-bottom:0.2rem">Staff Dashboard &nbsp;·&nbsp; <span id="dash-date"></span></p>
+
+      <!-- QUICK STATS -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:1.2rem 0">
+        <div class="report-stat"><div class="rs-val">47</div><div class="rs-label">Available Vehicles</div></div>
+        <div class="report-stat"><div class="rs-val">12</div><div class="rs-label">Sold This Month</div></div>
+        <div class="report-stat"><div class="rs-val">8</div><div class="rs-label">Parts Pending</div></div>
+        <div class="report-stat"><div class="rs-val">3</div><div class="rs-label">Orders Ordered</div></div>
+      </div>
+
+      <h2 style="font-size:14px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:0.8rem">Quick Actions</h2>
+      <div class="dash-grid" id="dash-actions"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 4: VEHICLE SEARCH
+═══════════════════════════════════════════ -->
+<div class="page" id="page-search">
+  <nav>
+    <div class="nav-brand">🚗 <span>Auto</span>Vault</div>
+    <div class="nav-right" id="search-nav-right">
+      <button class="nav-logout" onclick="go(session.username?'page-dashboard':'page-landing')">← Back</button>
+    </div>
+  </nav>
+  <div class="content">
+    <div class="container" style="padding-top:1rem">
+      <div class="page-title">
+        <h1>Vehicle Search</h1>
+        <div id="search-staff-badge"></div>
+      </div>
+
+      <div class="search-panel">
+        <h3>Filter Vehicles</h3>
+        <div class="form-row">
+          <div class="form-group" style="margin:0">
+            <label>Manufacturer</label>
+            <select id="f-mfr">
+              <option value="">All Manufacturers</option>
+              <option>Toyota</option><option>Honda</option><option>Ford</option>
+              <option>Chevrolet</option><option>BMW</option><option>Mercedes-Benz</option>
+              <option>Nissan</option><option>Hyundai</option><option>Kia</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>Vehicle Type</label>
+            <select id="f-type">
+              <option value="">All Types</option>
+              <option>Sedan</option><option>SUV</option><option>Truck</option>
+              <option>Coupe</option><option>Van</option><option>Hatchback</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row" style="margin-top:0.8rem">
+          <div class="form-group" style="margin:0">
+            <label>Model Year</label>
+            <input type="text" id="f-year" placeholder="e.g. 2022" maxlength="4">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>Fuel Type</label>
+            <select id="f-fuel">
+              <option value="">All Fuel Types</option>
+              <option>Gas</option><option>Diesel</option><option>Hybrid</option>
+              <option>Plugin Hybrid</option><option>Battery</option><option>Fuel Cell</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row" style="margin-top:0.8rem">
+          <div class="form-group" style="margin:0">
+            <label>Color</label>
+            <input type="text" id="f-color" placeholder="e.g. Silver">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>Keyword</label>
+            <input type="text" id="f-kw" placeholder="Search model, notes...">
+          </div>
+        </div>
+        <div class="form-row" style="margin-top:0.8rem" id="search-vin-row" style="display:none">
+          <div class="form-group" style="margin:0">
+            <label>VIN (Staff Only)</label>
+            <input type="text" id="f-vin" placeholder="Exact VIN match">
+          </div>
+          <div></div>
+        </div>
+        <div id="search-year-error" class="alert alert-error" style="display:none;margin-top:0.8rem"></div>
+        <div style="display:flex;gap:0.8rem;margin-top:1rem;align-items:center">
+          <button class="btn btn-primary" onclick="doSearch()">🔍 Search Vehicles</button>
+          <button class="btn btn-secondary" onclick="clearSearch()">Clear Filters</button>
+          <span id="search-filter-status" style="font-size:13px;color:#6b7280"></span>
+        </div>
+      </div>
+
+      <div id="search-results"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 5: VEHICLE DETAILS
+═══════════════════════════════════════════ -->
+<div class="page" id="page-vehicle-detail">
+  <nav>
+    <div class="nav-brand">🚗 <span>Auto</span>Vault</div>
+    <div class="nav-right">
+      <button class="nav-logout" onclick="go('page-search')">← Back to Results</button>
+    </div>
+  </nav>
+  <div class="content">
+    <div class="container" style="padding-top:1rem">
+      <div id="vehicle-detail-content"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 6: ADD VEHICLE / PURCHASE TRANSACTION
+═══════════════════════════════════════════ -->
+<div class="page" id="page-add-vehicle">
+  <nav>
+    <div class="nav-brand">🚗 <span>Auto</span>Vault</div>
+    <div class="nav-right"><button class="nav-logout" onclick="go('page-dashboard')">← Dashboard</button></div>
+  </nav>
+  <div class="content">
+    <div class="container" style="padding-top:1rem">
+      <div class="page-title"><h1>Purchase Transaction — Add Vehicle</h1></div>
+
+      <!-- STEPS -->
+      <div class="steps">
+        <div class="step-item done" id="av-step1"><span class="sn">Step 1</span>Seller</div>
+        <div class="step-item active" id="av-step2"><span class="sn">Step 2</span>Vehicle Info</div>
+        <div class="step-item" id="av-step3"><span class="sn">Step 3</span>Purchase Details</div>
+        <div class="step-item" id="av-step4"><span class="sn">Step 4</span>Confirm</div>
+      </div>
+
+      <!-- STEP 1: SELLER -->
+      <div id="av-pane-seller" class="card" style="display:none">
+        <div class="card-header"><h2>Step 1 – Identify the Seller</h2></div>
+        <div class="card-body">
+          <div id="av-seller-info" class="alert alert-info" style="display:none"></div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Search by SSN (Individual)</label>
+              <input type="text" id="av-ssn" placeholder="e.g. 123-45-6789">
+            </div>
+            <div class="form-group">
+              <label>Search by Tax ID (Business)</label>
+              <input type="text" id="av-taxid" placeholder="e.g. 98-7654321">
+            </div>
+          </div>
+          <div id="av-seller-found" style="display:none">
+            <div class="alert alert-success">✅ Seller found and selected.</div>
+          </div>
+          <div id="av-seller-notfound" class="alert alert-error" style="display:none">No customer found. You may add a new one below.</div>
+          <div style="display:flex;gap:.8rem;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="searchSeller()">Search Customer</button>
+            <button class="btn btn-outline" onclick="showAddCustomerModal('seller')">+ Add New Customer</button>
+          </div>
+          <div style="margin-top:1rem;display:flex;justify-content:flex-end">
+            <button class="btn btn-primary" onclick="avNextStep(2)" id="av-seller-next" disabled>Next: Vehicle Info →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: VEHICLE -->
+      <div id="av-pane-vehicle" class="card">
+        <div class="card-header"><h2>Step 2 – Vehicle Information</h2></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label>VIN *</label>
+              <input type="text" id="av-vin" placeholder="17-character VIN">
+              <div id="av-vin-error" class="alert alert-error" style="display:none;margin-top:5px"></div>
+            </div>
+            <div class="form-group">
+              <label>Manufacturer *</label>
+              <select id="av-mfr">
+                <option value="">Select Manufacturer</option>
+                <option>Toyota</option><option>Honda</option><option>Ford</option>
+                <option>Chevrolet</option><option>BMW</option><option>Mercedes-Benz</option>
+                <option>Nissan</option><option>Hyundai</option><option>Kia</option>
+                <option value="__new__">+ Add New Manufacturer</option>
+              </select>
+            </div>
+          </div>
+          <div id="new-mfr-row" class="form-group" style="display:none">
+            <label>New Manufacturer Name *</label>
+            <input type="text" id="av-new-mfr" placeholder="Enter manufacturer name">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Vehicle Type *</label>
+              <select id="av-vtype">
+                <option value="">Select Type</option>
+                <option>Sedan</option><option>SUV</option><option>Truck</option>
+                <option>Coupe</option><option>Van</option><option>Hatchback</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Model Name *</label>
+              <input type="text" id="av-model" placeholder="e.g. Camry">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Model Year * (4 digits)</label>
+              <input type="text" id="av-year" placeholder="e.g. 2021" maxlength="4">
+            </div>
+            <div class="form-group">
+              <label>Fuel Type *</label>
+              <select id="av-fuel">
+                <option value="">Select Fuel Type</option>
+                <option>Gas</option><option>Diesel</option><option>Natural Gas</option>
+                <option>Hybrid</option><option>Plugin Hybrid</option><option>Battery</option><option>Fuel Cell</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Color *</label>
+              <input type="text" id="av-color" placeholder="e.g. Midnight Blue">
+            </div>
+            <div class="form-group">
+              <label>Horsepower * (positive)</label>
+              <input type="number" id="av-hp" placeholder="e.g. 203" min="1">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Drivetrain *</label>
+              <select id="av-drive">
+                <option value="">Select Drivetrain</option>
+                <option>Front-Wheel Drive</option><option>Rear-Wheel Drive</option>
+                <option>All-Wheel Drive</option><option>Four-Wheel Drive</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Vehicle Condition *</label>
+              <select id="av-cond">
+                <option value="">Select Condition</option>
+                <option>Excellent</option><option>Very Good</option><option>Good</option><option>Fair</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Notes (optional)</label>
+            <textarea id="av-note" placeholder="Any additional notes about the vehicle..."></textarea>
+          </div>
+          <div id="av-vehicle-error" class="alert alert-error" style="display:none"></div>
+          <div style="display:flex;justify-content:space-between;margin-top:0.5rem">
+            <button class="btn btn-secondary" onclick="avGoToStep(1)" style="display:none" id="av-back2">← Back</button>
+            <button class="btn btn-primary" onclick="avNextStep(3)">Next: Purchase Details →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: PURCHASE -->
+      <div id="av-pane-purchase" class="card" style="display:none">
+        <div class="card-header"><h2>Step 3 – Purchase Details</h2></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Purchase Price * ($)</label>
+              <input type="number" id="av-price" placeholder="e.g. 12500.00" min="0.01" step="0.01">
+            </div>
+            <div class="form-group">
+              <label>Purchase Date *</label>
+              <input type="date" id="av-pdate">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Condition at Purchase *</label>
+            <select id="av-pcond">
+              <option value="">Select Condition</option>
+              <option>Excellent</option><option>Very Good</option><option>Good</option><option>Fair</option>
+            </select>
+          </div>
+          <div id="av-purchase-error" class="alert alert-error" style="display:none"></div>
+          <div style="display:flex;justify-content:space-between;margin-top:0.5rem">
+            <button class="btn btn-secondary" onclick="avGoToStep(2)">← Back</button>
+            <button class="btn btn-primary" onclick="avSubmit()">Submit Transaction →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: CONFIRM -->
+      <div id="av-pane-confirm" class="card" style="display:none">
+        <div class="card-body" style="text-align:center;padding:3rem">
+          <div style="font-size:4rem;margin-bottom:1rem">✅</div>
+          <h2 style="font-size:1.4rem;font-weight:800;color:#15803d;margin-bottom:0.5rem">Vehicle Added Successfully!</h2>
+          <p style="color:#6b7280;margin-bottom:0.5rem" id="av-confirm-msg"></p>
+          <p style="color:#6b7280;font-size:13px;margin-bottom:2rem">The purchase transaction has been recorded.</p>
+          <div style="display:flex;gap:1rem;justify-content:center">
+            <button class="btn btn-primary" onclick="go('page-dashboard')">Back to Dashboard</button>
+            <button class="btn btn-secondary" onclick="resetAddVehicle()">Add Another Vehicle</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 7: SELL CAR
+═══════════════════════════════════════════ -->
+<div class="page" id="page-sell">
+  <nav>
+    <div class="nav-brand">🚗 <span>Auto</span>Vault</div>
+    <div class="nav-right"><button class="nav-logout" onclick="go('page-dashboard')">← Dashboard</button></div>
+  </nav>
+  <div class="content">
+    <div class="container" style="padding-top:1rem">
+      <div class="page-title"><h1>Sell Car</h1></div>
+      <div class="steps">
+        <div class="step-item active" id="sc-step1"><span class="sn">Step 1</span>Select Vehicle</div>
+        <div class="step-item" id="sc-step2"><span class="sn">Step 2</span>Identify Buyer</div>
+        <div class="step-item" id="sc-step3"><span class="sn">Step 3</span>Sale Date</div>
+        <div class="step-item" id="sc-step4"><span class="sn">Step 4</span>Finalize</div>
+      </div>
+
+      <!-- STEP 1 -->
+      <div id="sc-pane1" class="card">
+        <div class="card-header"><h2>Step 1 – Select a Vehicle</h2></div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Enter VIN</label>
+            <input type="text" id="sc-vin" placeholder="Enter vehicle VIN">
+          </div>
+          <div id="sc-vin-error" class="alert alert-error" style="display:none"></div>
+          <div id="sc-vehicle-info" style="display:none">
+            <div class="alert alert-success">✅ Vehicle available for sale</div>
+            <div class="detail-section" id="sc-vehicle-details" style="margin-top:0.8rem"></div>
+          </div>
+          <div style="display:flex;gap:.8rem;margin-top:0.5rem">
+            <button class="btn btn-primary" onclick="scLookupVehicle()">🔍 Look Up Vehicle</button>
+            <button class="btn btn-outline" onclick="scPickFromList()">Browse Available</button>
+          </div>
+          <div style="margin-top:1rem;display:flex;justify-content:flex-end">
+            <button class="btn btn-primary" id="sc-next1" disabled onclick="scGoStep(2)">Next: Identify Buyer →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div id="sc-pane2" class="card" style="display:none">
+        <div class="card-header"><h2>Step 2 – Identify the Buyer</h2></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Search by SSN (Individual)</label>
+              <input type="text" id="sc-ssn" placeholder="e.g. 987-65-4321">
+            </div>
+            <div class="form-group">
+              <label>Search by Tax ID (Business)</label>
+              <input type="text" id="sc-taxid" placeholder="e.g. 12-3456789">
+            </div>
+          </div>
+          <div id="sc-buyer-found" style="display:none">
+            <div class="alert alert-success">✅ Buyer found: <strong id="sc-buyer-name"></strong></div>
+          </div>
+          <div id="sc-buyer-notfound" class="alert alert-error" style="display:none">No customer found. Add a new one.</div>
+          <div style="display:flex;gap:.8rem;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="searchBuyer()">Search Customer</button>
+            <button class="btn btn-outline" onclick="showAddCustomerModal('buyer')">+ Add New Customer</button>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:1rem">
+            <button class="btn btn-secondary" onclick="scGoStep(1)">← Back</button>
+            <button class="btn btn-primary" id="sc-next2" disabled onclick="scGoStep(3)">Next: Sale Date →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div id="sc-pane3" class="card" style="display:none">
+        <div class="card-header"><h2>Step 3 – Sale Details</h2></div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Sale Date *</label>
+            <input type="date" id="sc-date">
+          </div>
+          <div id="sc-sale-preview" style="margin-top:1rem"></div>
+          <div style="display:flex;justify-content:space-between;margin-top:1rem">
+            <button class="btn btn-secondary" onclick="scGoStep(2)">← Back</button>
+            <button class="btn btn-green btn-lg" onclick="scFinalize()">💰 Finalize Sale</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4 CONFIRM -->
+      <div id="sc-pane4" class="card" style="display:none">
+        <div class="card-body" style="text-align:center;padding:3rem">
+          <div style="font-size:4rem;margin-bottom:1rem">🎉</div>
+          <h2 style="font-size:1.4rem;font-weight:800;color:#15803d;margin-bottom:0.5rem">Sale Complete!</h2>
+          <p style="color:#6b7280;margin-bottom:2rem" id="sc-confirm-msg"></p>
+          <div style="display:flex;gap:1rem;justify-content:center">
+            <button class="btn btn-primary" onclick="go('page-dashboard')">Back to Dashboard</button>
+            <button class="btn btn-secondary" onclick="resetSell()">Sell Another</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 8: PARTS STATUS TRACKING
+═══════════════════════════════════════════ -->
+<div class="page" id="page-parts">
+  <nav>
+    <div class="nav-brand">🚗 <span>Auto</span>Vault</div>
+    <div class="nav-right"><button class="nav-logout" onclick="go('page-dashboard')">← Dashboard</button></div>
+  </nav>
+  <div class="content">
+    <div class="container" style="padding-top:1rem">
+      <div class="page-title"><h1>Parts Status Tracking</h1></div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem">
+        <div class="report-stat"><div class="rs-val" style="color:#d97706">3</div><div class="rs-label">Ordered</div></div>
+        <div class="report-stat"><div class="rs-val" style="color:#2563eb">5</div><div class="rs-label">Received</div></div>
+        <div class="report-stat"><div class="rs-val" style="color:#16a34a">24</div><div class="rs-label">Installed</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Pending / Ordered Parts</h2>
+          <div style="display:flex;gap:.5rem">
+            <button class="btn btn-secondary btn-sm" onclick="partsShowAll(false)">Pending Only</button>
+            <button class="btn btn-outline btn-sm" onclick="partsShowAll(true)">Show All</button>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap">
+            <table id="parts-table">
+              <thead>
+                <tr>
+                  <th>VIN</th><th>Vehicle</th><th>Vendor</th><th>Order#</th>
+                  <th>Part #</th><th>Description</th><th>Qty</th><th>Unit Price</th><th>Status</th><th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="parts-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 9: SOLD STATUS VIEW
+═══════════════════════════════════════════ -->
+<div class="page" id="page-sold">
+  <nav>
+    <div class="nav-brand">🚗 <span>Auto</span>Vault</div>
+    <div class="nav-right"><button class="nav-logout" onclick="go('page-dashboard')">← Dashboard</button></div>
+  </nav>
+  <div class="content">
+    <div class="container" style="padding-top:1rem">
+      <div class="page-title"><h1>Sold Vehicle Status</h1></div>
+      <div class="card">
+        <div class="card-header"><h2>All Sold Vehicles</h2><span style="font-size:13px;color:#6b7280">Click a row to view details</span></div>
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>VIN</th><th>Manufacturer</th><th>Model</th><th>Year</th><th>Sale Date</th><th>Sale Price</th><th>Sales Agent</th><th>Buyer</th></tr>
+              </thead>
+              <tbody id="sold-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 10: REPORTS HUB
+═══════════════════════════════════════════ -->
+<div class="page" id="page-reports">
+  <nav>
+    <div class="nav-brand">🚗 <span>Auto</span>Vault</div>
+    <div class="nav-right"><button class="nav-logout" onclick="go('page-dashboard')">← Dashboard</button></div>
+  </nav>
+  <div class="content">
+    <div class="container" style="padding-top:1rem">
+      <div class="page-title"><h1>Reports</h1></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.2rem">
+        <div class="dash-card" onclick="showReport('seller')"><div class="dash-icon">👤</div><div class="dash-label">Seller History</div><p style="font-size:12px;color:#9ca3af;margin-top:4px">Seller purchase stats</p></div>
+        <div class="dash-card" onclick="showReport('condition')"><div class="dash-icon">🏷️</div><div class="dash-label">Price Per Condition</div><p style="font-size:12px;color:#9ca3af;margin-top:4px">Avg price by condition & type</p></div>
+        <div class="dash-card" onclick="showReport('monthly')"><div class="dash-icon">📅</div><div class="dash-label">Monthly Sales</div><p style="font-size:12px;color:#9ca3af;margin-top:4px">Revenue & income by month</p></div>
+        <div class="dash-card" onclick="showReport('inventory')"><div class="dash-icon">⏱️</div><div class="dash-label">Avg. Time in Inventory</div><p style="font-size:12px;color:#9ca3af;margin-top:4px">Days in stock by vehicle type</p></div>
+        <div class="dash-card" onclick="showReport('parts')"><div class="dash-icon">🔧</div><div class="dash-label">Parts Statistics</div><p style="font-size:12px;color:#9ca3af;margin-top:4px">Vendor cost & quantity stats</p></div>
+      </div>
+      <div id="report-output" style="margin-top:2rem"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 11: CREATE PARTS ORDER
+═══════════════════════════════════════════ -->
+<div class="page" id="page-parts-order">
+  <nav>
+    <div class="nav-brand">🚗 <span>Auto</span>Vault</div>
+    <div class="nav-right"><button class="nav-logout" onclick="go('page-dashboard')">← Dashboard</button></div>
+  </nav>
+  <div class="content">
+    <div class="container" style="padding-top:1rem">
+      <div class="page-title"><h1>Create Parts Order</h1></div>
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-header"><h2>Vehicle & Vendor</h2></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Vehicle VIN *</label>
+              <input type="text" id="po-vin" placeholder="Enter VIN">
+            </div>
+            <div class="form-group">
+              <label>Vendor Name *</label>
+              <input type="text" id="po-vendor" placeholder="e.g. AutoParts Plus">
+            </div>
+          </div>
+          <div id="po-vehicle-info" class="alert alert-info" style="display:none"></div>
+          <button class="btn btn-outline btn-sm" onclick="poVerifyVehicle()">Verify Vehicle</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2>Parts (Order #<span id="po-ordinal">1</span>)</h2>
+          <button class="btn btn-outline btn-sm" onclick="poAddPart()">+ Add Part</button>
+        </div>
+        <div class="card-body">
+          <div id="po-parts-list"></div>
+          <div id="po-no-parts" style="color:#9ca3af;font-size:13px;text-align:center;padding:1.5rem">No parts added yet. Click "+ Add Part" to begin.</div>
+          <div style="margin-top:1rem;display:flex;justify-content:flex-end;gap:.8rem">
+            <button class="btn btn-secondary" onclick="go('page-dashboard')">Cancel</button>
+            <button class="btn btn-green" onclick="poFinish()">✅ Finish Order</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     MODAL: ADD CUSTOMER
+═══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-customer">
+  <div class="modal">
+    <h3>Add New Customer</h3>
+    <div class="form-group">
+      <label>Customer Type</label>
+      <select id="cust-type" onchange="toggleCustType()">
+        <option value="individual">Individual</option>
+        <option value="business">Business</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Email *</label><input type="text" id="cust-email" placeholder="email@example.com"></div>
+      <div class="form-group"><label>Phone *</label><input type="text" id="cust-phone" placeholder="(555) 123-4567"></div>
+    </div>
+    <div class="form-group"><label>Street Address *</label><input type="text" id="cust-addr" placeholder="123 Main St"></div>
+    <div class="form-row-3">
+      <div class="form-group"><label>City *</label><input type="text" id="cust-city"></div>
+      <div class="form-group"><label>State *</label><input type="text" id="cust-state" maxlength="2" placeholder="TX"></div>
+      <div class="form-group"><label>Postal Code *</label><input type="text" id="cust-zip" maxlength="5" placeholder="12345"></div>
+    </div>
+    <div id="cust-individual-fields">
+      <div class="form-row">
+        <div class="form-group"><label>First Name *</label><input type="text" id="cust-first"></div>
+        <div class="form-group"><label>Last Name *</label><input type="text" id="cust-last"></div>
+      </div>
+      <div class="form-group"><label>SSN *</label><input type="text" id="cust-ssn" placeholder="123-45-6789"></div>
+    </div>
+    <div id="cust-business-fields" style="display:none">
+      <div class="form-group"><label>Business Name *</label><input type="text" id="cust-bname"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Contact First Name *</label><input type="text" id="cust-cfirst"></div>
+        <div class="form-group"><label>Contact Last Name *</label><input type="text" id="cust-clast"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Contact Title *</label><input type="text" id="cust-ctitle" placeholder="e.g. CFO"></div>
+        <div class="form-group"><label>Tax ID *</label><input type="text" id="cust-taxid" placeholder="12-3456789"></div>
+      </div>
+    </div>
+    <div id="cust-error" class="alert alert-error" style="display:none"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-customer')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCustomer()">Save Customer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: UPDATE PART STATUS -->
+<div class="modal-overlay" id="modal-part-status">
+  <div class="modal">
+    <h3>Update Part Status</h3>
+    <p style="color:#6b7280;font-size:13.5px;margin-bottom:1rem">Part: <strong id="modal-part-desc"></strong></p>
+    <div class="form-group">
+      <label>New Status</label>
+      <select id="modal-new-status">
+        <option value="ordered">Ordered</option>
+        <option value="received">Received</option>
+        <option value="installed">Installed</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-part-status')">Cancel</button>
+      <button class="btn btn-primary" onclick="savePartStatus()">Save Status</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// MOCK DATA
+// ══════════════════════════════════════════
+const VEHICLES = [
+  {vin:'1HGCM82633A004352',mfr:'Honda',model:'Accord',year:2021,fuel:'Gas',color:'Pearl White',hp:192,drive:'Front-Wheel Drive',type:'Sedan',cond:'Excellent',note:'One owner. Clean title.',purchasePrice:18000,partsCost:0,partsList:[]},
+  {vin:'2T1BURHE0JC048821',mfr:'Toyota',model:'Corolla',year:2022,fuel:'Gas',color:'Midnight Blue',hp:139,drive:'Front-Wheel Drive',type:'Sedan',cond:'Very Good',note:'',purchasePrice:16500,partsCost:850,partsList:[{pn:'AF-221',desc:'Air Filter',qty:1,price:45,status:'installed'},{pn:'BR-009',desc:'Brake Pads (Front)',qty:2,price:80,status:'installed'}]},
+  {vin:'3VWFE21C04M000001',mfr:'Chevrolet',model:'Tahoe',year:2020,fuel:'Gas',color:'Graphite Grey',hp:355,drive:'Four-Wheel Drive',type:'SUV',cond:'Good',note:'Minor scuff on rear bumper.',purchasePrice:28000,partsCost:1200,partsList:[{pn:'OL-115',desc:'Oil Change Kit',qty:1,price:60,status:'installed'},{pn:'TR-304',desc:'Tire Rotation',qty:4,price:280,status:'installed'}]},
+  {vin:'4T1BF1FK0HU789234',mfr:'Ford',model:'F-150',year:2023,fuel:'Gas',color:'Velocity Red',hp:400,drive:'Four-Wheel Drive',type:'Truck',cond:'Excellent',note:'Towing package included.',purchasePrice:42000,partsCost:0,partsList:[]},
+  {vin:'5NPE34AF4FH050983',mfr:'Hyundai',model:'Sonata',year:2021,fuel:'Hybrid',color:'Ceramic Silver',hp:192,drive:'Front-Wheel Drive',type:'Sedan',cond:'Very Good',note:'',purchasePrice:21000,partsCost:500,partsList:[{pn:'SP-081',desc:'Spark Plugs Set',qty:4,price:125,status:'installed'}]},
+  {vin:'JTEBU5JR4G5377234',mfr:'Toyota',model:'4Runner',year:2019,fuel:'Gas',color:'Army Green',hp:270,drive:'Four-Wheel Drive',type:'SUV',cond:'Good',note:'New tires installed.',purchasePrice:31000,partsCost:2100,partsList:[{pn:'TI-501',desc:'All-Season Tires',qty:4,price:525,status:'installed'}]},
+  {vin:'WBA8A9C57HK882134',mfr:'BMW',model:'3 Series',year:2020,fuel:'Gas',color:'Alpine White',hp:255,drive:'Rear-Wheel Drive',type:'Sedan',cond:'Excellent',note:'Premium package.',purchasePrice:35000,partsCost:0,partsList:[]},
+  {vin:'1FTEW1EP5NFA00001',mfr:'Ford',model:'Mustang',year:2022,fuel:'Gas',color:'Race Red',hp:450,drive:'Rear-Wheel Drive',type:'Coupe',cond:'Excellent',note:'',purchasePrice:38000,partsCost:0,partsList:[]},
+  {vin:'KNDJP3A58J7546321',mfr:'Kia',model:'Soul',year:2021,fuel:'Gas',color:'Alien Green',hp:147,drive:'Front-Wheel Drive',type:'Hatchback',cond:'Good',note:'Fun city car.',purchasePrice:17500,partsCost:350,partsList:[{pn:'WP-044',desc:'Wiper Blades',qty:2,price:55,status:'installed'},{pn:'BL-190',desc:'Cabin Air Filter',qty:1,price:35,status:'ordered'}]},
+  {vin:'1C4RJFAG8EC476531',mfr:'Jeep',model:'Grand Cherokee',year:2018,fuel:'Gas',color:'Billet Silver',hp:295,drive:'All-Wheel Drive',type:'SUV',cond:'Fair',note:'High mileage. Solid mechanically.',purchasePrice:19000,partsCost:1800,partsList:[{pn:'SH-220',desc:'Shock Absorbers',qty:4,price:450,status:'received'}]},
+];
+
+const SOLD_VEHICLES = [
+  {vin:'2HGFG12688H502341',mfr:'Honda',model:'Civic',year:2019,saleDate:'2025-01-15',purchasePrice:13000,partsCost:0,agent:'jsmith',agentName:'John Smith',buyer:'Alice Johnson'},
+  {vin:'1N4AL3AP7JC123456',mfr:'Nissan',model:'Altima',year:2020,saleDate:'2025-02-03',purchasePrice:17500,partsCost:600,agent:'mwilson',agentName:'Mary Wilson',buyer:'Bob\'s Auto LLC'},
+  {vin:'3GNKBCRS4AS123789',mfr:'Chevrolet',model:'Equinox',year:2021,saleDate:'2025-02-18',purchasePrice:22000,partsCost:300,agent:'jsmith',agentName:'John Smith',buyer:'Carlos Mendez'},
+  {vin:'1FTFW1ET8DKE97651',mfr:'Ford',model:'Expedition',year:2017,saleDate:'2025-03-05',purchasePrice:25000,partsCost:1500,agent:'mwilson',agentName:'Mary Wilson',buyer:'Premier Events Inc.'},
+  {vin:'5YFEPRAE5LP123654',mfr:'Toyota',model:'Camry',year:2020,saleDate:'2025-03-11',purchasePrice:20000,partsCost:800,agent:'jsmith',agentName:'John Smith',buyer:'Diana Prince'},
+];
+
+const PARTS_DATA = [
+  {vin:'KNDJP3A58J7546321',vehicle:'Kia Soul (2021)',vendor:'AutoParts Plus',ordinal:1,pn:'BL-190',desc:'Cabin Air Filter',qty:1,price:35,status:'ordered'},
+  {vin:'1C4RJFAG8EC476531',vehicle:'Jeep Grand Cherokee (2018)',vendor:'Supreme Parts Co.',ordinal:1,pn:'SH-220',desc:'Shock Absorbers',qty:4,price:450,status:'received'},
+  {vin:'1HGCM82633A004352',vehicle:'Honda Accord (2021)',vendor:'AutoParts Plus',ordinal:2,pn:'CB-045',desc:'Cabin Bulb Kit',qty:1,price:22,status:'ordered'},
+  {vin:'2T1BURHE0JC048821',vehicle:'Toyota Corolla (2022)',vendor:'Metro Auto Supply',ordinal:1,pn:'AF-221',desc:'Air Filter',qty:1,price:45,status:'installed'},
+  {vin:'2T1BURHE0JC048821',vehicle:'Toyota Corolla (2022)',vendor:'Metro Auto Supply',ordinal:1,pn:'BR-009',desc:'Brake Pads (Front)',qty:2,price:80,status:'installed'},
+];
+
+const USERS = {
+  owner:   {password:'owner123',first:'Alex',last:'Rivera',isSales:true,isOps:true,isAcq:true,isOwner:true},
+  sales:   {password:'sales123',first:'John',last:'Smith',isSales:true,isOps:false,isAcq:false,isOwner:false},
+  acq:     {password:'acq123',first:'Maria',last:'Garcia',isSales:false,isOps:false,isAcq:true,isOwner:false},
+  manager: {password:'mgr123',first:'David',last:'Chen',isSales:false,isOps:true,isAcq:false,isOwner:false},
+};
+
+const EMOJIS = {Sedan:'🚗',SUV:'🚙',Truck:'🛻',Coupe:'🏎️',Van:'🚐',Hatchback:'🚘'};
+
+// ══════════════════════════════════════════
+// SESSION STATE
+// ══════════════════════════════════════════
+let session = {username:'',firstName:'',lastName:'',isSales:false,isOps:false,isAcq:false,isOwner:false};
+let selectedVehicle = null;
+let addVehicleStep = 2;
+let avSellerSelected = false;
+let scVehicleSelected = false;
+let scBuyerSelected = false;
+let scVehicle = null;
+let custModalContext = '';
+let currentPartUpdate = null;
+let poPartsAdded = [];
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+function go(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  window.scrollTo(0,0);
+
+  if(pageId === 'page-search') setupSearchPage();
+  if(pageId === 'page-dashboard') setupDashboard();
+  if(pageId === 'page-parts') renderParts(false);
+  if(pageId === 'page-sold') renderSold();
+  if(pageId === 'page-add-vehicle') {resetAddVehicle(); setupDateDefault('av-pdate');}
+  if(pageId === 'page-sell') {resetSell(); setupDateDefault('sc-date');}
+  if(pageId === 'page-reports') {document.getElementById('report-output').innerHTML='';}
+}
+
+function setupDateDefault(id) {
+  const el = document.getElementById(id);
+  if(el) el.valueAsDate = new Date();
+}
+
+// ══════════════════════════════════════════
+// LOGIN / LOGOUT
+// ══════════════════════════════════════════
+function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value.trim();
+  const err = document.getElementById('login-error');
+  err.style.display = 'none';
+
+  if(!u || !p) { showEl(err,'⚠️ Username and password are required.'); return; }
+
+  const user = USERS[u];
+  if(!user || user.password !== p) { showEl(err,'❌ Invalid username or password.'); return; }
+
+  session = {username:u, firstName:user.first, lastName:user.last,
+    isSales:user.isSales, isOps:user.isOps, isAcq:user.isAcq, isOwner:user.isOwner};
+
+  document.getElementById('login-user').value='';
+  document.getElementById('login-pass').value='';
+  go('page-dashboard');
+}
+
+function doLogout() {
+  session = {username:'',firstName:'',lastName:'',isSales:false,isOps:false,isAcq:false,isOwner:false};
+  go('page-landing');
+}
+
+// ══════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════
+function setupDashboard() {
+  document.getElementById('dash-greeting').textContent = `Welcome back, ${session.firstName} ${session.lastName}!`;
+  document.getElementById('dash-welcome').textContent = `${session.firstName} ${session.lastName}`;
+  document.getElementById('dash-date').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+  let roles = '';
+  if(session.isOwner) roles += '<span class="role-tag role-owner">Owner</span>';
+  if(session.isSales && !session.isOwner) roles += '<span class="role-tag role-sales">Sales Agent</span>';
+  if(session.isAcq && !session.isOwner) roles += '<span class="role-tag role-acq">Acq. Specialist</span>';
+  if(session.isOps && !session.isOwner) roles += '<span class="role-tag role-ops">Operating Manager</span>';
+  document.getElementById('dash-roles').innerHTML = roles;
+
+  const actions = [
+    {icon:'🔍', label:'Vehicle Search', page:'page-search', always:true},
+    {icon:'📋', label:'Sold Status View', page:'page-sold', always:true},
+    {icon:'🔧', label:'Parts Tracking', page:'page-parts', always:true},
+    {icon:'💰', label:'Sell Car', page:'page-sell', show: session.isSales||session.isOwner},
+    {icon:'🚗', label:'Add Vehicle', page:'page-add-vehicle', show: session.isAcq||session.isOwner},
+    {icon:'📦', label:'Create Parts Order', page:'page-parts-order', show: session.isAcq||session.isOwner},
+    {icon:'📊', label:'Reports', page:'page-reports', show: session.isOps||session.isOwner},
+  ];
+
+  const grid = document.getElementById('dash-actions');
+  grid.innerHTML = actions.filter(a=>a.always||a.show).map(a=>
+    `<div class="dash-card" onclick="go('${a.page}')">
+      <div class="dash-icon">${a.icon}</div>
+      <div class="dash-label">${a.label}</div>
+    </div>`
+  ).join('');
+}
+
+// ══════════════════════════════════════════
+// VEHICLE SEARCH
+// ══════════════════════════════════════════
+function setupSearchPage() {
+  const vinRow = document.getElementById('search-vin-row');
+  if(session.username) vinRow.style.display = 'grid';
+  else vinRow.style.display = 'none';
+
+  const badge = document.getElementById('search-staff-badge');
+  if(session.username) badge.innerHTML = `<span class="badge badge-blue">Staff View — VIN visible</span>`;
+  else badge.innerHTML = '';
+
+  renderSearchResults(VEHICLES);
+}
+
+function clearSearch() {
+  ['f-mfr','f-type','f-year','f-fuel','f-color','f-kw','f-vin'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('search-year-error').style.display='none';
+  renderSearchResults(VEHICLES);
+}
+
+function doSearch() {
+  const year = document.getElementById('f-year').value.trim();
+  const err = document.getElementById('search-year-error');
+  if(year && !/^\d{4}$/.test(year)) { showEl(err,'⚠️ Model year must be a 4-digit number.'); return; }
+  err.style.display='none';
+
+  const mfr   = document.getElementById('f-mfr').value;
+  const vtype = document.getElementById('f-type').value;
+  const fuel  = document.getElementById('f-fuel').value;
+  const color = document.getElementById('f-color').value.toLowerCase();
+  const kw    = document.getElementById('f-kw').value.toLowerCase();
+  const vin   = document.getElementById('f-vin').value.trim().toUpperCase();
+
+  const soldVins = new Set(SOLD_VEHICLES.map(s=>s.vin));
+
+  let results = VEHICLES.filter(v => {
+    if(soldVins.has(v.vin)) return false;
+    const hasPendingParts = v.partsList.some(p => p.status !== 'installed');
+    if(hasPendingParts) return false;
+    if(mfr   && v.mfr !== mfr) return false;
+    if(vtype && v.type !== vtype) return false;
+    if(year  && String(v.year) !== year) return false;
+    if(fuel  && v.fuel !== fuel) return false;
+    if(color && !v.color.toLowerCase().includes(color)) return false;
+    if(vin   && v.vin !== vin) return false;
+    if(kw && ![v.model,v.mfr,String(v.year),v.note].some(s=>s.toLowerCase().includes(kw))) return false;
+    return true;
+  });
+
+  renderSearchResults(results);
+}
+
+function renderSearchResults(vehicles) {
+  const el = document.getElementById('search-results');
+  if(!vehicles.length) {
+    el.innerHTML = `<div class="empty"><div class="ei">🔍</div><p>Sorry, it doesn't look like we have that in stock!</p></div>`;
+    return;
+  }
+  const isStaff = !!session.username;
+  el.innerHTML = `
+    <div class="result-meta"><span>Showing <strong>${vehicles.length}</strong> vehicle${vehicles.length!==1?'s':''}</span></div>
+    <div class="vehicle-grid">${vehicles.map(v=>{
+      const salePrice = ((v.purchasePrice + v.partsCost)*1.25).toLocaleString('en-US',{style:'currency',currency:'USD'});
+      return `<div class="vehicle-card" onclick="viewVehicle('${v.vin}')">
+        <div class="vehicle-img">
+          ${EMOJIS[v.type]||'🚗'}
+          <span class="year-badge">${v.year}</span>
+        </div>
+        <div class="vehicle-info">
+          <h3>${v.mfr} ${v.model}</h3>
+          <div class="meta">${v.fuel} · ${v.type} · ${v.color}</div>
+          <div class="price">${salePrice}</div>
+          <div class="vehicle-tags">
+            <span class="badge badge-gray">${v.cond}</span>
+            <span class="badge badge-blue">${v.drive.split(' ')[0]}-WD</span>
+            ${isStaff?`<span class="badge badge-purple" style="font-family:monospace;font-size:10px">${v.vin}</span>`:''}
+          </div>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+}
+
+// ══════════════════════════════════════════
+// VEHICLE DETAIL
+// ══════════════════════════════════════════
+function viewVehicle(vin) {
+  selectedVehicle = VEHICLES.find(v=>v.vin===vin) || SOLD_VEHICLES.find(v=>v.vin===vin);
+  const v = selectedVehicle;
+  if(!v) return;
+
+  const soldVins = new Set(SOLD_VEHICLES.map(s=>s.vin));
+  const isSold = soldVins.has(vin);
+  const salePrice = v.purchasePrice !== undefined ? ((v.purchasePrice + (v.partsCost||0))*1.25).toLocaleString('en-US',{style:'currency',currency:'USD'}) : 'N/A';
+  const isStaff = !!session.username;
+
+  let html = '';
+  if(isSold) html += `<div class="sold-banner">🔴 This vehicle has been sold</div>`;
+
+  html += `
+    <div class="price-hero">
+      <div class="ph-label">Sale Price</div>
+      <div class="ph-price">${salePrice}</div>
+      <div style="color:#94a3b8;font-size:13px;margin-top:4px">${v.year} ${v.mfr||''} ${v.model}</div>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-section">
+        <h3>Vehicle Information</h3>
+        ${isStaff?`<div class="detail-row"><span class="dk">VIN</span><span class="dv" style="font-family:monospace;font-size:12px">${v.vin}</span></div>`:''}
+        <div class="detail-row"><span class="dk">Manufacturer</span><span class="dv">${v.mfr}</span></div>
+        <div class="detail-row"><span class="dk">Model</span><span class="dv">${v.model}</span></div>
+        <div class="detail-row"><span class="dk">Year</span><span class="dv">${v.year}</span></div>
+        <div class="detail-row"><span class="dk">Type</span><span class="dv">${v.type}</span></div>
+        <div class="detail-row"><span class="dk">Fuel Type</span><span class="dv">${v.fuel}</span></div>
+        <div class="detail-row"><span class="dk">Color</span><span class="dv">${v.color}</span></div>
+        <div class="detail-row"><span class="dk">Horsepower</span><span class="dv">${v.hp} hp</span></div>
+        <div class="detail-row"><span class="dk">Drivetrain</span><span class="dv">${v.drive}</span></div>
+        <div class="detail-row"><span class="dk">Condition</span><span class="dv"><span class="badge badge-${v.cond==='Excellent'?'green':v.cond==='Very Good'?'blue':'yellow'}">${v.cond}</span></span></div>
+        ${v.note?`<div class="detail-row"><span class="dk">Note</span><span class="dv" style="max-width:200px;text-align:right">${v.note}</span></div>`:''}
+      </div>`;
+
+  if(isStaff && v.purchasePrice) {
+    html += `<div class="detail-section">
+      <h3>Purchase / Pricing</h3>
+      <div class="detail-row"><span class="dk">Purchase Price</span><span class="dv">$${v.purchasePrice.toLocaleString()}</span></div>
+      <div class="detail-row"><span class="dk">Parts Cost</span><span class="dv">$${(v.partsCost||0).toLocaleString()}</span></div>
+      <div class="detail-row"><span class="dk">Sale Price (×1.25)</span><span class="dv" style="color:#2563eb;font-size:1.05rem">${salePrice}</span></div>
+    </div>`;
+  }
+
+  html += `</div>`;
+
+  if(isStaff && v.partsList && v.partsList.length) {
+    html += `<div class="detail-section" style="margin-top:1.2rem">
+      <h3>Parts</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Part #</th><th>Description</th><th>Qty</th><th>Unit Price</th><th>Status</th></tr></thead>
+        <tbody>${v.partsList.map(p=>`<tr><td>${p.pn}</td><td>${p.desc}</td><td>${p.qty}</td><td>$${p.price}</td><td><span class="parts-status-${p.status}">${p.status}</span></td></tr>`).join('')}</tbody>
+      </table></div>
+    </div>`;
+  }
+
+  document.getElementById('vehicle-detail-content').innerHTML = html;
+  go('page-vehicle-detail');
+}
+
+// ══════════════════════════════════════════
+// ADD VEHICLE
+// ══════════════════════════════════════════
+function resetAddVehicle() {
+  avSellerSelected = false;
+  avGoToStep(2);
+  ['av-vin','av-model','av-year','av-color','av-hp','av-note','av-price','av-new-mfr'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  ['av-mfr','av-vtype','av-fuel','av-drive','av-cond','av-pcond'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.selectedIndex=0;
+  });
+  document.getElementById('av-pane-confirm').style.display='none';
+  document.getElementById('av-vehicle-error').style.display='none';
+  document.getElementById('av-purchase-error').style.display='none';
+}
+
+function avGoToStep(step) {
+  ['vehicle','purchase','confirm','seller'].forEach(p=>document.getElementById(`av-pane-${p}`).style.display='none');
+  ['av-step1','av-step2','av-step3','av-step4'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    el.className='step-item '+(i+1<step?'done':i+1===step?'active':'');
+  });
+  if(step===1) document.getElementById('av-pane-seller').style.display='block';
+  else if(step===2) document.getElementById('av-pane-vehicle').style.display='block';
+  else if(step===3) document.getElementById('av-pane-purchase').style.display='block';
+  else if(step===4) document.getElementById('av-pane-confirm').style.display='block';
+  addVehicleStep=step;
+
+  const back2=document.getElementById('av-back2');
+  if(back2) back2.style.display=step>2?'inline-flex':'none';
+}
+
+document.getElementById('av-mfr').addEventListener('change',function(){
+  document.getElementById('new-mfr-row').style.display = this.value==='__new__'?'block':'none';
+});
+
+function avNextStep(toStep) {
+  if(toStep===3) {
+    const vin=document.getElementById('av-vin').value.trim();
+    const mfr=document.getElementById('av-mfr').value;
+    const vt=document.getElementById('av-vtype').value;
+    const mn=document.getElementById('av-model').value.trim();
+    const yr=document.getElementById('av-year').value.trim();
+    const ft=document.getElementById('av-fuel').value;
+    const cl=document.getElementById('av-color').value.trim();
+    const hp=document.getElementById('av-hp').value;
+    const dr=document.getElementById('av-drive').value;
+    const cn=document.getElementById('av-cond').value;
+    const errEl=document.getElementById('av-vehicle-error');
+
+    if(!vin||!mfr||!vt||!mn||!yr||!ft||!cl||!hp||!dr||!cn) { showEl(errEl,'⚠️ All required fields must be filled in.'); return; }
+    if(!/^\d{4}$/.test(yr)) { showEl(errEl,'⚠️ Model year must be exactly 4 digits.'); return; }
+    if(parseFloat(hp)<=0) { showEl(errEl,'⚠️ Horsepower must be a positive number.'); return; }
+    if(VEHICLES.find(v=>v.vin===vin)||SOLD_VEHICLES.find(v=>v.vin===vin)) { showEl(errEl,'❌ VIN already exists in the system.'); return; }
+    errEl.style.display='none';
+  }
+  avGoToStep(toStep);
+}
+
+function avSubmit() {
+  const price=document.getElementById('av-price').value;
+  const date=document.getElementById('av-pdate').value;
+  const pcond=document.getElementById('av-pcond').value;
+  const errEl=document.getElementById('av-purchase-error');
+  if(!price||!date||!pcond) { showEl(errEl,'⚠️ All purchase fields are required.'); return; }
+  if(parseFloat(price)<=0) { showEl(errEl,'⚠️ Purchase price must be a positive number.'); return; }
+  errEl.style.display='none';
+
+  const vin=document.getElementById('av-vin').value.trim();
+  const mfr=document.getElementById('av-mfr').value==='__new__'?document.getElementById('av-new-mfr').value:document.getElementById('av-mfr').value;
+  const model=document.getElementById('av-model').value.trim();
+
+  document.getElementById('av-confirm-msg').textContent = `VIN ${vin} — ${mfr} ${model} has been added to inventory.`;
+  avGoToStep(4);
+}
+
+// ══════════════════════════════════════════
+// SELL CAR
+// ══════════════════════════════════════════
+function resetSell() {
+  scVehicleSelected=false; scBuyerSelected=false; scVehicle=null;
+  ['sc-pane1','sc-pane2','sc-pane3','sc-pane4'].forEach((id,i)=>document.getElementById(id).style.display=i===0?'block':'none');
+  ['sc-step1','sc-step2','sc-step3','sc-step4'].forEach((id,i)=>{
+    document.getElementById(id).className='step-item '+(i===0?'active':'');
+  });
+  document.getElementById('sc-vehicle-info').style.display='none';
+  document.getElementById('sc-vin-error').style.display='none';
+  document.getElementById('sc-buyer-found').style.display='none';
+  document.getElementById('sc-buyer-notfound').style.display='none';
+  document.getElementById('sc-next1').disabled=true;
+  document.getElementById('sc-next2').disabled=true;
+  document.getElementById('sc-vin').value='';
+}
+
+function scGoStep(step) {
+  ['sc-pane1','sc-pane2','sc-pane3','sc-pane4'].forEach((id,i)=>document.getElementById(id).style.display=i+1===step?'block':'none');
+  ['sc-step1','sc-step2','sc-step3','sc-step4'].forEach((id,i)=>{
+    document.getElementById(id).className='step-item '+(i+1<step?'done':i+1===step?'active':'');
+  });
+  if(step===3) {
+    const sp = ((scVehicle.purchasePrice+(scVehicle.partsCost||0))*1.25).toLocaleString('en-US',{style:'currency',currency:'USD'});
+    document.getElementById('sc-sale-preview').innerHTML=`
+      <div class="detail-section">
+        <h3>Sale Summary</h3>
+        <div class="detail-row"><span class="dk">Vehicle</span><span class="dv">${scVehicle.mfr} ${scVehicle.model} (${scVehicle.year})</span></div>
+        <div class="detail-row"><span class="dk">Sale Price</span><span class="dv" style="color:#2563eb;font-size:1.1rem">${sp}</span></div>
+        <div class="detail-row"><span class="dk">Buyer</span><span class="dv" id="sc-buyer-display">Selected ✓</span></div>
+      </div>`;
+  }
+}
+
+function scLookupVehicle() {
+  const vin = document.getElementById('sc-vin').value.trim().toUpperCase();
+  const errEl = document.getElementById('sc-vin-error');
+  const soldVins = new Set(SOLD_VEHICLES.map(s=>s.vin));
+
+  if(!vin) { showEl(errEl,'⚠️ Please enter a VIN.'); return; }
+
+  const v = VEHICLES.find(v=>v.vin===vin);
+  if(!v || soldVins.has(vin)) { showEl(errEl,'❌ Vehicle is not available for sale (may already be sold, not found, or has pending parts).'); return; }
+  const hasPending = v.partsList.some(p=>p.status!=='installed');
+  if(hasPending) { showEl(errEl,'❌ Vehicle has pending/ordered parts and cannot be sold yet.'); return; }
+
+  errEl.style.display='none';
+  scVehicle=v;
+  scVehicleSelected=true;
+  const sp=((v.purchasePrice+v.partsCost)*1.25).toLocaleString('en-US',{style:'currency',currency:'USD'});
+  document.getElementById('sc-vehicle-details').innerHTML=`
+    <div class="detail-row"><span class="dk">VIN</span><span class="dv" style="font-family:monospace">${v.vin}</span></div>
+    <div class="detail-row"><span class="dk">Vehicle</span><span class="dv">${v.mfr} ${v.model} (${v.year})</span></div>
+    <div class="detail-row"><span class="dk">Sale Price</span><span class="dv" style="color:#2563eb;font-weight:800">${sp}</span></div>`;
+  document.getElementById('sc-vehicle-info').style.display='block';
+  document.getElementById('sc-next1').disabled=false;
+}
+
+function scPickFromList() {
+  const soldVins = new Set(SOLD_VEHICLES.map(s=>s.vin));
+  const avail = VEHICLES.filter(v=>!soldVins.has(v.vin) && !v.partsList.some(p=>p.status!=='installed'));
+  const vin = avail[0]?.vin;
+  if(vin) { document.getElementById('sc-vin').value=vin; scLookupVehicle(); }
+}
+
+function searchBuyer() {
+  const ssn=document.getElementById('sc-ssn').value.trim();
+  const taxid=document.getElementById('sc-taxid').value.trim();
+  const mock_customers=['Tom Williams','Jennifer Lee','XYZ Corp LLC','First Choice Rentals'];
+  if(ssn||taxid) {
+    document.getElementById('sc-buyer-found').style.display='block';
+    const nm=mock_customers[Math.floor(Math.random()*mock_customers.length)];
+    document.getElementById('sc-buyer-name').textContent=nm;
+    document.getElementById('sc-buyer-notfound').style.display='none';
+    scBuyerSelected=true;
+    document.getElementById('sc-next2').disabled=false;
+  } else {
+    document.getElementById('sc-buyer-notfound').style.display='block';
+    document.getElementById('sc-buyer-found').style.display='none';
+  }
+}
+
+function scFinalize() {
+  const date=document.getElementById('sc-date').value;
+  if(!date) { alert('Please select a sale date.'); return; }
+  const sp=((scVehicle.purchasePrice+scVehicle.partsCost)*1.25).toLocaleString('en-US',{style:'currency',currency:'USD'});
+  document.getElementById('sc-confirm-msg').textContent = `Vehicle ${scVehicle.vin} (${scVehicle.mfr} ${scVehicle.model}) sold for ${sp} on ${date}.`;
+  scGoStep(4);
+}
+
+// SELLER SEARCH (for Add Vehicle)
+function searchSeller() {
+  const ssn=document.getElementById('av-ssn').value.trim();
+  const taxid=document.getElementById('av-taxid').value.trim();
+  if(ssn||taxid) {
+    document.getElementById('av-seller-found').style.display='block';
+    document.getElementById('av-seller-notfound').style.display='none';
+    document.getElementById('av-seller-next').disabled=false;
+    avSellerSelected=true;
+    document.getElementById('av-seller-info').style.display='none';
+  } else {
+    document.getElementById('av-seller-notfound').style.display='block';
+    document.getElementById('av-seller-found').style.display='none';
+    document.getElementById('av-seller-info').style.display='none';
+  }
+}
+
+// ══════════════════════════════════════════
+// PARTS STATUS
+// ══════════════════════════════════════════
+function renderParts(showAll) {
+  const rows = showAll ? PARTS_DATA : PARTS_DATA.filter(p=>p.status!=='installed');
+  const tbody = document.getElementById('parts-tbody');
+  if(!rows.length) {
+    tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;color:#9ca3af;padding:2rem">No pending parts.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rows.map((p,i)=>`
+    <tr>
+      <td style="font-family:monospace;font-size:12px">${p.vin.slice(-8)}</td>
+      <td>${p.vehicle}</td>
+      <td>${p.vendor}</td>
+      <td>#${p.ordinal}</td>
+      <td>${p.pn}</td>
+      <td>${p.desc}</td>
+      <td>${p.qty}</td>
+      <td>$${p.price}</td>
+      <td><span class="parts-status-${p.status}">${p.status}</span></td>
+      <td><button class="btn btn-outline btn-sm" onclick="openPartModal(${i})">Update</button></td>
+    </tr>`).join('');
+}
+
+function partsShowAll(all) { renderParts(all); }
+
+function openPartModal(idx) {
+  currentPartUpdate = PARTS_DATA[idx];
+  document.getElementById('modal-part-desc').textContent = currentPartUpdate.desc;
+  document.getElementById('modal-new-status').value = currentPartUpdate.status;
+  openModal('modal-part-status');
+}
+
+function savePartStatus() {
+  if(currentPartUpdate) currentPartUpdate.status = document.getElementById('modal-new-status').value;
+  closeModal('modal-part-status');
+  renderParts(false);
+}
+
+// ══════════════════════════════════════════
+// SOLD STATUS
+// ══════════════════════════════════════════
+function renderSold() {
+  document.getElementById('sold-tbody').innerHTML = SOLD_VEHICLES.map(s=>{
+    const sp = ((s.purchasePrice+s.partsCost)*1.25).toLocaleString('en-US',{style:'currency',currency:'USD'});
+    return `<tr onclick="viewSoldVehicle('${s.vin}')">
+      <td style="font-family:monospace;font-size:12px">${s.vin.slice(-8)}</td>
+      <td>${s.mfr}</td><td>${s.model}</td><td>${s.year}</td>
+      <td>${s.saleDate}</td>
+      <td style="font-weight:700;color:#2563eb">${sp}</td>
+      <td>${s.agentName}</td>
+      <td>${s.buyer}</td>
+    </tr>`;
+  }).join('');
+}
+
+function viewSoldVehicle(vin) {
+  const sv = SOLD_VEHICLES.find(v=>v.vin===vin);
+  if(!sv) return;
+  const sp=((sv.purchasePrice+sv.partsCost)*1.25).toLocaleString('en-US',{style:'currency',currency:'USD'});
+  const nc=((sv.purchasePrice+sv.partsCost)*0.25).toLocaleString('en-US',{style:'currency',currency:'USD'});
+  document.getElementById('vehicle-detail-content').innerHTML=`
+    <div class="sold-banner">🔴 This vehicle has been sold</div>
+    <div class="price-hero">
+      <div class="ph-label">Final Sale Price</div>
+      <div class="ph-price">${sp}</div>
+      <div style="color:#94a3b8;font-size:13px;margin-top:4px">${sv.year} ${sv.mfr} ${sv.model}</div>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-section">
+        <h3>Vehicle Info</h3>
+        <div class="detail-row"><span class="dk">VIN</span><span class="dv" style="font-family:monospace;font-size:12px">${sv.vin}</span></div>
+        <div class="detail-row"><span class="dk">Manufacturer</span><span class="dv">${sv.mfr}</span></div>
+        <div class="detail-row"><span class="dk">Model</span><span class="dv">${sv.model}</span></div>
+        <div class="detail-row"><span class="dk">Year</span><span class="dv">${sv.year}</span></div>
+      </div>
+      <div class="detail-section">
+        <h3>Sale Details</h3>
+        <div class="detail-row"><span class="dk">Sale Date</span><span class="dv">${sv.saleDate}</span></div>
+        <div class="detail-row"><span class="dk">Sale Price</span><span class="dv" style="color:#2563eb">${sp}</span></div>
+        <div class="detail-row"><span class="dk">Net Income</span><span class="dv" style="color:#16a34a">${nc}</span></div>
+        <div class="detail-row"><span class="dk">Sales Agent</span><span class="dv">${sv.agentName}</span></div>
+        <div class="detail-row"><span class="dk">Buyer</span><span class="dv">${sv.buyer}</span></div>
+      </div>
+    </div>`;
+  go('page-vehicle-detail');
+}
+
+// ══════════════════════════════════════════
+// REPORTS
+// ══════════════════════════════════════════
+function showReport(type) {
+  const out = document.getElementById('report-output');
+
+  if(type==='seller') {
+    out.innerHTML = `
+      <div class="card">
+        <div class="card-header"><h2>Seller History Report</h2></div>
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap"><table>
+            <thead><tr><th>Seller Name</th><th>Vehicles Sold</th><th>Avg Purchase Price</th><th>Avg Parts Orders/Vehicle</th><th>Avg Parts Cost/Vehicle</th></tr></thead>
+            <tbody>
+              <tr class="highlight-red"><td>Johnson Estate</td><td>5</td><td>$23,400</td><td>2.4</td><td>$1,250</td></tr>
+              <tr><td>Alice Thompson</td><td>3</td><td>$18,200</td><td>1.0</td><td>$320</td></tr>
+              <tr><td>Delta Auto LLC</td><td>2</td><td>$31,000</td><td>0.5</td><td>$180</td></tr>
+              <tr><td>Carlos Mendez</td><td>1</td><td>$14,500</td><td>1.0</td><td>$95</td></tr>
+            </tbody>
+          </table></div>
+          <div style="padding:0.8rem 1.2rem;font-size:12px;color:#9ca3af;background:#fef2f2">🔴 Red rows: Avg quantity ≥ 5 or avg cost ≥ $500</div>
+        </div>
+      </div>`;
+  } else if(type==='condition') {
+    out.innerHTML = `
+      <div class="card">
+        <div class="card-header"><h2>Price Per Condition Report</h2></div>
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap"><table>
+            <thead><tr><th>Condition</th><th>Sedan</th><th>SUV</th><th>Truck</th><th>Coupe</th><th>Hatchback</th><th>Van</th></tr></thead>
+            <tbody>
+              <tr><td><span class="badge badge-green">Excellent</span></td><td>$22,400</td><td>$38,500</td><td>$44,200</td><td>$36,800</td><td>$0</td><td>$0</td></tr>
+              <tr><td><span class="badge badge-blue">Very Good</span></td><td>$18,750</td><td>$32,100</td><td>$0</td><td>$0</td><td>$17,500</td><td>$0</td></tr>
+              <tr><td><span class="badge badge-yellow">Good</span></td><td>$14,200</td><td>$25,000</td><td>$0</td><td>$0</td><td>$0</td><td>$19,000</td></tr>
+              <tr><td><span class="badge badge-gray">Fair</span></td><td>$11,000</td><td>$19,000</td><td>$0</td><td>$0</td><td>$0</td><td>$0</td></tr>
+              <tr><td><span class="badge badge-red">Rough</span></td><td>$0</td><td>$0</td><td>$0</td><td>$0</td><td>$0</td><td>$0</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>`;
+  } else if(type==='monthly') {
+    out.innerHTML = `
+      <div class="card">
+        <div class="card-header"><h2>Monthly Sales Report</h2></div>
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap"><table>
+            <thead><tr><th>Year</th><th>Month</th><th>Vehicles Sold</th><th>Total Revenue</th><th>Gross Income</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>2025</td><td>March</td><td>3</td><td>$128,625</td><td>$25,725</td><td><button class="btn btn-outline btn-sm" onclick="showMonthDrilldown()">Drilldown ↓</button></td></tr>
+              <tr><td>2025</td><td>February</td><td>5</td><td>$201,312</td><td>$40,262</td><td><button class="btn btn-outline btn-sm">Drilldown ↓</button></td></tr>
+              <tr><td>2025</td><td>January</td><td>4</td><td>$168,000</td><td>$33,600</td><td><button class="btn btn-outline btn-sm">Drilldown ↓</button></td></tr>
+              <tr><td>2024</td><td>December</td><td>8</td><td>$345,600</td><td>$69,120</td><td><button class="btn btn-outline btn-sm">Drilldown ↓</button></td></tr>
+            </tbody>
+          </table></div>
+          <div id="monthly-drilldown"></div>
+        </div>
+      </div>`;
+  } else if(type==='inventory') {
+    out.innerHTML = `
+      <div class="card">
+        <div class="card-header"><h2>Avg. Time in Inventory Report</h2></div>
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap"><table>
+            <thead><tr><th>Vehicle Type</th><th>Vehicles Sold</th><th>Avg Days in Inventory</th></tr></thead>
+            <tbody>
+              <tr><td>Coupe</td><td>4</td><td>18.5 days</td></tr>
+              <tr><td>Hatchback</td><td>2</td><td>24.0 days</td></tr>
+              <tr><td>Sedan</td><td>9</td><td>31.2 days</td></tr>
+              <tr><td>SUV</td><td>7</td><td>45.8 days</td></tr>
+              <tr><td>Truck</td><td>3</td><td>52.3 days</td></tr>
+              <tr><td>Van</td><td>0</td><td><em style="color:#9ca3af">N/A</em></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>`;
+  } else if(type==='parts') {
+    out.innerHTML = `
+      <div class="card">
+        <div class="card-header"><h2>Parts Statistics Report</h2></div>
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap"><table>
+            <thead><tr><th>Vendor Name</th><th>Total Parts Qty</th><th>Total Parts Cost</th></tr></thead>
+            <tbody>
+              <tr><td>AutoParts Plus</td><td>14</td><td>$2,340.00</td></tr>
+              <tr><td>Metro Auto Supply</td><td>22</td><td>$4,890.50</td></tr>
+              <tr><td>Supreme Parts Co.</td><td>8</td><td>$1,820.00</td></tr>
+              <tr><td>Wholesale Auto Parts</td><td>31</td><td>$7,250.75</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>`;
+  }
+  out.scrollIntoView({behavior:'smooth'});
+}
+
+function showMonthDrilldown() {
+  document.getElementById('monthly-drilldown').innerHTML=`
+    <div style="padding:1rem;border-top:1px solid #f1f5f9">
+      <h3 style="font-size:14px;font-weight:700;color:#6b7280;margin-bottom:0.8rem">March 2025 — Vehicle Detail</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>VIN</th><th>Vehicle</th><th>Sale Date</th><th>Sale Price</th><th>Purchase Price</th><th>Parts Cost</th><th>Net Income</th><th>Agent</th><th>Buyer</th></tr></thead>
+        <tbody>
+          <tr><td style="font-family:monospace;font-size:11px">1FTEW1EP5N</td><td>Ford Expedition (2017)</td><td>2025-03-05</td><td>$33,062</td><td>$25,000</td><td>$1,500</td><td>$6,562</td><td>M. Wilson</td><td>Premier Events Inc.</td></tr>
+          <tr><td style="font-family:monospace;font-size:11px">5YFEPRAE5L</td><td>Toyota Camry (2020)</td><td>2025-03-11</td><td>$26,000</td><td>$20,000</td><td>$800</td><td>$5,200</td><td>J. Smith</td><td>Diana Prince</td></tr>
+          <tr><td style="font-family:monospace;font-size:11px">4T1BF1FK0H</td><td>BMW 3 Series (2020)</td><td>2025-03-18</td><td>$43,750</td><td>$35,000</td><td>$0</td><td>$8,750</td><td>J. Smith</td><td>Robert Hayes</td></tr>
+        </tbody>
+      </table></div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════
+// PARTS ORDER
+// ══════════════════════════════════════════
+function poVerifyVehicle() {
+  const vin=document.getElementById('po-vin').value.trim().toUpperCase();
+  const el=document.getElementById('po-vehicle-info');
+  const v=VEHICLES.find(v=>v.vin===vin);
+  if(v) showEl(el,`✅ Found: ${v.mfr} ${v.model} (${v.year})`,true);
+  else showEl(el,`❌ Vehicle not found.`);
+}
+
+function poAddPart() {
+  const idx=poPartsAdded.length;
+  poPartsAdded.push({});
+  document.getElementById('po-no-parts').style.display='none';
+  const div=document.createElement('div');
+  div.className='card';
+  div.style.marginBottom='0.8rem';
+  div.innerHTML=`
+    <div class="card-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem">
+        <strong style="font-size:13px">Part #${idx+1}</strong>
+        <button class="btn btn-secondary btn-sm" onclick="this.closest('div.card').remove()">Remove</button>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Part Number *</label><input type="text" placeholder="e.g. AF-221"></div>
+        <div class="form-group"><label>Description *</label><input type="text" placeholder="e.g. Air Filter"></div>
+      </div>
+      <div class="form-row-3">
+        <div class="form-group"><label>Unit Price *</label><input type="number" placeholder="0.00" min="0.01" step="0.01"></div>
+        <div class="form-group"><label>Quantity *</label><input type="number" placeholder="1" min="1"></div>
+        <div class="form-group"><label>Status *</label>
+          <select><option value="ordered">Ordered</option><option value="received">Received</option><option value="installed">Installed</option></select>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('po-parts-list').appendChild(div);
+}
+
+function poFinish() {
+  const vin=document.getElementById('po-vin').value.trim();
+  const vendor=document.getElementById('po-vendor').value.trim();
+  if(!vin||!vendor) { alert('Please fill in the VIN and Vendor Name.'); return; }
+  alert(`✅ Parts order created successfully for VIN ${vin||'UNKNOWN'} from vendor "${vendor}".`);
+  go('page-dashboard');
+}
+
+// ══════════════════════════════════════════
+// ADD CUSTOMER MODAL
+// ══════════════════════════════════════════
+function showAddCustomerModal(ctx) {
+  custModalContext=ctx;
+  document.getElementById('cust-error').style.display='none';
+  openModal('modal-customer');
+}
+
+function toggleCustType() {
+  const t=document.getElementById('cust-type').value;
+  document.getElementById('cust-individual-fields').style.display=t==='individual'?'block':'none';
+  document.getElementById('cust-business-fields').style.display=t==='business'?'block':'none';
+}
+
+function saveCustomer() {
+  const email=document.getElementById('cust-email').value.trim();
+  const phone=document.getElementById('cust-phone').value.trim();
+  const addr=document.getElementById('cust-addr').value.trim();
+  const city=document.getElementById('cust-city').value.trim();
+  const state=document.getElementById('cust-state').value.trim();
+  const zip=document.getElementById('cust-zip').value.trim();
+  const errEl=document.getElementById('cust-error');
+
+  if(!email||!phone||!addr||!city||!state||!zip) { showEl(errEl,'⚠️ All required fields must be filled in.'); return; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showEl(errEl,'⚠️ Invalid email format.'); return; }
+  if(!/^\d{5}$/.test(zip)) { showEl(errEl,'⚠️ Postal code must be exactly 5 digits.'); return; }
+
+  closeModal('modal-customer');
+  if(custModalContext==='seller') {
+    document.getElementById('av-seller-found').style.display='block';
+    document.getElementById('av-seller-notfound').style.display='none';
+    document.getElementById('av-seller-next').disabled=false;
+    avSellerSelected=true;
+    document.getElementById('av-seller-info').innerHTML='✅ New customer added and selected as seller.';
+    document.getElementById('av-seller-info').style.display='block';
+  } else {
+    document.getElementById('sc-buyer-found').style.display='block';
+    document.getElementById('sc-buyer-name').textContent=email;
+    document.getElementById('sc-buyer-notfound').style.display='none';
+    scBuyerSelected=true;
+    document.getElementById('sc-next2').disabled=false;
+  }
+}
+
+// ══════════════════════════════════════════
+// MODAL HELPERS
+// ══════════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+  m.addEventListener('click',function(e){if(e.target===this) this.classList.remove('open');});
+});
+
+// ══════════════════════════════════════════
+// UTILITIES
+// ══════════════════════════════════════════
+function showEl(el, msg, isSuccess=false) {
+  el.textContent=msg;
+  el.className='alert '+(isSuccess?'alert-success':'alert-error');
+  el.style.display='flex';
+}
+
+// Init
+document.getElementById('av-pdate').valueAsDate=new Date();
+document.getElementById('sc-date').valueAsDate=new Date();
+renderSearchResults(VEHICLES);
+</script>
+</body>
+</html>
