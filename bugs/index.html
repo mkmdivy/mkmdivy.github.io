@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Underleaf</title>
+<meta name="description" content="Underleaf — an engine-building card game about raising bugs from larva to adult in your own little garden.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐞</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Nunito:wght@400;600;800&display=swap">
+<style>
+:root{
+  --bg:#f3ecdc; --bg2:#e9dfc8; --paper:#fffaf0; --ink:#2b2418; --muted:#6f6350; --line:#d4c6a6;
+  --accent:#2f6b3a; --accent-ink:#fff; --warn:#b4432c; --gold:#c08a12;
+  --t-B:#f6d3e0; --t-L:#d5ebc4; --t-S:#e3cfb2; --t-P:#cfe5f0;
+  --f-beetle:#8a5a2b; --f-flutter:#c2410c; --f-sting:#b98500; --f-hop:#4d7c0f; --f-skim:#0e7490; --f-crawl:#6b3fa0;
+  --shadow:0 2px 0 rgba(60,40,10,.08),0 6px 18px rgba(60,40,10,.10);
+  --display:"Fraunces",Georgia,serif; --body:"Nunito",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1b1a14; --bg2:#24231b; --paper:#2c2a21; --ink:#f1e9d6; --muted:#b6aa90; --line:#4a4535;
+  --accent:#6fbf73; --accent-ink:#10200f; --warn:#ff8a6b; --gold:#e3b23c;
+  --t-B:#4a3040; --t-L:#2f4528; --t-S:#43392a; --t-P:#24404d;
+  --shadow:0 2px 0 rgba(0,0,0,.25),0 6px 18px rgba(0,0,0,.35); color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#1b1a14; --bg2:#24231b; --paper:#2c2a21; --ink:#f1e9d6; --muted:#b6aa90; --line:#4a4535;
+  --accent:#6fbf73; --accent-ink:#10200f; --warn:#ff8a6b; --gold:#e3b23c;
+  --t-B:#4a3040; --t-L:#2f4528; --t-S:#43392a; --t-P:#24404d;
+  --shadow:0 2px 0 rgba(0,0,0,.25),0 6px 18px rgba(0,0,0,.35); color-scheme:dark;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.4 var(--body)}
+body{padding:0 16px 120px}
+button{font:inherit;color:inherit;cursor:pointer}
+h1,h2,h3{font-family:var(--display);margin:0}
+.wrap{max-width:1280px;margin:0 auto}
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 0 10px}
+header h1{font-size:28px;font-weight:800;letter-spacing:-.01em}
+header h1 span{color:var(--accent)}
+.seasons{display:flex;gap:6px;margin-left:auto;align-items:center;flex-wrap:wrap}
+.pip{padding:4px 10px;border-radius:999px;background:var(--bg2);border:1px solid var(--line);font-size:13px;font-weight:700;color:var(--muted)}
+.pip.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.pip.done{text-decoration:line-through;opacity:.6}
+.hbtn{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:6px 12px;font-weight:700;box-shadow:var(--shadow)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:16px;align-items:start}
+@media (max-width:980px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+.panel+.panel{margin-top:14px}
+.ptitle{display:flex;align-items:baseline;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.ptitle h2{font-size:18px}
+.ptitle small{color:var(--muted)}
+.shared{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start}
+@media (max-width:700px){.shared{grid-template-columns:1fr}}
+.meadow{display:grid;grid-template-columns:repeat(5,46px);gap:8px}
+.tok{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:24px;background:var(--bg2);border:2px solid var(--line);transition:transform .15s}
+.tok.pick{cursor:pointer;border-color:var(--accent);animation:pulse 1.4s infinite}
+.tok.pick:hover{transform:scale(1.1)}
+.tok.sel{background:var(--accent);border-color:var(--accent);transform:scale(.9)}
+@keyframes pulse{50%{box-shadow:0 0 0 5px color-mix(in srgb,var(--accent) 25%,transparent)}}
+.guide{display:flex;gap:10px;flex-wrap:wrap;align-items:stretch}
+.deck{width:118px;min-height:170px;border-radius:12px;border:2px dashed var(--line);display:grid;place-items:center;text-align:center;color:var(--muted);font-weight:700;background:repeating-linear-gradient(45deg,var(--bg2) 0 8px,transparent 8px 16px)}
+.deck.pick{cursor:pointer;border-color:var(--accent);border-style:solid;color:var(--ink)}
+/* Cards */
+.card{--fc:var(--f-beetle);width:150px;min-height:200px;background:var(--paper);border:2px solid var(--fc);border-radius:12px;display:flex;flex-direction:column;overflow:hidden;position:relative;box-shadow:var(--shadow);transition:transform .15s, box-shadow .15s}
+.card .c-head{background:var(--fc);color:#fff;padding:5px 7px;display:flex;justify-content:space-between;gap:4px;align-items:flex-start}
+.card .c-name{font:800 12.5px/1.15 var(--display)}
+.card .c-fam{font-size:10px;opacity:.85;font-weight:600}
+.card .c-ter{font-size:13px;white-space:nowrap;background:rgba(255,255,255,.85);border-radius:6px;padding:0 3px}
+.card .c-art{font-size:40px;text-align:center;padding:4px 0 0;line-height:1.15}
+.card .c-row{display:flex;justify-content:space-between;padding:1px 8px;font-size:12px;align-items:center}
+.card .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:800}
+.card .c-ab{margin:5px 6px 6px;padding:5px 6px;background:var(--bg2);border-radius:7px;font-size:11px;line-height:1.3;flex:1}
+.card .c-ab b{color:var(--fc)}
+.card .c-pts{position:absolute;right:6px;top:44px;display:flex;flex-direction:column;align-items:center;font-weight:800}
+.ptsbadge{display:inline-grid;place-items:center;min-width:24px;height:24px;border-radius:50%;background:var(--gold);color:#fff;font:800 13px var(--body);padding:0 4px}
+.ptsbadge.lp{background:var(--bg2);color:var(--ink);border:1px solid var(--line);min-width:20px;height:20px;font-size:11px}
+.card.pick{cursor:pointer;outline:3px solid var(--accent);outline-offset:2px}
+.card.pick:hover{transform:translateY(-4px)}
+.card.sel{transform:translateY(-8px);outline:3px solid var(--gold);outline-offset:2px}
+.card.dim{opacity:.55}
+.fam-beetle{--fc:var(--f-beetle)} .fam-flutter{--fc:var(--f-flutter)} .fam-sting{--fc:var(--f-sting)}
+.fam-hop{--fc:var(--f-hop)} .fam-skim{--fc:var(--f-skim)} .fam-crawl{--fc:var(--f-crawl)}
+/* Garden */
+.garden{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.cell{min-height:132px;border-radius:12px;border:2px solid transparent;position:relative;padding:6px;display:flex;flex-direction:column;transition:transform .15s}
+.cell.B{background:var(--t-B)} .cell.L{background:var(--t-L)} .cell.S{background:var(--t-S)} .cell.P{background:var(--t-P)}
+.cell .ter{position:absolute;left:6px;bottom:4px;font-size:11px;font-weight:800;color:var(--muted);opacity:.85}
+.cell.empty{align-items:center;justify-content:center}
+.cell.empty .big{font-size:30px;opacity:.35}
+.cell.pick{cursor:pointer;border-color:var(--accent);border-style:dashed;animation:pulse 1.4s infinite}
+.cell.pick:hover{transform:scale(1.03)}
+.cell.sel{border-color:var(--gold);border-style:solid}
+.cell.flash{animation:flash .9s}
+@keyframes flash{30%{transform:scale(1.06);box-shadow:0 0 0 4px var(--gold)}}
+.bug{flex:1;display:flex;flex-direction:column;background:var(--paper);border-radius:9px;border:2px solid var(--fc);overflow:hidden}
+.bug .b-head{background:var(--fc);color:#fff;font:800 11.5px/1.15 var(--display);padding:3px 6px;display:flex;justify-content:space-between;gap:4px}
+.bug .b-body{display:flex;align-items:center;gap:6px;padding:3px 6px}
+.bug .b-art{font-size:28px;line-height:1}
+.bug.larva .b-art{filter:grayscale(.9) opacity(.65);font-size:22px}
+.bug .b-stage{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.bug .b-ab{font-size:10.5px;line-height:1.25;padding:0 6px 5px;color:var(--ink)}
+.bug.larva .b-ab{opacity:.55}
+.bug .b-tokens{font-size:12px;padding:0 6px 4px;min-height:4px}
+.bug .b-cost{font-size:11px}
+@media (max-width:600px){.garden{gap:5px}.cell{min-height:104px;padding:3px}.bug .b-ab,.bug .b-stage{display:none}.bug .b-head{font-size:10px;padding:2px 4px}.bug .b-body{flex-direction:column;gap:2px;padding:3px}.bug .b-art{font-size:24px}.bug .b-cost{font-size:10px}.bug .b-tokens{font-size:10px;padding:0 3px 3px}}
+/* Hand */
+.hand{display:flex;gap:10px;overflow-x:auto;padding:10px 4px 8px}
+.hand .card{flex:0 0 auto}
+/* Sidebar */
+.food{display:flex;gap:6px;flex-wrap:wrap}
+.fchip{display:flex;align-items:center;gap:4px;background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-weight:800}
+.note{border:1px dashed var(--line);border-radius:10px;padding:8px 10px;background:var(--bg2)}
+.note h3{font-size:14px}
+.note p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.goal{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;padding:7px 0;border-top:1px solid var(--line);font-size:13px}
+.goal:first-of-type{border-top:0}
+.goal .gs{font-weight:800;color:var(--muted);font-size:11px;text-transform:uppercase}
+.goal.cur .gs{color:var(--accent)}
+.goal .gv{grid-column:2;color:var(--muted);font-size:12px}
+.opp{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:4px 8px;padding:8px;border-radius:10px;border:1px solid var(--line);cursor:pointer;margin-top:8px;background:var(--paper)}
+.opp:hover{border-color:var(--accent)}
+.opp.active{outline:2px solid var(--gold)}
+.mini{display:grid;grid-template-columns:repeat(4,22px);gap:2px}
+.mini div{width:22px;height:22px;border-radius:5px;display:grid;place-items:center;font-size:14px}
+.mini .B{background:var(--t-B)} .mini .L{background:var(--t-L)} .mini .S{background:var(--t-S)} .mini .P{background:var(--t-P)}
+.mini .lv{filter:grayscale(1) opacity(.55);font-size:11px}
+.oname{font-weight:800}
+.ometa{font-size:12px;color:var(--muted)}
+.log{max-height:260px;overflow-y:auto;font-size:12.5px;display:flex;flex-direction:column-reverse;gap:3px}
+.log div{padding:2px 0;border-bottom:1px dotted var(--line)}
+.log .sys{font-weight:800;color:var(--accent)}
+/* Action bar */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(6px);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+.bar .in{max-width:1280px;margin:0 auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.prompt{flex:1 1 260px;font-weight:700}
+.prompt small{display:block;font-weight:400;color:var(--muted)}
+.abtn{border:0;border-radius:12px;padding:10px 14px;font-weight:800;background:var(--accent);color:var(--accent-ink);box-shadow:var(--shadow);display:flex;gap:6px;align-items:center}
+.abtn.sec{background:var(--bg2);color:var(--ink);border:1px solid var(--line)}
+.abtn:disabled{opacity:.4;cursor:not-allowed}
+/* Overlays */
+.ov.solid{background:var(--bg)}
+.ov{position:fixed;inset:0;z-index:50;background:rgba(20,15,5,.55);display:grid;place-items:center;padding:16px;overflow-y:auto}
+.modal{background:var(--paper);border-radius:18px;padding:22px;max-width:760px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.4);max-height:calc(100vh - 32px);overflow-y:auto}
+.modal h2{font-size:26px;margin-bottom:6px}
+.modal p{margin:6px 0}
+.prow{display:flex;gap:8px;align-items:center;margin:8px 0}
+.prow input,.prow select{font:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.prow input{flex:1;min-width:0}
+.seg{display:flex;gap:6px;margin:10px 0}
+.seg button{border:1px solid var(--line);border-radius:10px;padding:6px 14px;background:var(--bg2);font-weight:800}
+.seg button.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.notes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media (max-width:560px){.notes{grid-template-columns:1fr}}
+.notes .note{cursor:pointer;padding:14px;border-style:solid;border-width:2px}
+.notes .note:hover{border-color:var(--accent)}
+.score{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+.score th,.score td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right}
+.score th:first-child,.score td:first-child{text-align:left}
+.score tr.tot td{font-weight:800;font-size:16px;border-top:2px solid var(--ink)}
+.rules h3{font-size:17px;margin:14px 0 4px}
+.rules ul{margin:4px 0;padding-left:20px}
+.rules li{margin:3px 0}
+.toast{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:60;background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:12px;font-weight:800;box-shadow:var(--shadow);animation:tin .3s;max-width:calc(100vw - 32px);text-align:center}
+@keyframes tin{from{opacity:0;transform:translate(-50%,-10px)}}
+.muted{color:var(--muted)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.spacer{flex:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Under<span>leaf</span></h1>
+    <div class="seasons" id="seasons"></div>
+    <button class="hbtn" data-act="rules">📖 Rules</button>
+    <button class="hbtn" data-act="newgame">↻ New game</button>
+  </header>
+  <div class="layout">
+    <main>
+      <section class="panel">
+        <div class="shared">
+          <div>
+            <div class="ptitle"><h2>The Meadow</h2><small>food to forage</small></div>
+            <div class="meadow" id="meadow"></div>
+          </div>
+          <div>
+            <div class="ptitle"><h2>Field Guide</h2><small>bugs to scout</small></div>
+            <div class="guide" id="guide"></div>
+          </div>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="ptitle" id="gardenTitle"></div>
+        <div class="garden" id="garden"></div>
+      </section>
+      <section class="panel">
+        <div class="ptitle" id="handTitle"></div>
+        <div class="hand" id="hand"></div>
+      </section>
+    </main>
+    <aside>
+      <section class="panel" id="mine"></section>
+      <section class="panel"><div class="ptitle"><h2>Season goals</h2></div><div id="goals"></div></section>
+      <section class="panel"><div class="ptitle"><h2>Gardeners</h2><small>tap to view</small></div><div id="players"></div></section>
+      <section class="panel"><div class="ptitle"><h2>Field log</h2></div><div class="log" id="log"></div></section>
+    </aside>
+  </div>
+</div>
+<div class="bar"><div class="in" id="bar"></div></div>
+<div id="overlay"></div>
+<div id="toast"></div>
+
+<script>
+/* ============================== DATA ============================== */
+const FOODS=['nectar','leaf','dew','prey'];
+const FI={nectar:'🌼',leaf:'🍃',dew:'💧',prey:'🍖',any:'✳️'};
+const FNAME={nectar:'Nectar',leaf:'Leaf',dew:'Dew',prey:'Prey',any:'Any food'};
+const TER={B:{n:'Bloom',i:'🌸'},L:{n:'Leaf',i:'🌿'},S:{n:'Soil',i:'🍄'},P:{n:'Pond',i:'🌊'}};
+const FAM={beetle:'Beetle',flutter:'Flutterer',sting:'Stinger',hop:'Hopper',skim:'Skimmer',crawl:'Crawler'};
+const FAMS={beetle:'Beetles',flutter:'Flutterers',sting:'Stingers',hop:'Hoppers',skim:'Skimmers',crawl:'Crawlers'};
+const STASH='🌰', GROW='🌱';
+const LAYOUT=['B','L','B','P','L','P','S','L','S','B','P','S'];
+const COLS=4, CELLS=12, TURNS=[7,6,5], SEASON=['Spring','Summer','Autumn'], HAND_MAX=8;
+
+// [id, name, art, family, terrains, settle cost, molt cost, larva pts, adult pts, ability]
+const RAW=[
+['ladybird','Seven-spot Ladybird','🐞','beetle','LB',['leaf'],['prey'],1,3,{t:'forage',e:'gain',f:'prey',n:1}],
+['stag','Stag Beetle','🪲','beetle','S',['leaf'],['leaf','leaf','prey'],1,7,null],
+['dung','Dung Beetle','🪲','beetle','S',['any'],['any','any'],0,4,{t:'forage',e:'hoard',n:1}],
+['firefly','Firefly','🪲','beetle','LP',['dew'],['dew','nectar'],1,4,{t:'end',e:'adj',fam:'any',n:1}],
+['diving','Great Diving Beetle','🪲','beetle','P',['dew'],['prey','prey'],1,5,{t:'forage',e:'hunt',n:1}],
+['jewel','Jewel Beetle','🪲','beetle','BL',['nectar'],['nectar','leaf'],1,5,{t:'emerge',e:'draw',n:1}],
+['rhino','Rhinoceros Beetle','🪲','beetle','SL',['leaf'],['leaf','leaf','leaf'],1,8,null],
+['tiger','Tiger Beetle','🪲','beetle','S',['prey'],['prey','dew'],1,4,{t:'forage',e:'hunt',n:1}],
+['monarch','Monarch Butterfly','🦋','flutter','B',['leaf'],['nectar','nectar'],0,5,{t:'end',e:'fam',fam:'flutter',n:1}],
+['swallowtail','Swallowtail','🦋','flutter','BL',['leaf'],['nectar','leaf'],1,5,{t:'scout',e:'draw',n:1}],
+['luna','Luna Moth','🦋','flutter','L',['leaf'],['dew','nectar'],1,5,{t:'emerge',e:'grow',n:2}],
+['hawkmoth','Hummingbird Hawk-moth','🦋','flutter','B',['nectar'],['nectar','nectar'],1,4,{t:'forage',e:'gain',f:'nectar',n:1}],
+['silkmoth','Silk Moth','🐛','flutter','L',['leaf'],['leaf','leaf'],1,3,{t:'scout',e:'hoard',n:1}],
+['morpho','Blue Morpho','🦋','flutter','BP',['dew'],['nectar','dew','dew'],1,7,null],
+['cabbage','Cabbage White','🦋','flutter','LB',['leaf'],['leaf'],0,2,{t:'emerge',e:'gain',f:'leaf',n:2}],
+['atlas','Atlas Moth','🦋','flutter','L',['leaf','leaf'],['nectar','nectar','leaf'],0,9,null],
+['honeybee','Honeybee','🐝','sting','B',['nectar'],['nectar'],1,3,{t:'forage',e:'gain',f:'nectar',n:1}],
+['bumble','Bumblebee','🐝','sting','B',['nectar'],['nectar','dew'],1,4,{t:'forage',e:'grow',n:1}],
+['leafcutter','Leafcutter Ant','🐜','sting','LS',['leaf'],['leaf','leaf'],1,3,{t:'forage',e:'gain',f:'leaf',n:1}],
+['armyant','Army Ant','🐜','sting','S',['prey'],['prey','prey'],1,4,{t:'forage',e:'hunt',n:1}],
+['paperwasp','Paper Wasp','🐝','sting','BL',['prey'],['prey','nectar'],1,4,{t:'emerge',e:'hoard',n:2}],
+['carpenter','Carpenter Bee','🐝','sting','LB',['nectar'],['nectar','any'],1,4,{t:'scout',e:'grow',n:1}],
+['harvester','Harvester Ant','🐜','sting','S',['any'],['leaf','any'],1,3,{t:'end',e:'food',n:1}],
+['woodant','Wood Ant Queen','🐜','sting','S',['leaf','prey'],['any','any','any'],1,5,{t:'end',e:'adj',fam:'sting',n:2}],
+['cricket','Field Cricket','🦗','hop','SL',['leaf'],['leaf'],1,2,{t:'emerge',e:'draw',n:2}],
+['katydid','Katydid','🦗','hop','L',['leaf'],['leaf','dew'],1,4,{t:'scout',e:'gain',f:'leaf',n:1}],
+['locust','Desert Locust','🦗','hop','LB',['leaf'],['leaf','leaf'],1,4,{t:'emerge',e:'swarm',n:1}],
+['mantis','Praying Mantis','🦗','hop','LB',['prey'],['prey','prey'],1,6,{t:'forage',e:'hunt',n:1}],
+['orchid','Orchid Mantis','🦗','hop','B',['prey'],['prey','nectar'],1,4,{t:'end',e:'adj',fam:'sting',n:2}],
+['cicada','Periodical Cicada','🦗','hop','SL',['dew'],['dew','any','any'],2,7,{t:'emerge',e:'hoard',n:1}],
+['molecricket','Mole Cricket','🦗','hop','S',['any'],['leaf','prey'],1,4,{t:'scout',e:'hoard',n:1}],
+['emperor','Emperor Dragonfly','🦟','skim','P',['prey'],['prey','prey','dew'],1,7,{t:'forage',e:'hunt',n:1}],
+['damsel','Azure Damselfly','🦟','skim','PL',['dew'],['prey','dew'],1,4,{t:'forage',e:'gain',f:'dew',n:1}],
+['mayfly','Mayfly','🦟','skim','P',['dew'],['dew'],0,2,{t:'emerge',e:'draw',n:2}],
+['strider','Water Strider','🦟','skim','P',['dew'],['dew','dew'],1,4,{t:'forage',e:'gain',f:'dew',n:1}],
+['hoverfly','Hoverfly','🪰','skim','B',['nectar'],['nectar'],1,3,{t:'forage',e:'grow',n:1}],
+['mosquito','Mosquito','🦟','skim','P',['dew'],['prey'],0,2,{t:'emerge',e:'bite',n:1}],
+['housefly','Housefly','🪰','skim','SB',['any'],['any'],0,2,{t:'scout',e:'draw',n:1}],
+['orbweaver','Orb Weaver','🕷️','crawl','BL',['prey'],['prey','prey'],1,5,{t:'forage',e:'hunt',n:1}],
+['jumper','Jumping Spider','🕷️','crawl','L',['prey'],['prey'],1,3,{t:'emerge',e:'hunt',n:2}],
+['scorpion','Emperor Scorpion','🦂','crawl','S',['prey'],['prey','prey','prey'],1,8,null],
+['roach','Hissing Cockroach','🪳','crawl','S',['any'],['any','any'],1,4,{t:'end',e:'ter',ter:'S',n:1}],
+['centipede','Giant Centipede','🐛','crawl','S',['prey'],['prey','any'],1,5,{t:'forage',e:'hunt',n:1}],
+['waterscorp','Water Scorpion','🦂','crawl','P',['prey'],['prey','dew'],1,5,{t:'end',e:'ter',ter:'P',n:1}],
+['woodlouse','Woodlouse','🪳','crawl','SL',['leaf'],['any'],1,2,{t:'forage',e:'hoard',n:1}],
+];
+const C={};
+RAW.forEach(r=>{const[id,name,art,fam,ter,settle,molt,lp,ap,ab]=r;C[id]={id,name,art,fam,ter:ter.split(''),settle,molt,lp,ap,ab};});
+
+const count=(p,fn)=>p.grid.reduce((s,c,i)=>s+(c&&fn(c,C[c.id],i)?1:0),0);
+const NOTES=[
+  ...Object.keys(FAM).map(f=>({name:`${FAM[f]} Collector`,text:`2 per ${FAM[f]} in your garden`,f:p=>2*count(p,(c,k)=>k.fam===f)})),
+  ...Object.keys(TER).map(t=>({name:`${TER[t].n} Survey`,text:`3 per bug on ${TER[t].i} ${TER[t].n}`,f:p=>3*count(p,(c,k,i)=>LAYOUT[i]===t)})),
+  {name:'Metamorphosis',text:'2 per adult worth 4+ points',f:p=>2*count(p,(c,k)=>c.adult&&k.ap>=4)},
+  {name:'Giants',text:'3 per bug worth 7+ points',f:p=>3*count(p,(c,k)=>k.ap>=7)},
+  {name:'Packrat',text:`1 per ${STASH} stashed (max 12)`,f:p=>Math.min(12,stashOf(p))},
+  {name:'Biodiversity',text:'2 per family in your garden',f:p=>2*famsOf(p)},
+  {name:'Full Rows',text:'4 per completely filled row',f:p=>[0,1,2].reduce((s,r)=>s+(p.grid.slice(r*COLS,r*COLS+COLS).every(Boolean)?4:0),0)},
+  {name:'Hunters',text:'3 per bug that hunts',f:p=>3*count(p,(c,k)=>k.ab&&k.ab.e==='hunt')},
+];
+function stashOf(p){return p.grid.reduce((s,c)=>s+(c?c.stash:0),0)}
+function famsOf(p){return new Set(p.grid.filter(Boolean).map(c=>C[c.id].fam)).size}
+function foodOf(p){return FOODS.reduce((s,f)=>s+p.food[f],0)}
+const GOALS=[
+  {id:'adults',name:'Most adults',f:p=>count(p,c=>c.adult)},
+  {id:'larvae',name:'Most larvae',f:p=>count(p,c=>!c.adult)},
+  {id:'stash',name:`Biggest ${STASH} stash`,f:stashOf},
+  {id:'fams',name:'Most families',f:famsOf},
+  {id:'B',name:'Most bugs on 🌸 Bloom',f:p=>count(p,(c,k,i)=>LAYOUT[i]==='B')},
+  {id:'L',name:'Most bugs on 🌿 Leaf',f:p=>count(p,(c,k,i)=>LAYOUT[i]==='L')},
+  {id:'S',name:'Most bugs on 🍄 Soil',f:p=>count(p,(c,k,i)=>LAYOUT[i]==='S')},
+  {id:'P',name:'Most bugs on 🌊 Pond',f:p=>count(p,(c,k,i)=>LAYOUT[i]==='P')},
+  {id:'hunt',name:'Most hunters',f:p=>count(p,(c,k)=>k.ab&&k.ab.e==='hunt')},
+  {id:'big',name:'Most bugs worth 5+',f:p=>count(p,(c,k)=>k.ap>=5)},
+  {id:'food',name:'Most food in pantry',f:foodOf},
+  {id:'hand',name:'Most cards in hand',f:p=>p.hand.length},
+];
+const BOTNAMES=['Beetlebot','Waspwick','Mothra-9','Antonina'];
+const COLORS=['#2f6b3a','#b4432c','#2563a8','#8a4fb8'];
+
+/* ============================== HELPERS ============================== */
+const $=s=>document.querySelector(s);
+const rnd=n=>Math.floor(Math.random()*n);
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const costStr=c=>c.map(f=>FI[f]).join('');
+const terStr=t=>t.map(x=>TER[x].i).join('');
+function neighbors(i){const r=Math.floor(i/COLS),c=i%COLS,o=[];if(r>0)o.push(i-COLS);if(r<2)o.push(i+COLS);if(c>0)o.push(i-1);if(c<COLS-1)o.push(i+1);return o}
+
+function abText(a){
+  if(!a) return '<i>No ability — just a magnificent bug.</i>';
+  const trig={forage:'Forage',scout:'Scout',emerge:'Emerge',end:'Game end'}[a.t];
+  let e='';
+  switch(a.e){
+    case 'gain': e=`gain ${FI[a.f].repeat(a.n)}`;break;
+    case 'hoard': e=`stash ${STASH.repeat(a.n)}`;break;
+    case 'hunt': e=(a.n>1?`hunt ${a.n}×`:'hunt')+` (🎲 3–5: ${STASH}, 6: ${STASH}${STASH})`;break;
+    case 'draw': e=`draw ${a.n} card${a.n>1?'s':''}`;break;
+    case 'grow': e=`give ${GROW.repeat(a.n)} to your larvae (none? gain ${FI.nectar})`;break;
+    case 'bite': e=`each rival loses 1 food; you gain ${FI.prey}`;break;
+    case 'swarm': e='every gardener draws 1 card; you draw 1 more';break;
+    case 'adj': e=`+${a.n} per adjacent ${a.fam==='any'?'bug':FAM[a.fam]}`;break;
+    case 'fam': e=`+${a.n} per ${FAM[a.fam]} you have (incl. this)`;break;
+    case 'ter': e=`+${a.n} per bug on ${TER[a.ter].i} ${TER[a.ter].n}`;break;
+    case 'food': e='+1 per 2 food left in your pantry';break;
+  }
+  return `<b>${trig}:</b> ${e}`;
+}
+
+/* ============================== STATE ============================== */
+let G=null;
+let UI={mode:null,picks:[],h:null,cell:null};
+let setupCfg={n:3,players:[{name:'You',human:true},{name:BOTNAMES[0],human:false},{name:BOTNAMES[1],human:false},{name:BOTNAMES[2],human:false}]};
+let flashes=new Set(), busy=false;
+
+function newState(cfg){
+  const deck=shuffle(RAW.flatMap(r=>[r[0],r[0]]));
+  const goals=shuffle(GOALS.slice()).slice(0,3).map(g=>({id:g.id,res:null}));
+  const players=cfg.players.slice(0,cfg.n).map((p,i)=>({
+    name:p.name||(p.human?`Player ${i+1}`:BOTNAMES[i]),human:p.human,color:COLORS[i],
+    grid:Array(CELLS).fill(null),hand:[],food:{nectar:1,leaf:1,dew:1,prey:1},
+    note:null,noteOpts:[],goalPts:[0,0,0],turns:0,
+  }));
+  G={players,deck,discard:[],guide:[],meadow:[],season:0,cur:0,first:0,turnNo:0,goals,log:[],over:false,viewer:0,phase:'notes'};
+  const noteIdx=shuffle([...NOTES.keys()]);
+  players.forEach((p,i)=>{for(let k=0;k<5;k++)p.hand.push(draw());p.noteOpts=[noteIdx[i*2],noteIdx[i*2+1]];});
+  for(let i=0;i<3;i++)G.guide.push(draw());
+  for(let i=0;i<5;i++)G.meadow.push(FOODS[rnd(4)]);
+  G.viewer=Math.max(0,players.findIndex(p=>p.human));
+  log(`🌱 ${SEASON[0]} begins. ${players.length} gardeners, ${TURNS.join('/')} turns per season.`,true);
+}
+function draw(){
+  if(!G.deck.length){G.deck=shuffle(G.discard);G.discard=[];}
+  return G.deck.pop()||null;
+}
+function log(msg,sys){G.log.push({msg,sys});if(G.log.length>200)G.log.shift()}
+const cur=()=>G.players[G.cur];
+function turnsLeft(p){let t=TURNS[G.season]-p.turns;for(let s=G.season+1;s<3;s++)t+=TURNS[s];return t}
+
+/* ============================== RULES LOGIC ============================== */
+function payPlan(cost,food,wild){
+  const f={...food};let w=wild||0;
+  for(const t of cost){if(t==='any')continue;if(w>0)w--;else if(f[t]>0)f[t]--;else return null;}
+  for(const t of cost){if(t!=='any')continue;if(w>0){w--;continue}
+    const best=FOODS.slice().sort((a,b)=>f[b]-f[a])[0];if(f[best]>0)f[best]--;else return null;}
+  return f;
+}
+const validCells=(p,card)=>[...Array(CELLS).keys()].filter(i=>!p.grid[i]&&card.ter.includes(LAYOUT[i]));
+const canSettle=(p,id)=>{const k=C[id];return !!payPlan(k.settle,p.food,0)&&validCells(p,k).length>0};
+const canMolt=(p,i)=>{const c=p.grid[i];return c&&!c.adult&&!!payPlan(C[c.id].molt,p.food,c.growth)};
+const anySettle=p=>p.hand.some(id=>canSettle(p,id));
+const anyMolt=p=>p.grid.some((c,i)=>canMolt(p,i));
+
+const isYou=p=>p.name.toLowerCase()==='you';
+const poss=p=>isYou(p)?'Your':esc(p.name)+"'s";
+const vb=(p,v)=>`${esc(p.name)} ${isYou(p)?v.replace(/s$/,'').replace(/ie$/,'y'):v}`;
+function bugName(p,i){const k=C[p.grid[i].id];return `${k.art} ${k.name}`}
+function flash(pi,i){flashes.add(pi+'-'+i)}
+
+function applyEffect(pi,i,a){
+  const p=G.players[pi],cell=p.grid[i],who=`${poss(p)} ${bugName(p,i)}`;
+  flash(pi,i);
+  switch(a.e){
+    case 'gain': p.food[a.f]+=a.n;log(`${who}: +${FI[a.f].repeat(a.n)}`);break;
+    case 'hoard': cell.stash+=a.n;log(`${who}: stashed ${STASH.repeat(a.n)}`);break;
+    case 'hunt': for(let k=0;k<a.n;k++){const r=rnd(6)+1,g=r===6?2:r>=3?1:0;cell.stash+=g;log(`${who} hunts 🎲${r} — ${g?'caught! '+STASH.repeat(g):'missed'}`);}break;
+    case 'draw': {let got=0;for(let k=0;k<a.n;k++){if(p.hand.length>=HAND_MAX)break;const d=draw();if(d){p.hand.push(d);got++}}log(`${who}: drew ${got} card${got===1?'':'s'}`);break;}
+    case 'grow': for(let k=0;k<a.n;k++){
+      let t=-1,need=-1;p.grid.forEach((c,j)=>{if(c&&!c.adult){const r=C[c.id].molt.length-c.growth;if(r>need){need=r;t=j}}});
+      if(t>=0&&need>0){p.grid[t].growth++;flash(pi,t);log(`${who}: ${GROW} to ${bugName(p,t)}`)}else{p.food.nectar++;log(`${who}: no larva to feed, +${FI.nectar}`)}
+    }break;
+    case 'bite': G.players.forEach((o,j)=>{if(j===pi)return;const f=FOODS.slice().sort((a,b)=>o.food[b]-o.food[a])[0];if(o.food[f]>0){o.food[f]--;log(`🦟 ${vb(o,'loses')} ${FI[f]}`)}});p.food.prey++;log(`${who}: bite! +${FI.prey}`);break;
+    case 'swarm': G.players.forEach((o,j)=>{const n=j===pi?2:1;for(let k=0;k<n;k++){if(o.hand.length<HAND_MAX){const d=draw();if(d)o.hand.push(d)}}});log(`${who}: the swarm spreads — everyone draws`);break;
+  }
+}
+function trigger(pi,t){G.players[pi].grid.forEach((c,i)=>{if(c&&c.adult){const a=C[c.id].ab;if(a&&a.t===t)applyEffect(pi,i,a)}})}
+
+function doForage(picks){
+  const p=cur();picks=[...picks].sort((a,b)=>b-a);
+  const got=picks.map(i=>G.meadow.splice(i,1)[0]);
+  got.forEach(f=>p.food[f]++);
+  while(G.meadow.length<5)G.meadow.push(FOODS[rnd(4)]);
+  log(`${vb(p,'forages')} ${got.map(f=>FI[f]).join('')}`);
+  trigger(G.cur,'forage');endTurn();
+}
+function doScout(picks){
+  const p=cur(),names=[];
+  picks.forEach(k=>{if(p.hand.length>=HAND_MAX)return;let id;if(k==='deck')id=draw();else{id=G.guide[k];G.guide[k]=null;}
+    if(id){p.hand.push(id);names.push(k==='deck'?'a mystery card':C[id].art+' '+C[id].name)}});
+  G.guide=G.guide.filter(Boolean);while(G.guide.length<3){const d=draw();if(!d)break;G.guide.push(d)}
+  log(`${vb(p,'scouts')} ${names.join(' and ')}`);
+  trigger(G.cur,'scout');endTurn();
+}
+function doSettle(h,i){
+  const p=cur(),id=p.hand[h],k=C[id];
+  p.food=payPlan(k.settle,p.food,0);p.hand.splice(h,1);
+  p.grid[i]={id,adult:false,growth:0,stash:0};flash(G.cur,i);
+  log(`${vb(p,'settles')} a ${k.art} ${k.name} larva on ${TER[LAYOUT[i]].i} (paid ${costStr(k.settle)})`);
+  endTurn();
+}
+function doMolt(i){
+  const p=cur(),c=p.grid[i],k=C[c.id];
+  p.food=payPlan(k.molt,p.food,c.growth);
+  c.adult=true;c.growth=0;flash(G.cur,i);
+  log(`✨ ${poss(p)} ${k.art} ${k.name} metamorphoses! (${k.lp}→${k.ap} pts)`);
+  if(k.ab&&k.ab.t==='emerge')applyEffect(G.cur,i,k.ab);
+  endTurn();
+}
+
+function endTurn(){
+  UI={mode:null,picks:[],h:null,cell:null};
+  cur().turns++;G.turnNo++;
+  if(G.turnNo>=G.players.length*TURNS[G.season]){endSeason();}
+  else G.cur=(G.cur+1)%G.players.length;
+  afterChange();
+}
+function goalPoints(rank){const n=G.players.length;return (n===2?[5,2]:[5,3,1])[rank]||0}
+function scoreGoal(gi){
+  const g=GOALS.find(x=>x.id===G.goals[gi].id);
+  const vals=G.players.map(p=>g.f(p));
+  const res=G.players.map((p,j)=>{const v=vals[j];if(v<=0)return 0;const rank=vals.filter(x=>x>v).length;return goalPoints(rank)});
+  res.forEach((r,j)=>G.players[j].goalPts[gi]=r);
+  G.goals[gi].res={vals,res};
+  log(`🏆 ${SEASON[gi]} goal “${g.name}”: `+G.players.map((p,j)=>`${p.name} ${vals[j]}→+${res[j]}`).join(', '),true);
+}
+function endSeason(){
+  scoreGoal(G.season);
+  if(G.season===2){endGame();return}
+  G.players.forEach((p,pi)=>{p.turns=0;p.grid.forEach((c,i)=>{if(c&&!c.adult&&c.growth<C[c.id].molt.length){c.growth++;flash(pi,i)}})});
+  G.season++;G.turnNo=0;G.first=(G.first+1)%G.players.length;G.cur=G.first;
+  G.discard.push(...G.guide);G.guide=[];for(let i=0;i<3;i++){const d=draw();if(d)G.guide.push(d)}
+  G.meadow=[];for(let i=0;i<5;i++)G.meadow.push(FOODS[rnd(4)]);
+  log(`🍂 ${SEASON[G.season]} begins. Every larva grows (${GROW}). Fresh meadow & field guide.`,true);
+  toast(`${SEASON[G.season-1]} is over — ${SEASON[G.season]} begins! Your larvae grew ${GROW}`);
+}
+function endAbility(p,i){
+  const c=p.grid[i];if(!c||!c.adult)return 0;const a=C[c.id].ab;if(!a||a.t!=='end')return 0;
+  switch(a.e){
+    case 'adj':return a.n*neighbors(i).filter(j=>p.grid[j]&&(a.fam==='any'||C[p.grid[j].id].fam===a.fam)).length;
+    case 'fam':return a.n*count(p,(x,k)=>k.fam===a.fam);
+    case 'ter':return a.n*count(p,(x,k,j)=>LAYOUT[j]===a.ter);
+    case 'food':return Math.floor(foodOf(p)/2);
+  }return 0;
+}
+function breakdown(p){
+  const bugs=p.grid.reduce((s,c)=>s+(c?(c.adult?C[c.id].ap:C[c.id].lp):0),0);
+  const stash=stashOf(p);
+  const ends=p.grid.reduce((s,c,i)=>s+endAbility(p,i),0);
+  const notes=p.note!=null?NOTES[p.note].f(p):0;
+  const goals=p.goalPts.reduce((a,b)=>a+b,0);
+  return {bugs,stash,ends,notes,goals,total:bugs+stash+ends+notes+goals};
+}
+function endGame(){
+  G.over=true;log('🌙 The year ends. Final scoring!',true);
+  render();showEnd();
+}
+
+/* ============================== BOT ============================== */
+function abilityValue(a,R){
+  if(!a)return 0;
+  if(a.t==='end')return 2.5;
+  if(a.t==='emerge')return 0;
+  const per={gain:0.8,hoard:1,hunt:0.85,draw:0.5,grow:0.8}[a.e]||0.5;
+  return per*a.n*Math.max(0,R-2)/(a.t==='forage'?3:4);
+}
+function emergeValue(a){if(!a||a.t!=='emerge')return 0;return {gain:0.8,hoard:1,hunt:0.85,draw:0.6,grow:0.9,bite:1.3,swarm:0.8}[a.e]*a.n}
+function withTemp(p,i,val,fn){const old=p.grid[i];p.grid[i]=val;const r=fn();p.grid[i]=old;return r}
+function shapeScore(p){
+  let s=p.note!=null?NOTES[p.note].f(p):0;
+  const g=GOALS.find(x=>x.id===G.goals[G.season].id);s+=0.6*g.f(p);
+  for(let k=G.season+1;k<3;k++){const g2=GOALS.find(x=>x.id===G.goals[k].id);s+=0.25*g2.f(p)}
+  s+=p.grid.reduce((a,c,i)=>a+endAbility(p,i),0);
+  return s;
+}
+function settleValue(p,k,i,R){
+  const base=shapeScore(p);
+  const after=withTemp(p,i,{id:k.id,adult:false,growth:0,stash:0},()=>shapeScore(p));
+  const afterAdult=withTemp(p,i,{id:k.id,adult:true,growth:0,stash:0},()=>shapeScore(p));
+  const pot=R>=2?Math.min(1,(R-1)/3)*(0.55*(k.ap-k.lp)+0.5*(afterAdult-after)+abilityValue(k.ab,R-1)+emergeValue(k.ab)*0.6):0;
+  return k.lp+(after-base)+pot-0.3*k.settle.length-(R>=2?0.15*k.molt.length:0)+Math.random()*0.3;
+}
+function moltValue(p,i,R){
+  const c=p.grid[i],k=C[c.id];
+  const base=shapeScore(p),after=withTemp(p,i,{...c,adult:true},()=>shapeScore(p));
+  return (k.ap-k.lp)+(after-base)+emergeValue(k.ab)+abilityValue(k.ab,R)+0.6+Math.random()*0.3;
+}
+function demand(p){
+  const d={nectar:0,leaf:0,dew:0,prey:0};
+  p.grid.forEach(c=>{if(c&&!c.adult)C[c.id].molt.forEach(f=>{if(f!=='any')d[f]+=1})});
+  p.hand.forEach(id=>{const k=C[id];if(validCells(p,k).length){k.settle.forEach(f=>{if(f!=='any')d[f]+=0.7});k.molt.forEach(f=>{if(f!=='any')d[f]+=0.35})}});
+  FOODS.forEach(f=>d[f]-=p.food[f]*0.9);
+  return d;
+}
+function cardValue(p,k){
+  const cells=validCells(p,k);if(!cells.length)return -5;
+  return k.ap*0.6+k.lp+abilityValue(k.ab,turnsLeft(p))+emergeValue(k.ab)+Math.max(...cells.map(i=>withTemp(p,i,{id:k.id,adult:true,growth:0,stash:0},()=>shapeScore(p))-shapeScore(p)))*0.6-0.25*(k.settle.length+k.molt.length);
+}
+function botTurn(){
+  const p=cur(),R=turnsLeft(p);
+  let best={v:-1e9};
+  p.grid.forEach((c,i)=>{if(canMolt(p,i)){const v=moltValue(p,i,R);if(v>best.v)best={v,type:'molt',i}}});
+  p.hand.forEach((id,h)=>{const k=C[id];if(!payPlan(k.settle,p.food,0))return;validCells(p,k).forEach(i=>{const v=settleValue(p,k,i,R);if(v>best.v)best={v,type:'settle',h,i}})});
+  const nF=count(p,(c,k)=>c.adult&&k.ab&&k.ab.t==='forage'),nS=count(p,(c,k)=>c.adult&&k.ab&&k.ab.t==='scout');
+  const stuck=!anyMolt(p)&&!anySettle(p);
+  const fv=1.3+0.85*nF+(stuck?2:0)-(foodOf(p)>=9?2.5:0)+(R<=1?-1:0);
+  if(fv>best.v)best={v:fv,type:'forage'};
+  const playable=p.hand.filter(id=>validCells(p,C[id]).length).length;
+  let sv=0.6+0.8*nS+(playable<=1?2.2:0)+(R<=2?-1.5:0);
+  if(p.hand.length>=HAND_MAX||count(p,()=>true)>=CELLS&&nS===0)sv=-99;
+  if(sv>best.v)best={v:sv,type:'scout'};
+  if(best.type==='forage'){
+    const d=demand(p),picks=[];
+    for(let n=0;n<2;n++){let bi=-1,bv=-1e9;G.meadow.forEach((f,i)=>{if(picks.includes(i))return;const v=d[f]+Math.random()*0.2;if(v>bv){bv=v;bi=i}});picks.push(bi);d[G.meadow[bi]]-=1;}
+    doForage(picks);
+  }else if(best.type==='scout'){
+    const picks=[],avail=G.guide.map((id,i)=>i);
+    for(let n=0;n<2;n++){let bi='deck',bv=3.5;avail.forEach(i=>{if(picks.includes(i))return;const v=cardValue(p,C[G.guide[i]]);if(v>bv){bv=v;bi=i}});picks.push(bi);}
+    doScout(picks);
+  }else if(best.type==='settle')doSettle(best.h,best.i);
+  else doMolt(best.i);
+}
+
+/* ============================== FLOW ============================== */
+function afterChange(){
+  render();
+  if(flashes.size)setTimeout(()=>{flashes.clear();document.querySelectorAll('.flash').forEach(e=>e.classList.remove('flash'))},950);
+  if(G.over||G.phase!=='play')return;
+  const p=cur();
+  if(!p.human){busy=true;const g=G;setTimeout(()=>{if(G!==g)return;busy=false;if(!G.over&&!cur().human)botTurn()},800);}
+  else{
+    const humans=G.players.filter(x=>x.human).length;
+    if(humans>1&&G.viewer!==G.cur){showPass(G.cur,()=>{G.viewer=G.cur;render()});}
+    else{G.viewer=G.cur;render()}
+  }
+}
+function startPlay(){G.phase='play';G.cur=0;afterChange()}
+function chooseNotes(){
+  const humans=G.players.map((p,i)=>i).filter(i=>G.players[i].human&&G.players[i].note==null);
+  G.players.forEach(p=>{if(!p.human&&p.note==null){
+    // Bots pick the note that best matches their starting hand
+    const sc=p.noteOpts.map(n=>{const nm=NOTES[n].name;return p.hand.reduce((s,id)=>{const k=C[id];return s+(nm.includes(FAM[k.fam])?2:0)+(k.ter.some(t=>nm.includes(TER[t].n))?1.5:0)+(nm==='Giants'&&k.ap>=7?2:0)+(nm==='Hunters'&&k.ab&&k.ab.e==='hunt'?2:0)},Math.random())});
+    p.note=p.noteOpts[sc[0]>=sc[1]?0:1];
+  }});
+  if(!humans.length){startPlay();return}
+  const pi=humans[0];
+  const go=()=>{G.viewer=pi;render();showNotes(pi,chooseNotes)};
+  if(G.players.filter(p=>p.human).length>1)showPass(pi,go);else go();
+}
+
+/* ============================== RENDER ============================== */
+function cardHTML(id,cls='',attrs=''){
+  const k=C[id];
+  return `<div class="card fam-${k.fam} ${cls}" ${attrs} title="${esc(k.name)}">
+    <div class="c-head"><div><div class="c-name">${esc(k.name)}</div><div class="c-fam">${FAM[k.fam]}</div></div><span class="c-ter" title="${k.ter.map(t=>TER[t].n).join(' or ')}">${terStr(k.ter)}</span></div>
+    <div class="c-art">${k.art}</div>
+    <div class="c-pts"><span class="ptsbadge" title="Adult points">${k.ap}</span><span class="ptsbadge lp" title="Larva points">${k.lp}</span></div>
+    <div class="c-row"><span class="lbl">Settle</span><span>${costStr(k.settle)}</span></div>
+    <div class="c-row"><span class="lbl">Molt</span><span>${costStr(k.molt)}</span></div>
+    <div class="c-ab">${abText(k.ab)}</div></div>`;
+}
+function bugHTML(c){
+  const k=C[c.id];
+  const toks=STASH.repeat(Math.min(c.stash,6))+(c.stash>6?`×${c.stash}`:'')+GROW.repeat(c.growth);
+  return `<div class="bug fam-${k.fam} ${c.adult?'adult':'larva'}">
+    <div class="b-head"><span>${esc(k.name)}</span><span>${c.adult?k.ap:k.lp}★</span></div>
+    <div class="b-body"><span class="b-art">${c.adult?k.art:'🐛'}</span><div>
+      <div class="b-stage">${c.adult?'Adult':'Larva → '+k.art}</div>
+      ${c.adult?'':`<div class="b-cost">molt ${costStr(k.molt)}</div>`}</div></div>
+    <div class="b-ab">${abText(k.ab)}</div>
+    <div class="b-tokens">${toks}</div></div>`;
+}
+function canSee(pi){const p=G.players[pi];return G.over||(p.human&&(pi===G.cur||G.players.filter(x=>x.human).length===1))}
+function shownTotal(pi){const b=breakdown(G.players[pi]);return canSee(pi)?b.total:b.total-b.notes}
+function myTurn(){return G&&G.phase==='play'&&!G.over&&cur().human&&G.viewer===G.cur&&!busy}
+
+function render(){
+  if(!G)return;
+  const V=G.players[G.viewer],mine=myTurn(),mode=UI.mode;
+  // seasons
+  $('#seasons').innerHTML=SEASON.map((s,i)=>`<span class="pip ${i===G.season&&!G.over?'on':''} ${i<G.season||G.over?'done':''}">${s} · ${TURNS[i]}</span>`).join('');
+  // meadow
+  $('#meadow').innerHTML=G.meadow.map((f,i)=>{
+    const pick=mine&&mode==='forage',sel=UI.picks.includes(i);
+    return `<div class="tok ${pick?'pick':''} ${sel?'sel':''}" ${pick?`data-act="meadow" data-i="${i}"`:''} title="${FNAME[f]}">${FI[f]}</div>`}).join('');
+  // guide
+  const sp=mine&&mode==='scout';
+  $('#guide').innerHTML=G.guide.map((id,i)=>cardHTML(id,(sp?'pick':'')+(UI.picks.includes(i)?' sel':''),sp?`data-act="guide" data-i="${i}"`:'')).join('')+
+    `<div class="deck ${sp?'pick':''}" ${sp?'data-act="deck"':''}><div>🂠<br>Draw blind<br><small class="muted">${G.deck.length} in deck${UI.picks.filter(x=>x==='deck').length?` · ×${UI.picks.filter(x=>x==='deck').length} picked`:''}</small></div></div>`;
+  // garden
+  const own=G.viewer===G.cur;
+  $('#gardenTitle').innerHTML=`<h2 style="color:${V.color}">${poss(V)} garden</h2><small>${V.human?'':'🤖 '}${count(V,()=>true)}/12 bugs · ${count(V,c=>c.adult)} adults · ${stashOf(V)} ${STASH}</small>`;
+  let targets=[];
+  if(mine&&mode==='settle'&&UI.h!=null)targets=validCells(V,C[V.hand[UI.h]]);
+  $('#garden').innerHTML=LAYOUT.map((t,i)=>{
+    const c=V.grid[i],fl=flashes.has(G.viewer+'-'+i)?'flash':'';
+    if(!c){const pk=targets.includes(i);return `<div class="cell ${t} empty ${pk?'pick':''} ${fl}" ${pk?`data-act="cell" data-i="${i}"`:''}><span class="big">${TER[t].i}</span><span class="ter">${TER[t].n}</span></div>`}
+    const pk=mine&&(mode===null||mode==='molt')&&canMolt(V,i);
+    return `<div class="cell ${t} ${pk&&mode==='molt'?'pick':''} ${UI.cell===i?'sel':''} ${fl}" ${pk?`data-act="larva" data-i="${i}"`:''} ${pk&&mode!=='molt'?'style="cursor:pointer"':''}>${bugHTML(c)}</div>`;
+  }).join('');
+  // hand
+  $('#handTitle').innerHTML=`<h2>${V.human&&isYou(V)?'Hand':poss(V)+' hand'}</h2><small>${V.hand.length}/${HAND_MAX} cards${mine?' · tap a glowing card to settle it as a larva':''}</small>`;
+  const showHand=canSee(G.viewer);
+  $('#hand').innerHTML=showHand?(V.hand.map((id,h)=>{
+    const ok=mine&&(mode===null||mode==='settle')&&canSettle(V,id);
+    return cardHTML(id,(ok?'pick':(mine?'dim':''))+(UI.h===h?' sel':''),ok?`data-act="hand" data-h="${h}"`:'');
+  }).join('')||'<span class="muted">No cards — Scout to find more bugs.</span>'):`<span class="muted">${V.hand.length} hidden cards.</span>`;
+  // my panel
+  const bd=breakdown(V);
+  $('#mine').innerHTML=`<div class="ptitle"><h2>Pantry</h2><small>${esc(V.name)}</small><span class="spacer"></span><span class="ptsbadge" title="Current score">${shownTotal(G.viewer)}</span></div>
+   <div class="food">${FOODS.map(f=>`<span class="fchip" title="${FNAME[f]}">${FI[f]} ${V.food[f]}</span>`).join('')}</div>
+   <div style="margin-top:10px" class="note">${V.note!=null&&canSee(G.viewer)?`<h3>📓 ${NOTES[V.note].name}</h3><p>${NOTES[V.note].text} · now <b>${NOTES[V.note].f(V)}</b></p>`:'<h3>📓 Field Notes</h3><p>Secret.</p>'}</div>
+   <p class="muted" style="font-size:12px;margin:8px 0 0">Score now: bugs ${bd.bugs} · ${STASH} ${bd.stash} · end abilities ${bd.ends} · notes ${canSee(G.viewer)?bd.notes:'?'} · goals ${bd.goals}</p>`;
+  // goals
+  $('#goals').innerHTML=G.goals.map((g,gi)=>{
+    const def=GOALS.find(x=>x.id===g.id);
+    const now=G.players.map(p=>`${esc(p.name)} ${def.f(p)}`).join(' · ');
+    const res=g.res?G.players.map((p,j)=>`${esc(p.name)} +${g.res.res[j]}`).join(' · '):now;
+    return `<div class="goal ${gi===G.season&&!G.over?'cur':''}"><span class="gs">${SEASON[gi]}</span><b>${def.name}</b><span class="gv">${g.res?'✔ '+res:res}</span></div>`;
+  }).join('')+`<p class="muted" style="font-size:12px;margin:6px 0 0">Scored at season end: ${G.players.length===2?'5 / 2':'5 / 3 / 1'} pts for 1st / 2nd${G.players.length===2?'':' / 3rd'}.</p>`;
+  // players
+  $('#players').innerHTML=G.players.map((p,pi)=>`<div class="opp ${pi===G.viewer?'active':''}" data-act="view" data-i="${pi}">
+    <div class="mini">${LAYOUT.map((t,i)=>{const c=p.grid[i];return `<div class="${t} ${c&&!c.adult?'lv':''}">${c?(c.adult?C[c.id].art:'🐛'):''}</div>`}).join('')}</div>
+    <div><div class="oname" style="color:${p.color}">${pi===G.cur&&!G.over?'▶ ':''}${p.human?'':'🤖 '}${esc(p.name)}</div>
+    <div class="ometa">${FOODS.map(f=>FI[f]+p.food[f]).join(' ')} · 🂠${p.hand.length}</div>
+    <div class="ometa">${G.over?'':`${TURNS[G.season]-p.turns} turns left this season`}</div></div>
+    <span class="ptsbadge" style="background:${p.color}" title="Score so far${canSee(pi)?'':' (excl. secret notes)'}">${shownTotal(pi)}</span></div>`).join('');
+  // log
+  $('#log').innerHTML=G.log.slice(-80).map(l=>`<div class="${l.sys?'sys':''}">${l.msg}</div>`).reverse().join('');
+  renderBar();
+}
+function renderBar(){
+  const bar=$('#bar');
+  if(G.over){bar.innerHTML=`<div class="prompt">The year is over.</div><button class="abtn" data-act="showend">🏆 Final scores</button><button class="abtn sec" data-act="newgame">↻ New game</button>`;return}
+  if(G.phase!=='play'){bar.innerHTML=`<div class="prompt">Choose your Field Notes…</div>`;return}
+  const p=cur();
+  if(!myTurn()){bar.innerHTML=`<div class="prompt">${p.human?'':'🤖 '}${esc(p.name)} is ${p.human?'up':'thinking…'}<small>${SEASON[G.season]} · ${TURNS[G.season]-p.turns} turns left this season</small></div>${p.human?`<button class="abtn" data-act="view" data-i="${G.cur}">Go to ${esc(p.name)}'s turn</button>`:''}`;return}
+  const tl=`${SEASON[G.season]} · turn ${p.turns+1}/${TURNS[G.season]}`;
+  let msg,btns='';
+  switch(UI.mode){
+    case 'forage':msg=`Pick 2 food from the Meadow (${UI.picks.length}/2)<small>Then your adult Forage bugs activate.</small>`;btns=`<button class="abtn sec" data-act="cancel">Cancel</button>`;break;
+    case 'scout':{const max=Math.min(2,HAND_MAX-p.hand.length);msg=`Pick ${max} card${max>1?'s':''}: from the Field Guide or the deck (${UI.picks.length}/${max})<small>Then your adult Scout bugs activate.</small>`;btns=`<button class="abtn sec" data-act="cancel">Cancel</button>`;break;}
+    case 'settle':
+      if(UI.h==null){msg='Choose a bug from your hand to settle';}
+      else{const k=C[p.hand[UI.h]];msg=`Place ${k.art} ${esc(k.name)} on a glowing ${k.ter.map(t=>TER[t].i+' '+TER[t].n).join(' / ')} cell<small>Pay ${costStr(k.settle)} — it arrives as a larva worth ${k.lp}.</small>`}
+      btns=`<button class="abtn sec" data-act="cancel">Cancel</button>`;break;
+    case 'molt':
+      if(UI.cell==null)msg='Choose a glowing larva to metamorphose';
+      else{const c=p.grid[UI.cell],k=C[c.id];msg=`Metamorphose ${k.art} ${esc(k.name)}?<small>Pay ${costStr(k.molt)}${c.growth?` (${GROW}×${c.growth} cover any part)`:''} → becomes an adult worth ${k.ap}${k.ab&&k.ab.t==='emerge'?' and emerges':''}.</small>`;btns=`<button class="abtn" data-act="confirmMolt">✨ Metamorphose</button>`}
+      btns+=`<button class="abtn sec" data-act="cancel">Cancel</button>`;break;
+    default:
+      msg=`Your turn — ${tl}<small>Forage, Scout, Settle a larva, or Metamorphose one.</small>`;
+      const full=p.hand.length>=HAND_MAX;
+      btns=`<button class="abtn" data-act="forage">🌼 Forage</button>
+        <button class="abtn" data-act="scout" ${full?'disabled title="Hand full"':''}>🔍 Scout</button>
+        <button class="abtn" data-act="settle" ${anySettle(p)?'':'disabled'}>🐛 Settle</button>
+        <button class="abtn" data-act="molt" ${anyMolt(p)?'':'disabled'}>✨ Metamorphose</button>`;
+  }
+  bar.innerHTML=`<div class="prompt">${msg}</div>${btns}`;
+}
+
+/* ============================== INPUT ============================== */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-act]');if(!t)return;
+  const a=t.dataset.act,i=t.dataset.i!=null?+t.dataset.i:null;
+  if(a==='rules')return showRules();
+  if(a==='newgame')return showSetup();
+  if(a==='showend')return showEnd();
+  if(a==='closeov')return closeOv();
+  if(!G)return;
+  if(a==='view'){if(G.players[i].human&&i===G.cur&&G.viewer!==i&&G.players.filter(p=>p.human).length>1){showPass(i,()=>{G.viewer=i;render()});return}G.viewer=i;UI={mode:null,picks:[],h:null,cell:null};render();return}
+  if(!myTurn())return;
+  const p=cur();
+  switch(a){
+    case 'cancel':UI={mode:null,picks:[],h:null,cell:null};break;
+    case 'forage':UI={mode:'forage',picks:[],h:null,cell:null};break;
+    case 'scout':UI={mode:'scout',picks:[],h:null,cell:null};break;
+    case 'settle':UI={mode:'settle',picks:[],h:null,cell:null};break;
+    case 'molt':UI={mode:'molt',picks:[],h:null,cell:null};break;
+    case 'meadow':
+      if(UI.picks.includes(i))UI.picks=UI.picks.filter(x=>x!==i);else UI.picks.push(i);
+      if(UI.picks.length>=2)return doForage(UI.picks);break;
+    case 'guide':case 'deck':{
+      const k=a==='deck'?'deck':i;
+      if(k!=='deck'&&UI.picks.includes(k))UI.picks=UI.picks.filter(x=>x!==k);else UI.picks.push(k);
+      if(UI.picks.length>=Math.min(2,HAND_MAX-p.hand.length))return doScout(UI.picks);break;}
+    case 'hand':UI={mode:'settle',picks:[],h:+t.dataset.h,cell:null};break;
+    case 'cell':if(UI.mode==='settle'&&UI.h!=null)return doSettle(UI.h,i);break;
+    case 'larva':UI={mode:'molt',picks:[],h:null,cell:i};break;
+    case 'confirmMolt':if(UI.cell!=null)return doMolt(UI.cell);break;
+  }
+  render();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&G&&UI.mode&&!$('#overlay').innerHTML){UI={mode:null,picks:[],h:null,cell:null};render()}});
+
+/* ============================== OVERLAYS ============================== */
+let resume=null;
+function ov(html,solid){$('#overlay').innerHTML=`<div class="ov ${solid?'solid':''}"><div class="modal">${html}</div></div>`}
+function closeOv(){$('#overlay').innerHTML='';resume=null}
+let toastT;
+function toast(msg){$('#toast').innerHTML=`<div class="toast">${msg}</div>`;clearTimeout(toastT);toastT=setTimeout(()=>$('#toast').innerHTML='',3200)}
+function showPass(pi,then){
+  const p=G.players[pi];resume=()=>showPass(pi,then);
+  ov(`<h2>Pass to ${esc(p.name)}</h2><p class="muted">Hand the device over — no peeking at other gardens' secrets!</p><div class="row" style="margin-top:14px"><button class="abtn" id="passOk">I'm ${esc(p.name)} — show my garden</button></div>`,true);
+  $('#passOk').onclick=()=>{closeOv();then()};
+}
+function showNotes(pi,then){
+  const p=G.players[pi];resume=()=>showNotes(pi,then);
+  ov(`<h2>${esc(p.name)}, choose your Field Notes</h2><p class="muted">A secret objective scored at the end of the year. Your starting hand is shown behind this window — pick the notes that suit it.</p>
+   <div class="notes">${p.noteOpts.map(n=>`<div class="note" data-note="${n}"><h3>📓 ${NOTES[n].name}</h3><p>${NOTES[n].text}</p></div>`).join('')}</div>
+   <div class="hand" style="pointer-events:none;transform:scale(.85);transform-origin:left top">${p.hand.map(id=>cardHTML(id)).join('')}</div>`);
+  document.querySelectorAll('[data-note]').forEach(el=>el.onclick=()=>{p.note=+el.dataset.note;closeOv();then()});
+}
+function showSetup(){
+  const c=setupCfg;resume=showSetup;
+  ov(`<h2>🐞 Underleaf</h2>
+   <p>Raise a garden of bugs from wriggling larvae to dazzling adults. Settle them, feed them, watch them metamorphose — and let their abilities build an engine through ${SEASON.join(', ')}.</p>
+   <h3 style="margin-top:14px">Gardeners</h3>
+   <div class="seg">${[2,3,4].map(n=>`<button class="${c.n===n?'on':''}" data-n="${n}">${n} players</button>`).join('')}</div>
+   ${c.players.slice(0,c.n).map((p,i)=>`<div class="prow"><span class="ptsbadge" style="background:${COLORS[i]}">${i+1}</span><input data-name="${i}" value="${esc(p.name)}" maxlength="16" aria-label="Name"><select data-human="${i}"><option value="1" ${p.human?'selected':''}>Human</option><option value="0" ${p.human?'':'selected'}>Bot</option></select></div>`).join('')}
+   <p class="muted" style="font-size:13px">Several humans? Play pass-and-play on one device.</p>
+   <div class="row" style="margin-top:14px"><button class="abtn" id="startBtn">Start the year 🌱</button><button class="abtn sec" data-act="rules">📖 How to play</button>${G&&!G.over&&G.phase==='play'?'<button class="abtn sec" data-act="closeov">Keep playing</button>':''}</div>`);
+  document.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{sync();c.n=+b.dataset.n;showSetup()});
+  document.querySelectorAll('[data-human]').forEach(s=>s.onchange=()=>{sync();const i=+s.dataset.human;c.players[i].human=s.value==='1';if(!c.players[i].human&&!c.players[i].name)c.players[i].name=BOTNAMES[i];showSetup()});
+  function sync(){document.querySelectorAll('[data-name]').forEach(inp=>c.players[+inp.dataset.name].name=inp.value.trim())}
+  $('#startBtn').onclick=()=>{sync();
+    if(!c.players.slice(0,c.n).some(p=>p.human)){c.players[0].human=true}
+    closeOv();busy=false;UI={mode:null,picks:[],h:null,cell:null};newState(c);render();chooseNotes()};
+}
+function showRules(){
+  const back=resume?'<button class="abtn" id="rulesBack">Back</button>':'<button class="abtn" data-act="closeov">Back to the garden</button>';
+  const r=resume;
+  ov(`<div class="rules"><h2>How to play Underleaf</h2>
+  <p>Over three seasons (<b>Spring 7 turns, Summer 6, Autumn 5</b>) you raise bugs in your 12-cell garden. Most points at the end of Autumn wins.</p>
+  <h3>On your turn, do ONE action</h3>
+  <ul>
+   <li><b>🌼 Forage</b> — take 2 food tokens from the Meadow. Then every <i>adult</i> bug with a <b>Forage</b> ability activates.</li>
+   <li><b>🔍 Scout</b> — take 2 cards, from the Field Guide and/or blind from the deck (hand limit ${HAND_MAX}). Then every adult with a <b>Scout</b> ability activates.</li>
+   <li><b>🐛 Settle</b> — pay a card's <b>Settle</b> cost and place it on an empty cell of a matching terrain (🌸 Bloom, 🌿 Leaf, 🍄 Soil, 🌊 Pond). It arrives as a <b>larva</b>, worth its small grey number.</li>
+   <li><b>✨ Metamorphose</b> — pay a larva's <b>Molt</b> cost. It becomes an <b>adult</b>: worth its gold number, and its ability switches on. <b>Emerge</b> abilities fire once, right now.</li>
+  </ul>
+  <h3>Food</h3>
+  <ul><li>${FOODS.map(f=>FI[f]+' '+FNAME[f]).join(', ')}. ${FI.any} means any food (paid with your most plentiful).</li>
+  <li>${GROW} <b>Growth</b> on a larva pays for any one food of its Molt cost. Larvae gain ${GROW} from some abilities, and <b>every larva grows ${GROW} at the end of each season</b>.</li></ul>
+  <h3>Abilities (adults only)</h3>
+  <ul><li><b>Forage / Scout</b> — trigger every time you take that action. This is your engine!</li>
+  <li><b>Emerge</b> — once, when the bug metamorphoses.</li>
+  <li><b>Game end</b> — bonus points at final scoring (adjacent = up/down/left/right).</li>
+  <li><b>Hunt</b> — roll a die: 1–2 miss, 3–5 stash 1 ${STASH}, 6 stash 2 ${STASH}. Each ${STASH} is worth 1 point.</li></ul>
+  <h3>Seasons & scoring</h3>
+  <ul><li>Each season has a public <b>goal</b>. At season end, 1st/2nd/3rd place score 5/3/1 (2 players: 5/2). Ties all score the higher place; you need at least 1 to score.</li>
+  <li>Your secret <b>Field Notes</b> score at the end of the game.</li>
+  <li>Final score = bug points (larva or adult) + ${STASH} + Game-end abilities + Field Notes + season goals. Ties are broken by leftover food.</li></ul>
+  <h3>Tips</h3>
+  <ul><li>Early adults with Forage abilities pay off every turn after — but big beautiful bugs (Atlas Moth 9!) win games.</li>
+  <li>A larva left un-molted still scores, and grows ${GROW} each season, getting cheaper to finish.</li></ul>
+  <div class="row" style="margin-top:14px">${back}</div></div>`);
+  const b=$('#rulesBack');if(b)b.onclick=()=>r();
+}
+function showEnd(){
+  const rows=G.players.map(p=>({p,b:breakdown(p)}));
+  const order=[...rows].sort((a,b)=>b.b.total-a.b.total||foodOf(b.p)-foodOf(a.p));
+  const w=order[0];
+  const L=[['Bug points','bugs'],[`${STASH} Stash`,'stash'],['Game-end abilities','ends'],['Field Notes','notes'],['Season goals','goals']];
+  resume=null;
+  ov(`<h2>🏆 ${esc(w.p.name)} ${w.p.human&&G.players.filter(x=>x.human).length===1?'win':'wins'}!</h2>
+   <p class="muted">The garden settles in for winter.</p>
+   <table class="score"><tr><th></th>${rows.map(r=>`<th style="color:${r.p.color}">${esc(r.p.name)}</th>`).join('')}</tr>
+   ${L.map(([n,k])=>`<tr><td>${n}</td>${rows.map(r=>`<td>${r.b[k]}</td>`).join('')}</tr>`).join('')}
+   <tr><td class="muted">Field Notes</td>${rows.map(r=>`<td class="muted" style="font-size:12px">${NOTES[r.p.note].name}</td>`).join('')}</tr>
+   <tr class="tot"><td>Total</td>${rows.map(r=>`<td>${r.b.total}</td>`).join('')}</tr></table>
+   <div class="row"><button class="abtn" data-act="newgame">Play again</button><button class="abtn sec" data-act="closeov">Look at the gardens</button></div>`);
+}
+
+showSetup();
+</script>
+</body>
+</html>
